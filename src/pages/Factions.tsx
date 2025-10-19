@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, ArrowLeft, Save, Plus, X } from "lucide-react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Shield, ArrowLeft, Save, Plus, X, Info } from "lucide-react";
 import { toast } from "sonner";
+import { typesBatiments, batimentsUniques, navires } from "@/data/batiments";
+import { titresCarrieres } from "@/data/titres";
 
 interface Faction {
   id: string;
@@ -16,7 +18,8 @@ interface Faction {
   marquesDepensees: number;
   marquesDisponibles: number;
   proprietes: string[];
-  batiment: { type: string; nom: string } | null;
+  batiment: { type: string; nom: string; avantages: string } | null;
+  titres: string[];
   descriptionCourte: string;
   background: string;
   dateCreation: string;
@@ -34,6 +37,7 @@ const Factions = () => {
     marquesDepensees: 0,
     proprietes: [],
     batiment: null,
+    titres: [],
     descriptionCourte: "",
     background: "",
     statut: "active"
@@ -66,16 +70,50 @@ const Factions = () => {
     });
   };
 
-  const ajouterBatiment = (type: string, nom: string) => {
+  const ajouterBatiment = (nom: string, type: string, avantages: string) => {
+    if (formData.batiment) {
+      toast.error("Vous avez déjà un bâtiment. Retirez-le d'abord.");
+      return;
+    }
     if (calculerMarquesDisponibles() >= 2) {
       setFormData({
         ...formData,
-        batiment: { type, nom },
+        batiment: { type, nom, avantages },
         marquesDepensees: formData.marquesDepensees + 1
       });
     } else {
       toast.error("Marques de destinée insuffisantes (coût: 2 marques)");
     }
+  };
+
+  const ajouterTitre = (nomTitre: string) => {
+    if (formData.titres.length >= 2) {
+      toast.error("Maximum 2 titres par faction");
+      return;
+    }
+    if (formData.titres.includes(nomTitre)) {
+      toast.error("Ce titre est déjà ajouté");
+      return;
+    }
+    if (calculerMarquesDisponibles() >= 2) {
+      setFormData({
+        ...formData,
+        titres: [...formData.titres, nomTitre],
+        marquesDepensees: formData.marquesDepensees + 1
+      });
+    } else {
+      toast.error("Marques de destinée insuffisantes (coût: 2 marques)");
+    }
+  };
+
+  const retirerTitre = (index: number) => {
+    const nouveauxTitres = [...formData.titres];
+    nouveauxTitres.splice(index, 1);
+    setFormData({
+      ...formData,
+      titres: nouveauxTitres,
+      marquesDepensees: formData.marquesDepensees - 1
+    });
   };
 
   const retirerBatiment = () => {
@@ -107,6 +145,7 @@ const Factions = () => {
       marquesDepensees: 0,
       proprietes: [],
       batiment: null,
+      titres: [],
       descriptionCourte: "",
       background: "",
       statut: "active"
@@ -185,33 +224,95 @@ const Factions = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Bâtiment/Navire/Navire Volant (2 Marques)</Label>
+                <Label>Bâtiment/Navire (2 Marques - 1 seul choix)</Label>
                 {!formData.batiment ? (
-                  <div className="space-y-2">
-                    <Select onValueChange={(type) => {
-                      const nom = prompt(`Nom de votre ${type}:`);
-                      if (nom) ajouterBatiment(type, nom);
-                    }}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choisir un type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Bâtiment">Bâtiment</SelectItem>
-                        <SelectItem value="Navire">Navire</SelectItem>
-                        <SelectItem value="Navire Volant">Navire Volant</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Select onValueChange={(value) => {
+                    const [nom, type, avantages] = value.split('||');
+                    ajouterBatiment(nom, type, avantages);
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un bâtiment ou navire" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[400px]">
+                      <SelectGroup>
+                        <SelectLabel>Bâtiments Uniques</SelectLabel>
+                        {batimentsUniques.map((bat) => (
+                          <SelectItem key={bat.nom} value={`${bat.nom}||Bâtiment||${bat.avantages}`}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{bat.nom}</span>
+                              <span className="text-xs text-muted-foreground">{bat.avantages}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                      <SelectGroup>
+                        <SelectLabel>Navires</SelectLabel>
+                        {navires.map((nav) => (
+                          <SelectItem key={nav.nom} value={`${nav.nom}||Navire||${nav.avantages}`}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{nav.nom}</span>
+                              <span className="text-xs text-muted-foreground">{nav.avantages}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 ) : (
-                  <div className="flex items-center gap-2 bg-accent/20 p-3 rounded-lg">
-                    <span className="flex-1">
-                      <strong>{formData.batiment.type}:</strong> {formData.batiment.nom}
-                    </span>
-                    <Button onClick={retirerBatiment} variant="ghost" size="icon">
-                      <X className="h-4 w-4" />
-                    </Button>
+                  <div className="bg-accent/20 p-4 rounded-lg space-y-2">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="font-bold text-primary">{formData.batiment.nom}</p>
+                        <p className="text-xs text-muted-foreground mb-2">{formData.batiment.type}</p>
+                        <div className="flex items-start gap-2 bg-muted/50 p-2 rounded">
+                          <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <p className="text-sm">{formData.batiment.avantages}</p>
+                        </div>
+                      </div>
+                      <Button onClick={retirerBatiment} variant="ghost" size="icon" className="ml-2">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Titres/Carrières (2 Marques chacun - Max 2)</Label>
+                <Select onValueChange={ajouterTitre} disabled={formData.titres.length >= 2}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={formData.titres.length >= 2 ? "Maximum atteint" : "Choisir un titre"} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[400px]">
+                    {titresCarrieres.map((titre) => (
+                      <SelectItem 
+                        key={titre.nom} 
+                        value={titre.nom}
+                        disabled={formData.titres.includes(titre.nom)}
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium">{titre.nom}</span>
+                          {titre.prerequis && (
+                            <span className="text-xs text-muted-foreground">Prérequis: {titre.prerequis}</span>
+                          )}
+                          {titre.incompatible && (
+                            <span className="text-xs text-destructive">Incompatible: {titre.incompatible}</span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formData.titres.map((titre, idx) => (
+                    <div key={idx} className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg">
+                      <span className="text-sm font-medium">{titre}</span>
+                      <button onClick={() => retirerTitre(idx)} className="hover:text-destructive">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -295,9 +396,22 @@ const Factions = () => {
                         </div>
                       )}
                       {faction.batiment && (
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-primary">{faction.batiment.nom}</p>
+                          <p className="text-xs text-muted-foreground">{faction.batiment.type}</p>
+                          <p className="text-xs bg-muted/50 p-2 rounded">{faction.batiment.avantages}</p>
+                        </div>
+                      )}
+                      {faction.titres.length > 0 && (
                         <div>
-                          <p className="text-sm font-medium">{faction.batiment.type}:</p>
-                          <p className="text-sm text-muted-foreground">{faction.batiment.nom}</p>
+                          <p className="text-sm font-medium mb-1">Titres/Carrières:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {faction.titres.map((titre, idx) => (
+                              <span key={idx} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">
+                                {titre}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
                       {faction.descriptionCourte && (
