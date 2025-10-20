@@ -21,12 +21,14 @@ interface Personnage {
   pv: number;
   abime: number;
   abimeMax: number;
+  scoreBagarre: number;
   foi: number;
   pointsCreation: number;
   pointsDepenses: number;
   competences: { nom: string; cout: number }[];
   pierresDeVie: number;
   materielTO: string[];
+  email: string;
 }
 
 const Personnages = () => {
@@ -43,12 +45,14 @@ const Personnages = () => {
     pv: 1,
     abime: 10,
     abimeMax: 10,
+    scoreBagarre: 1,
     foi: 1,
     pointsCreation: 12,
     pointsDepenses: 0,
     competences: [],
     pierresDeVie: 0,
-    materielTO: []
+    materielTO: [],
+    email: ""
   });
 
   const pointsRestants = formData.pointsCreation - formData.pointsDepenses;
@@ -57,11 +61,46 @@ const Personnages = () => {
     if (formData.espece) {
       const especeData = especes.find(e => e.nom === formData.espece);
       if (especeData) {
+        let basePV = 1;
+        let basePA = 0;
+        let baseAbime = 10;
+        let baseAbimeMax = 10;
+
+        // Appliquer les effets de l'espèce
+        basePV = 1 + especeData.effetsPV;
+        basePA = especeData.effetsPA;
+
+        // Êtres mécaniques: pas d'abîme
+        if (especeData.nom === "Êtres Mécaniques") {
+          baseAbime = 0;
+          baseAbimeMax = 0;
+        }
+
+        // Calculer les bonus d'armure
+        let bonusPA = 0;
+        formData.competences.forEach(comp => {
+          if (comp.nom === "Armure niv.1" || comp.nom === "Armure niv.2" || comp.nom === "Armure niv.3") {
+            bonusPA += 1;
+          }
+        });
+
+        // Calculer le score de bagarre
+        let scoreBagarre = basePV;
+        formData.competences.forEach(comp => {
+          if (comp.nom === "Sauvage niv.1" || comp.nom === "Sauvage niv.2" || comp.nom === "Sauvage niv.3") {
+            scoreBagarre += 1;
+          }
+        });
+
         setFormData(prev => ({
           ...prev,
-          pv: 1 + especeData.effetsPV,
-          pa: especeData.effetsPA
+          pv: basePV,
+          pa: basePA + bonusPA,
+          abime: baseAbime,
+          abimeMax: baseAbimeMax,
+          scoreBagarre: scoreBagarre
         }));
+        
         genererRecapitulatif();
       }
     }
@@ -96,8 +135,13 @@ const Personnages = () => {
     recap.push('');
     recap.push('📊 STATISTIQUES:');
     recap.push(`   PV par localisation: ${formData.pv}`);
-    recap.push(`   Points d'Armure: ${formData.pa}`);
-    recap.push(`   Abîme: ${formData.abime}/${formData.abimeMax}`);
+    recap.push(`   PA par localisation: ${formData.pa}`);
+    recap.push(`   Score de Bagarre: ${formData.scoreBagarre}`);
+    if (formData.espece !== "Êtres Mécaniques") {
+      recap.push(`   Abîme: ${formData.abime}/${formData.abimeMax}`);
+    } else {
+      recap.push(`   Abîme: N/A (Être Mécanique)`);
+    }
     recap.push(`   Pierres de Vie: ${formData.pierresDeVie}`);
     recap.push(`   Cartes Foi: ${formData.foi}`);
 
@@ -194,6 +238,13 @@ const Personnages = () => {
       return;
     }
 
+    // Validation de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
+      toast.error("Une adresse email valide est requise");
+      return;
+    }
+
     const nouveauPersonnage: Personnage = {
       id: crypto.randomUUID(),
       ...formData
@@ -210,12 +261,14 @@ const Personnages = () => {
       pv: 1,
       abime: 10,
       abimeMax: 10,
+      scoreBagarre: 1,
       foi: 1,
       pointsCreation: 12,
       pointsDepenses: 0,
       competences: [],
       pierresDeVie: 0,
-      materielTO: []
+      materielTO: [],
+      email: ""
     });
     setRecapitulatif([]);
     
@@ -381,6 +434,27 @@ const Personnages = () => {
                 </CardContent>
               </Card>
 
+              <Card className="ornament-border">
+                <CardHeader>
+                  <CardTitle>Email pour l'envoi de la Fiche</CardTitle>
+                  <CardDescription>
+                    Recevez votre fiche de personnage par email
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email pour l'envoi de la Fiche de personnage *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="email@exemple.com"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               <div className="flex gap-3">
                 <Button onClick={sauvegarderPersonnage} className="flex-1 gap-2">
                   <Save className="h-4 w-4" />
@@ -447,14 +521,20 @@ const Personnages = () => {
                           <p className="font-bold text-primary">{perso.pv}</p>
                         </div>
                         <div className="bg-muted/50 p-2 rounded text-center">
-                          <p className="text-xs text-muted-foreground">PA</p>
+                          <p className="text-xs text-muted-foreground">PA/loc</p>
                           <p className="font-bold text-primary">{perso.pa}</p>
                         </div>
                         <div className="bg-muted/50 p-2 rounded text-center">
-                          <p className="text-xs text-muted-foreground">Abîme</p>
-                          <p className="font-bold text-primary">{perso.abime}/{perso.abimeMax}</p>
+                          <p className="text-xs text-muted-foreground">Bagarre</p>
+                          <p className="font-bold text-primary">{perso.scoreBagarre}</p>
                         </div>
                       </div>
+                      {perso.espece !== "Êtres Mécaniques" && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Abîme:</span>
+                          <span className="font-bold">{perso.abime}/{perso.abimeMax}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Compétences:</span>
                         <span className="font-bold">{perso.competences.length}</span>

@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      factions: {
+        Row: {
+          background: string | null
+          batiment: string | null
+          contact_email: string
+          created_at: string | null
+          date_creation: string | null
+          description_courte: string | null
+          id: string
+          marques_depensees: number
+          marques_disponibles: number
+          marques_total: number
+          nom: string
+          propriete_terrienne: string | null
+          statut: string | null
+          titres: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          background?: string | null
+          batiment?: string | null
+          contact_email: string
+          created_at?: string | null
+          date_creation?: string | null
+          description_courte?: string | null
+          id?: string
+          marques_depensees?: number
+          marques_disponibles?: number
+          marques_total?: number
+          nom: string
+          propriete_terrienne?: string | null
+          statut?: string | null
+          titres?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          background?: string | null
+          batiment?: string | null
+          contact_email?: string
+          created_at?: string | null
+          date_creation?: string | null
+          description_courte?: string | null
+          id?: string
+          marques_depensees?: number
+          marques_disponibles?: number
+          marques_total?: number
+          nom?: string
+          propriete_terrienne?: string | null
+          statut?: string | null
+          titres?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

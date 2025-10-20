@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Shield, ArrowLeft, Save, Plus, X, Info } from "lucide-react";
 import { toast } from "sonner";
 import { typesBatiments, batimentsUniques, navires } from "@/data/batiments";
-import { titresCarrieres } from "@/data/titres";
+import { titresCarrieres, Titre } from "@/data/titres";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Faction {
   id: string;
@@ -17,11 +18,12 @@ interface Faction {
   marquesTotal: number;
   marquesDepensees: number;
   marquesDisponibles: number;
-  proprietes: string[];
+  propriete: string;
   batiment: { type: string; nom: string; avantages: string } | null;
   titres: string[];
   descriptionCourte: string;
   background: string;
+  contactEmail: string;
   dateCreation: string;
   statut: "active" | "inactive";
 }
@@ -29,45 +31,22 @@ interface Faction {
 const Factions = () => {
   const [factions, setFactions] = useState<Faction[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [nouvellePropriete, setNouvellePropriete] = useState("");
 
   const [formData, setFormData] = useState<Omit<Faction, "id" | "marquesDisponibles" | "dateCreation">>({
     nom: "",
     marquesTotal: 4,
     marquesDepensees: 0,
-    proprietes: [],
+    propriete: "",
     batiment: null,
     titres: [],
     descriptionCourte: "",
     background: "",
+    contactEmail: "",
     statut: "active"
   });
 
   const calculerMarquesDisponibles = () => {
     return formData.marquesTotal - (formData.marquesDepensees * 2);
-  };
-
-  const ajouterPropriete = () => {
-    if (nouvellePropriete.trim() && calculerMarquesDisponibles() >= 2) {
-      setFormData({
-        ...formData,
-        proprietes: [...formData.proprietes, nouvellePropriete.trim()],
-        marquesDepensees: formData.marquesDepensees + 1
-      });
-      setNouvellePropriete("");
-    } else if (calculerMarquesDisponibles() < 2) {
-      toast.error("Marques de destinée insuffisantes (coût: 2 marques)");
-    }
-  };
-
-  const retirerPropriete = (index: number) => {
-    const nouvelles = [...formData.proprietes];
-    nouvelles.splice(index, 1);
-    setFormData({
-      ...formData,
-      proprietes: nouvelles,
-      marquesDepensees: formData.marquesDepensees - 1
-    });
   };
 
   const ajouterBatiment = (nom: string, type: string, avantages: string) => {
@@ -86,6 +65,30 @@ const Factions = () => {
     }
   };
 
+  const verifierIncompatibilite = (nouveauTitre: string): boolean => {
+    const titreData = titresCarrieres.find(t => t.nom === nouveauTitre);
+    if (!titreData) return false;
+
+    // Vérifier si un titre déjà sélectionné est incompatible avec le nouveau
+    for (const titreActuel of formData.titres) {
+      const titreActuelData = titresCarrieres.find(t => t.nom === titreActuel);
+      
+      // Vérifier incompatibilité du nouveau titre avec les titres actuels
+      if (titreData.incompatible && titreData.incompatible.includes(titreActuel)) {
+        toast.error(`${nouveauTitre} est incompatible avec ${titreActuel}`);
+        return true;
+      }
+      
+      // Vérifier incompatibilité des titres actuels avec le nouveau titre
+      if (titreActuelData?.incompatible && titreActuelData.incompatible.includes(nouveauTitre)) {
+        toast.error(`${nouveauTitre} est incompatible avec ${titreActuel}`);
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const ajouterTitre = (nomTitre: string) => {
     if (formData.titres.length >= 2) {
       toast.error("Maximum 2 titres par faction");
@@ -95,6 +98,12 @@ const Factions = () => {
       toast.error("Ce titre est déjà ajouté");
       return;
     }
+    
+    // Vérifier les incompatibilités
+    if (verifierIncompatibilite(nomTitre)) {
+      return;
+    }
+    
     if (calculerMarquesDisponibles() >= 2) {
       setFormData({
         ...formData,
@@ -124,9 +133,36 @@ const Factions = () => {
     });
   };
 
-  const sauvegarderFaction = () => {
+  const getTitreDisabledStatus = (titre: Titre): boolean => {
+    // Déjà sélectionné
+    if (formData.titres.includes(titre.nom)) return true;
+
+    // Vérifier les incompatibilités avec les titres déjà sélectionnés
+    for (const titreActuel of formData.titres) {
+      const titreActuelData = titresCarrieres.find(t => t.nom === titreActuel);
+      
+      if (titre.incompatible && titre.incompatible.includes(titreActuel)) {
+        return true;
+      }
+      
+      if (titreActuelData?.incompatible && titreActuelData.incompatible.includes(titre.nom)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const sauvegarderFaction = async () => {
     if (!formData.nom.trim()) {
       toast.error("Le nom de la faction est requis");
+      return;
+    }
+
+    // Validation de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.contactEmail.trim() || !emailRegex.test(formData.contactEmail)) {
+      toast.error("Une adresse email valide est requise");
       return;
     }
 
@@ -137,21 +173,70 @@ const Factions = () => {
       dateCreation: new Date().toLocaleDateString("fr-FR")
     };
 
-    setFactions([...factions, nouvelleFaction]);
-    setShowForm(false);
-    setFormData({
-      nom: "",
-      marquesTotal: 4,
-      marquesDepensees: 0,
-      proprietes: [],
-      batiment: null,
-      titres: [],
-      descriptionCourte: "",
-      background: "",
-      statut: "active"
-    });
-    
-    toast.success("Faction créée avec succès !");
+    try {
+      // Sauvegarder dans la base de données
+      const { data: dbData, error: dbError } = await supabase
+        .from('factions')
+        .insert({
+          nom: nouvelleFaction.nom,
+          marques_total: nouvelleFaction.marquesTotal,
+          marques_depensees: nouvelleFaction.marquesDepensees,
+          marques_disponibles: nouvelleFaction.marquesDisponibles,
+          propriete_terrienne: nouvelleFaction.propriete || null,
+          batiment: nouvelleFaction.batiment ? JSON.stringify(nouvelleFaction.batiment) : null,
+          titres: nouvelleFaction.titres,
+          description_courte: nouvelleFaction.descriptionCourte,
+          background: nouvelleFaction.background,
+          contact_email: nouvelleFaction.contactEmail,
+          statut: nouvelleFaction.statut
+        })
+        .select()
+        .single();
+
+      if (dbError) throw dbError;
+
+      // Envoyer les emails
+      const { data: emailData, error: emailError } = await supabase.functions.invoke('send-faction-email', {
+        body: {
+          factionName: nouvelleFaction.nom,
+          contactEmail: nouvelleFaction.contactEmail,
+          marques: {
+            total: nouvelleFaction.marquesTotal,
+            disponibles: nouvelleFaction.marquesDisponibles
+          },
+          propriete: nouvelleFaction.propriete || null,
+          batiment: nouvelleFaction.batiment,
+          titres: nouvelleFaction.titres,
+          descriptionCourte: nouvelleFaction.descriptionCourte,
+          background: nouvelleFaction.background
+        }
+      });
+
+      if (emailError) {
+        console.error("Erreur d'envoi d'email:", emailError);
+        toast.error("La faction a été créée mais l'envoi d'email a échoué");
+      }
+
+      setFactions([...factions, nouvelleFaction]);
+      setShowForm(false);
+      setFormData({
+        nom: "",
+        marquesTotal: 4,
+        marquesDepensees: 0,
+        propriete: "",
+        batiment: null,
+        titres: [],
+        descriptionCourte: "",
+        background: "",
+        contactEmail: "",
+        statut: "active"
+      });
+      
+      toast.success("Faction créée avec succès ! Les emails ont été envoyés.");
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde:", error);
+      toast.error("Une erreur est survenue lors de la création de la faction");
+    }
   };
 
   return (
@@ -199,28 +284,16 @@ const Factions = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Propriétés Terriennes (2 Marques chacune)</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={nouvellePropriete}
-                    onChange={(e) => setNouvellePropriete(e.target.value)}
-                    placeholder="Nom de la propriété"
-                    onKeyPress={(e) => e.key === 'Enter' && ajouterPropriete()}
-                  />
-                  <Button onClick={ajouterPropriete} variant="secondary">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.proprietes.map((prop, idx) => (
-                    <div key={idx} className="flex items-center gap-1 bg-secondary/20 px-3 py-1 rounded-full">
-                      <span className="text-sm">{prop}</span>
-                      <button onClick={() => retirerPropriete(idx)} className="hover:text-destructive">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <Label htmlFor="propriete">Propriété Terrienne (gratuit - 1 seul)</Label>
+                <Input
+                  id="propriete"
+                  value={formData.propriete}
+                  onChange={(e) => setFormData({ ...formData, propriete: e.target.value })}
+                  placeholder="Nom de votre propriété"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Une seule propriété terrienne peut être ajoutée gratuitement
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -284,23 +357,26 @@ const Factions = () => {
                     <SelectValue placeholder={formData.titres.length >= 2 ? "Maximum atteint" : "Choisir un titre"} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[400px]">
-                    {titresCarrieres.map((titre) => (
-                      <SelectItem 
-                        key={titre.nom} 
-                        value={titre.nom}
-                        disabled={formData.titres.includes(titre.nom)}
-                      >
-                        <div className="flex flex-col">
-                          <span className="font-medium">{titre.nom}</span>
-                          {titre.prerequis && (
-                            <span className="text-xs text-muted-foreground">Prérequis: {titre.prerequis}</span>
-                          )}
-                          {titre.incompatible && (
-                            <span className="text-xs text-destructive">Incompatible: {titre.incompatible}</span>
-                          )}
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {titresCarrieres.map((titre) => {
+                      const isDisabled = getTitreDisabledStatus(titre);
+                      return (
+                        <SelectItem 
+                          key={titre.nom} 
+                          value={titre.nom}
+                          disabled={isDisabled}
+                        >
+                          <div className="flex flex-col">
+                            <span className={`font-medium ${isDisabled ? 'opacity-50' : ''}`}>{titre.nom}</span>
+                            {titre.prerequis && (
+                              <span className="text-xs text-muted-foreground">Prérequis: {titre.prerequis}</span>
+                            )}
+                            {titre.incompatible && (
+                              <span className="text-xs text-destructive">Incompatible: {titre.incompatible}</span>
+                            )}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -335,6 +411,20 @@ const Factions = () => {
                   placeholder="L'histoire complète de votre faction..."
                   rows={6}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="contactEmail">Contact email de la Faction *</Label>
+                <Input
+                  id="contactEmail"
+                  type="email"
+                  value={formData.contactEmail}
+                  onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                  placeholder="email@exemple.com"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Cet email recevra une confirmation de création de la faction
+                </p>
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -383,16 +473,12 @@ const Factions = () => {
                         <span className="text-muted-foreground">Marques disponibles:</span>
                         <span className="font-bold">{faction.marquesDisponibles}/{faction.marquesTotal}</span>
                       </div>
-                      {faction.proprietes.length > 0 && (
+                      {faction.propriete && (
                         <div>
-                          <p className="text-sm font-medium mb-1">Propriétés:</p>
-                          <div className="flex flex-wrap gap-1">
-                            {faction.proprietes.map((prop, idx) => (
-                              <span key={idx} className="text-xs bg-secondary/20 px-2 py-1 rounded">
-                                {prop}
-                              </span>
-                            ))}
-                          </div>
+                          <p className="text-sm font-medium mb-1">Propriété:</p>
+                          <span className="text-xs bg-secondary/20 px-2 py-1 rounded">
+                            {faction.propriete}
+                          </span>
                         </div>
                       )}
                       {faction.batiment && (

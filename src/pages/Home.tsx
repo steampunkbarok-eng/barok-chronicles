@@ -29,13 +29,13 @@ const Home = () => {
             <span className="text-primary">Barok</span>
           </h2>
           <p className="text-xl text-muted-foreground">
-            Créez et gérez vos factions et personnages pour vos aventures grandeur nature
+            Créez vos factions et personnages pour vos aventures grandeurs natures Dark fantasy et steampunk !
           </p>
           <div className="flex gap-4 justify-center pt-6">
             <Link to="/factions">
               <Button size="lg" className="gap-2 bg-primary hover:bg-primary/90">
                 <Users className="h-5 w-5" />
-                Gérer les Factions
+                Créez votre Faction PJ
               </Button>
             </Link>
             <Link to="/personnages">
