@@ -10,6 +10,9 @@ import { ArrowLeft, Scroll, Plus, X, Save, AlertCircle, Info } from "lucide-reac
 import { toast } from "sonner";
 import { especes } from "@/data/especes";
 import { competencesDisponibles } from "@/data/competences";
+import { titresCarrieres } from "@/data/titres";
+import { supabase } from "@/integrations/supabase/client";
+import { CharacterSheet } from "@/components/CharacterSheet";
 
 interface Personnage {
   id: string;
@@ -35,6 +38,7 @@ const Personnages = () => {
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
+  const [factions, setFactions] = useState<{ nom: string; titres: string[] }[]>([]);
 
   const [formData, setFormData] = useState<Omit<Personnage, "id">>({
     nomTO: "",
@@ -56,6 +60,22 @@ const Personnages = () => {
   });
 
   const pointsRestants = formData.pointsCreation - formData.pointsDepenses;
+
+  useEffect(() => {
+    const fetchFactions = async () => {
+      const { data, error } = await supabase
+        .from('factions')
+        .select('nom, titres')
+        .eq('statut', 'active');
+      
+      if (error) {
+        console.error("Erreur lors du chargement des factions:", error);
+      } else if (data) {
+        setFactions(data);
+      }
+    };
+    fetchFactions();
+  }, []);
 
   useEffect(() => {
     if (formData.espece) {
@@ -105,6 +125,22 @@ const Personnages = () => {
       }
     }
   }, [formData.espece, formData.competences]);
+
+  const getInterditsFromFaction = (): string[] => {
+    const faction = factions.find(f => f.nom === formData.faction);
+    if (!faction || !faction.titres) return [];
+
+    let interdits: string[] = [];
+    faction.titres.forEach(titreNom => {
+      const titre = titresCarrieres.find(t => t.nom === titreNom);
+      if (titre && titre.incompatible) {
+        const incompatibles = titre.incompatible.split(',').map(s => s.trim());
+        interdits = [...interdits, ...incompatibles];
+      }
+    });
+    
+    return interdits;
+  };
 
   const genererRecapitulatif = () => {
     const recap: string[] = [];
@@ -180,6 +216,17 @@ const Personnages = () => {
         toast.error(`Cette compétence est interdite pour l'espèce ${especeData.nom}`);
         return;
       }
+    }
+
+    // Vérifier les interdits de la faction
+    const interdits = getInterditsFromFaction();
+    const isInterdit = interdits.some(interdit => 
+      competence.nom.toLowerCase().includes(interdit.toLowerCase()) ||
+      interdit.toLowerCase().includes(competence.nom.toLowerCase())
+    );
+    if (isInterdit) {
+      toast.error(`Cette compétence est interdite par votre faction`);
+      return;
     }
 
     // Ajouter la compétence
@@ -337,13 +384,28 @@ const Personnages = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="faction">Faction</Label>
-                    <Input
-                      id="faction"
+                    <Label htmlFor="faction">Faction (optionnel)</Label>
+                    <Select
                       value={formData.faction}
-                      onChange={(e) => setFormData({ ...formData, faction: e.target.value })}
-                      placeholder="Nom de votre faction"
-                    />
+                      onValueChange={(value) => setFormData({ ...formData, faction: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choisir une faction" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Aucune faction</SelectItem>
+                        {factions.map((faction) => (
+                          <SelectItem key={faction.nom} value={faction.nom}>
+                            {faction.nom}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {formData.faction && factions.find(f => f.nom === formData.faction)?.titres.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        Titres de cette faction : {factions.find(f => f.nom === formData.faction)?.titres.join(", ")}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -353,15 +415,42 @@ const Personnages = () => {
                         <SelectValue placeholder="Choisir une espèce" />
                       </SelectTrigger>
                       <SelectContent className="max-h-[400px]">
-                        {especes.map((esp) => (
-                          <SelectItem key={esp.nom} value={esp.nom}>
-                            <div className="flex flex-col">
-                              <span className="font-medium">{esp.nom}</span>
-                              <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
-                              <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
+                        <SelectGroup>
+                          <SelectLabel>Espèces Standard</SelectLabel>
+                          {especes.slice(0, 1).map((esp) => (
+                            <SelectItem key={esp.nom} value={esp.nom}>
+                              <div className="flex flex-col">
+                                <span className="font-medium">{esp.nom}</span>
+                                <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
+                                <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                        <SelectGroup>
+                          <SelectLabel className="text-primary font-bold">Avec accord de l'Orga</SelectLabel>
+                          {especes.slice(1, 14).map((esp) => (
+                            <SelectItem key={esp.nom} value={esp.nom}>
+                              <div className="flex flex-col">
+                                <span className="font-medium">{esp.nom}</span>
+                                <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
+                                <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                        <SelectGroup>
+                          <SelectLabel>Espèces Standard (suite)</SelectLabel>
+                          {especes.slice(14).map((esp) => (
+                            <SelectItem key={esp.nom} value={esp.nom}>
+                              <div className="flex flex-col">
+                                <span className="font-medium">{esp.nom}</span>
+                                <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
+                                <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
                       </SelectContent>
                     </Select>
                   </div>
@@ -376,6 +465,11 @@ const Personnages = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {formData.faction && getInterditsFromFaction().length > 0 && (
+                    <div className="text-xs text-destructive bg-destructive/10 p-3 rounded-lg">
+                      <strong>Compétences interdites par votre faction:</strong> {getInterditsFromFaction().join(", ")}
+                    </div>
+                  )}
                   <Select onValueChange={ajouterCompetence}>
                     <SelectTrigger>
                       <SelectValue placeholder="Ajouter une compétence" />
@@ -386,21 +480,31 @@ const Personnages = () => {
                           <SelectLabel>{categorie}</SelectLabel>
                           {competencesDisponibles
                             .filter(c => c.categorie === categorie)
-                            .map((comp) => (
-                              <SelectItem 
-                                key={comp.nom} 
-                                value={comp.nom}
-                                disabled={formData.competences.some(c => c.nom === comp.nom)}
-                              >
-                                <div className="flex flex-col">
-                                  <span className="font-medium">{comp.nom} ({comp.cout} pts)</span>
-                                  <span className="text-xs text-muted-foreground">{comp.effet}</span>
-                                  {comp.prerequis && (
-                                    <span className="text-xs text-primary">Prérequis: {comp.prerequis}</span>
-                                  )}
-                                </div>
-                              </SelectItem>
-                            ))}
+                            .map((comp) => {
+                              const interdits = getInterditsFromFaction();
+                              const isInterdit = interdits.some(interdit => 
+                                comp.nom.toLowerCase().includes(interdit.toLowerCase()) ||
+                                interdit.toLowerCase().includes(comp.nom.toLowerCase())
+                              );
+                              
+                              return (
+                                <SelectItem 
+                                  key={comp.nom} 
+                                  value={comp.nom}
+                                  disabled={formData.competences.some(c => c.nom === comp.nom) || isInterdit}
+                                >
+                                  <div className="flex flex-col">
+                                    <span className={`font-medium ${isInterdit ? 'text-destructive' : ''}`}>
+                                      {comp.nom} ({comp.cout} pts) {isInterdit ? '(Interdit)' : ''}
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">{comp.effet}</span>
+                                    {comp.prerequis && (
+                                      <span className="text-xs text-primary">Prérequis: {comp.prerequis}</span>
+                                    )}
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                         </SelectGroup>
                       ))}
                     </SelectContent>
@@ -547,6 +651,19 @@ const Personnages = () => {
                         <span className="text-muted-foreground">Points utilisés:</span>
                         <span className="font-bold">{perso.pointsDepenses}/{perso.pointsCreation}</span>
                       </div>
+                      <CharacterSheet 
+                        character={{
+                          nom: perso.nomTI,
+                          prenom: perso.nomTO,
+                          faction: perso.faction || "Aucune",
+                          espece: perso.espece,
+                          competences: perso.competences.map(c => c.nom),
+                          pvTotal: perso.pv,
+                          paTotal: perso.pa,
+                          scoreBagarre: perso.scoreBagarre,
+                          email: perso.email
+                        }}
+                      />
                     </CardContent>
                   </Card>
                 ))}

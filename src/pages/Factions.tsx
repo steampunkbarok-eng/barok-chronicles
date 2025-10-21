@@ -54,15 +54,11 @@ const Factions = () => {
       toast.error("Vous avez déjà un bâtiment. Retirez-le d'abord.");
       return;
     }
-    if (calculerMarquesDisponibles() >= 2) {
-      setFormData({
-        ...formData,
-        batiment: { type, nom, avantages },
-        marquesDepensees: formData.marquesDepensees + 1
-      });
-    } else {
-      toast.error("Marques de destinée insuffisantes (coût: 2 marques)");
-    }
+    // Le bâtiment est maintenant gratuit
+    setFormData({
+      ...formData,
+      batiment: { type, nom, avantages }
+    });
   };
 
   const verifierIncompatibilite = (nouveauTitre: string): boolean => {
@@ -128,8 +124,7 @@ const Factions = () => {
   const retirerBatiment = () => {
     setFormData({
       ...formData,
-      batiment: null,
-      marquesDepensees: formData.marquesDepensees - 1
+      batiment: null
     });
   };
 
@@ -297,7 +292,7 @@ const Factions = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Bâtiment/Navire (2 Marques - 1 seul choix)</Label>
+                <Label>Bâtiment/Navire (Gratuit - 1 seul choix)</Label>
                 {!formData.batiment ? (
                   <Select onValueChange={(value) => {
                     const [nom, type, avantages] = value.split('||');
