@@ -390,10 +390,9 @@ const Personnages = () => {
                       onValueChange={(value) => setFormData({ ...formData, faction: value })}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Choisir une faction" />
+                        <SelectValue placeholder="Aucune faction sélectionnée" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Aucune faction</SelectItem>
                         {factions.map((faction) => (
                           <SelectItem key={faction.nom} value={faction.nom}>
                             {faction.nom}
@@ -401,7 +400,7 @@ const Personnages = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    {formData.faction && factions.find(f => f.nom === formData.faction)?.titres.length > 0 && (
+                    {formData.faction && factions.find(f => f.nom === formData.faction)?.titres && factions.find(f => f.nom === formData.faction)?.titres.length > 0 && (
                       <p className="text-xs text-muted-foreground">
                         Titres de cette faction : {factions.find(f => f.nom === formData.faction)?.titres.join(", ")}
                       </p>
