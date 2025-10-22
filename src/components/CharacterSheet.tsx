@@ -229,6 +229,29 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <div class="stat-label">Score de Bagarre</div>
         <div class="stat-value">${character.scoreBagarre}</div>
       </div>
+      <div class="stat">
+        <div class="stat-label">GM</div>
+        <div class="stat-value"></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">GO</div>
+        <div class="stat-value"></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">GA</div>
+        <div class="stat-value"></div>
+      </div>
+    </div>
+
+    <div class="info-grid" style="margin-bottom: 0.3cm;">
+      <div class="info-item" style="grid-column: span 2;">
+        <div class="info-label">Pierres de Vie</div>
+        <div class="info-value" style="min-height: 0.8cm;"></div>
+      </div>
+      <div class="info-item" style="grid-column: span 2;">
+        <div class="info-label">Points d'Abîme</div>
+        <div class="info-value" style="min-height: 0.8cm;"></div>
+      </div>
     </div>
 
     <h2>Compétences Choisies (${character.competences.length})</h2>
@@ -271,9 +294,23 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     </div>
 
     <h2>Maladies</h2>
-    <div class="long-box" style="min-height: 1cm;"></div>
-    <div class="long-box" style="min-height: 1cm;"></div>
-    <div class="long-box" style="min-height: 1cm;"></div>
+    <div class="empty-boxes">
+      <div class="empty-box" style="min-height: 1.2cm;">
+        <div class="empty-box-label">1.</div>
+      </div>
+      <div class="empty-box" style="min-height: 1.2cm;">
+        <div class="empty-box-label">2.</div>
+      </div>
+      <div class="empty-box" style="min-height: 1.2cm;">
+        <div class="empty-box-label">3.</div>
+      </div>
+      <div class="empty-box" style="min-height: 1.2cm;">
+        <div class="empty-box-label">4.</div>
+      </div>
+      <div class="empty-box" style="min-height: 1.2cm;">
+        <div class="empty-box-label">5.</div>
+      </div>
+    </div>
 
     <h2>Perles Obsidiennes</h2>
     <div class="rect-box">
