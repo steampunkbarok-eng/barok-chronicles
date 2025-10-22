@@ -660,7 +660,9 @@ const Personnages = () => {
                           pvTotal: perso.pv,
                           paTotal: perso.pa,
                           scoreBagarre: perso.scoreBagarre,
-                          email: perso.email
+                          email: perso.email,
+                          especeGratuit: especes.find(e => e.nom === perso.espece)?.gratuit,
+                          especeInterdit: especes.find(e => e.nom === perso.espece)?.interdit
                         }}
                       />
                     </CardContent>

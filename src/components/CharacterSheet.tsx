@@ -13,6 +13,9 @@ interface CharacterSheetProps {
     paTotal: number;
     scoreBagarre: number;
     email: string;
+    especeGratuit?: string;
+    especeInterdit?: string;
+    factionInterdit?: string;
   };
 }
 
@@ -229,8 +232,23 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     </div>
 
     <h2>Compétences Choisies (${character.competences.length})</h2>
-    <div class="competences-box">
-      ${character.competences.map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+    <div class="two-columns">
+      <div class="competences-box" style="min-height: 4cm;">
+        ${character.competences.slice(0, Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+      </div>
+      <div class="competences-box" style="min-height: 4cm;">
+        ${character.competences.slice(Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+      </div>
+    </div>
+
+    <h2>Compétences Apprises</h2>
+    <div class="two-columns">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">
+        ${Array(6).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 1}.</div></div>`).join('')}
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">
+        ${Array(6).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 7}.</div></div>`).join('')}
+      </div>
     </div>
 
     <h2>Séquelles</h2>
@@ -278,58 +296,18 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
   <div class="page">
     <h1>RÉCAPITULATIF - ${character.prenom} ${character.nom}</h1>
     
-    <h2>Informations de Création</h2>
-    <table>
-      <tr>
-        <th>Caractéristique</th>
-        <th>Valeur</th>
-      </tr>
-      <tr>
-        <td><strong>Espèce</strong></td>
-        <td>${character.espece}</td>
-      </tr>
-      <tr>
-        <td><strong>Faction</strong></td>
-        <td>${character.faction || 'Aucune faction sélectionnée'}</td>
-      </tr>
-      <tr>
-        <td><strong>Points de Vie (PV)</strong></td>
-        <td>${character.pvTotal} points</td>
-      </tr>
-      <tr>
-        <td><strong>Points d'Action (PA)</strong></td>
-        <td>${character.paTotal} points</td>
-      </tr>
-      <tr>
-        <td><strong>Score de Bagarre</strong></td>
-        <td>${character.scoreBagarre} points (PV délocalisés)</td>
-      </tr>
-    </table>
-
-    <h2>PA par Localisation</h2>
-    <table>
-      <tr>
-        <th>Localisation</th>
-        <th>PA</th>
-      </tr>
-      <tr><td>Torse</td><td>${Math.floor(character.paTotal / 3)}</td></tr>
-      <tr><td>Bras Gauche</td><td>${Math.floor(character.paTotal / 3)}</td></tr>
-      <tr><td>Bras Droit</td><td>${Math.floor(character.paTotal / 3)}</td></tr>
-    </table>
-
     <h2>Compétences Gratuites de l'Espèce</h2>
     <div class="competences-box" style="min-height: 3cm;">
-      ${character.competences.length > 0 ? 
-        '<div style="font-size: 8pt; font-style: italic;">Les compétences gratuites sont incluses dans la liste des compétences choisies ci-dessus.</div>' : 
+      ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
+        `<div style="font-size: 9pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
         '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
     </div>
 
     <h2>Compétences Interdites</h2>
     <div class="competences-box" style="min-height: 3cm;">
-      <div style="font-size: 8pt; font-style: italic;">
-        Les compétences interdites dépendent de votre espèce et de votre faction (si applicable).
-        Consultez les règles pour plus de détails.
-      </div>
+      ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
+        `<div style="font-size: 9pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
+        '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
     </div>
 
     <h2>Système de Bagarre (Rappel)</h2>
@@ -348,6 +326,112 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div class="footer" style="margin-top: 1cm;">
       <strong>Fiche générée automatiquement</strong> | 
       Pour toute modification, contactez l'organisation
+    </div>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page">
+    <h1>ANNONCES DE JEU</h1>
+    
+    <h2>Annonces de Combat</h2>
+    <table>
+      <tr>
+        <th style="width: 25%;">Annonce</th>
+        <th>Effet</th>
+      </tr>
+      <tr>
+        <td><strong>PAF</strong></td>
+        <td>Cible assommée pendant 5 minutes (inconsciente, au sol)</td>
+      </tr>
+      <tr>
+        <td><strong>BLIND</strong></td>
+        <td>Cible aveuglée pendant 1 minute + subit 1 PV de dégâts</td>
+      </tr>
+      <tr>
+        <td><strong>CRUSH</strong></td>
+        <td>Attaque dévastatrice - Dégâts doublés. Détruit instantanément les Morts-Vivants</td>
+      </tr>
+      <tr>
+        <td><strong>SACRED</strong></td>
+        <td>Attaque sacrée - Efficace contre les créatures impies. Détruit instantanément les Morts-Vivants</td>
+      </tr>
+      <tr>
+        <td><strong>ENCHANTED</strong></td>
+        <td>Attaque enchantée - Les Planaires subissent 2 PV au lieu d'1 PV</td>
+      </tr>
+      <tr>
+        <td><strong>BONFIRE</strong></td>
+        <td>Flammes purificatrices - Rend les Morts-Vivants vulnérables pendant 3 touches. Détruit définitivement les Planaires du Néant</td>
+      </tr>
+    </table>
+
+    <h2>Annonces de Magie</h2>
+    <table>
+      <tr>
+        <th style="width: 25%;">Annonce</th>
+        <th>Effet</th>
+      </tr>
+      <tr>
+        <td><strong>FRAYEUR</strong></td>
+        <td>Cible effrayée - Doit fuir la source de peur pendant 1 minute</td>
+      </tr>
+      <tr>
+        <td><strong>ENTRAVE</strong></td>
+        <td>Cible immobilisée - Ne peut pas se déplacer pendant la durée de l'effet</td>
+      </tr>
+      <tr>
+        <td><strong>DÉSINCARNATION</strong></td>
+        <td>Projection astrale - L'esprit quitte temporairement le corps</td>
+      </tr>
+    </table>
+
+    <h2>Système de Bagarre (Rappel)</h2>
+    <div style="border: 2px solid #000; padding: 0.3cm; background: #f9f9f9; margin-bottom: 0.4cm;">
+      <p style="margin: 0.1cm 0;"><strong>Conditions de déclenchement :</strong></p>
+      <ul style="margin: 0.1cm 0; padding-left: 0.5cm;">
+        <li>Accord tacite entre les participants OU souffler « Bagarre » à l'oreille de l'adversaire</li>
+        <li>Score de bagarre = Points de vie délocalisés au moment de la bagarre</li>
+      </ul>
+      <p style="margin: 0.2cm 0;"><strong>Règles :</strong></p>
+      <ul style="margin: 0.1cm 0; padding-left: 0.5cm;">
+        <li>Le participant avec le score le plus élevé l'emporte</li>
+        <li>En cas d'égalité : épuisement mutuel, pas de vainqueur (sauf si annonce d'assommage utilisée)</li>
+        <li>Annonces autorisées : PAF (assommé 5 min), BLIND (aveuglé 1 min + 1 PV)</li>
+      </ul>
+      <p style="margin: 0.2cm 0; color: #c00;"><strong>⚠ INTERDICTIONS ABSOLUES :</strong></p>
+      <ul style="margin: 0.1cm 0; padding-left: 0.5cm; color: #c00;">
+        <li>Les personnes non-combattantes ne peuvent PAS participer aux bagarres</li>
+        <li>Les mineurs ne peuvent JAMAIS faire de bagarre</li>
+      </ul>
+    </div>
+
+    <h2>États Spéciaux</h2>
+    <table>
+      <tr>
+        <th style="width: 25%;">État</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><strong>Assommé</strong></td>
+        <td>Personnage inconscient, au sol, incapable d'agir pendant la durée indiquée</td>
+      </tr>
+      <tr>
+        <td><strong>Aveuglé</strong></td>
+        <td>Personnage ne peut pas voir, pénalités aux actions nécessitant la vue</td>
+      </tr>
+      <tr>
+        <td><strong>Immobilisé</strong></td>
+        <td>Personnage ne peut pas se déplacer mais peut agir sur place</td>
+      </tr>
+      <tr>
+        <td><strong>Effrayé</strong></td>
+        <td>Personnage doit s'éloigner de la source de peur, ne peut pas l'attaquer</td>
+      </tr>
+    </table>
+
+    <div class="footer" style="margin-top: 0.5cm;">
+      <strong>Référence rapide</strong> | 
+      Ces annonces doivent être clairement énoncées lors de leur utilisation
     </div>
   </div>
 </body>
