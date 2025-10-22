@@ -310,18 +310,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
     </div>
 
-    <h2>Système de Bagarre (Rappel)</h2>
-    <div style="border: 1px solid #000; padding: 0.3cm; background: #f9f9f9;">
-      <p style="margin: 0.1cm 0;"><strong>Conditions :</strong></p>
-      <ul style="margin: 0.1cm 0; padding-left: 0.5cm;">
-        <li>Accord tacite ou souffler « Bagarre » à l'oreille</li>
-        <li>Score de bagarre = Points de vie délocalisés</li>
-        <li>Le score le plus élevé l'emporte</li>
-        <li>Égalité : épuisement mutuel, pas de vainqueur (sauf assommage)</li>
-      </ul>
-      <p style="margin: 0.1cm 0;"><strong>Annonces autorisées :</strong> PAF (assommé 5 min), BLIND (aveuglé 1 min + 1 PV)</p>
-      <p style="margin: 0.1cm 0;"><strong>Interdictions :</strong> Les personnes non-combattantes et les mineurs ne font PAS de bagarre.</p>
-    </div>
 
     <div class="footer" style="margin-top: 1cm;">
       <strong>Fiche générée automatiquement</strong> | 
