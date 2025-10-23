@@ -661,6 +661,8 @@ const Personnages = () => {
                           paTotal: perso.pa,
                           scoreBagarre: perso.scoreBagarre,
                           email: perso.email,
+                          pierresDeVie: perso.pierresDeVie,
+                          abime: perso.abime,
                           especeGratuit: especes.find(e => e.nom === perso.espece)?.gratuit,
                           especeInterdit: especes.find(e => e.nom === perso.espece)?.interdit
                         }}
