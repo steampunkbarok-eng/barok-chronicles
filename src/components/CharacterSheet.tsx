@@ -273,42 +273,42 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <th style="width: 25%;">Niveau 4</th>
       </tr>
       ${Array(6).fill(0).map(() => `<tr>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>`).join('')}
     </table>
 
     <h2>Rituels Magiques</h2>
     <table>
       <tr>
-        <th style="width: 20%;">École 1</th>
-        <th style="width: 20%;">Sort 1</th>
-        <th style="width: 20%;">Sort 2</th>
-        <th style="width: 20%;">Sort 3</th>
-        <th style="width: 20%;">Sort 4</th>
+        <th style="width: 16.66%;">École 1 Sort 1</th>
+        <th style="width: 16.66%;">École 1 Sort 2</th>
+        <th style="width: 16.66%;">École 1 Sort 3</th>
+        <th style="width: 16.66%;">École 1 Sort 4</th>
+        <th style="width: 16.66%;">École 1 Sort 5</th>
       </tr>
       <tr>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>
       <tr>
-        <th style="width: 20%;">École 2</th>
-        <th style="width: 20%;">Sort 1</th>
-        <th style="width: 20%;">Sort 2</th>
-        <th style="width: 20%;">Sort 3</th>
-        <th style="width: 20%;">Sort 4</th>
+        <th style="width: 16.66%;">École 2 Sort 1</th>
+        <th style="width: 16.66%;">École 2 Sort 2</th>
+        <th style="width: 16.66%;">École 2 Sort 3</th>
+        <th style="width: 16.66%;">École 2 Sort 4</th>
+        <th style="width: 16.66%;">École 2 Sort 5</th>
       </tr>
       <tr>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
-        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>
     </table>
 
