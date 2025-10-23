@@ -246,11 +246,11 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div class="info-grid" style="margin-bottom: 0.3cm;">
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Pierres de Vie</div>
-        <div class="info-value" style="min-height: 0.8cm;"></div>
+        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;">${character.pvTotal}</div>
       </div>
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Points d'Abîme</div>
-        <div class="info-value" style="min-height: 0.8cm;"></div>
+        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;">${character.paTotal}</div>
       </div>
     </div>
 
