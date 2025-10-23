@@ -264,6 +264,54 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
+    <h2>Sortilèges</h2>
+    <table>
+      <tr>
+        <th style="width: 25%;">Niveau 1</th>
+        <th style="width: 25%;">Niveau 2</th>
+        <th style="width: 25%;">Niveau 3</th>
+        <th style="width: 25%;">Niveau 4</th>
+      </tr>
+      ${Array(6).fill(0).map(() => `<tr>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+      </tr>`).join('')}
+    </table>
+
+    <h2>Rituels Magiques</h2>
+    <table>
+      <tr>
+        <th style="width: 20%;">École 1</th>
+        <th style="width: 20%;">Sort 1</th>
+        <th style="width: 20%;">Sort 2</th>
+        <th style="width: 20%;">Sort 3</th>
+        <th style="width: 20%;">Sort 4</th>
+      </tr>
+      <tr>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+      </tr>
+      <tr>
+        <th style="width: 20%;">École 2</th>
+        <th style="width: 20%;">Sort 1</th>
+        <th style="width: 20%;">Sort 2</th>
+        <th style="width: 20%;">Sort 3</th>
+        <th style="width: 20%;">Sort 4</th>
+      </tr>
+      <tr>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+        <td style="min-height: 0.8cm;"></td>
+      </tr>
+    </table>
+
     <h2>Compétences Apprises</h2>
     <div class="two-columns">
       <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">

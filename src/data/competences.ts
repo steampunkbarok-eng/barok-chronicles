@@ -40,12 +40,12 @@ export const competencesDisponibles: Competence[] = [
   { nom: "Armure niv.3", cout: 3, categorie: "Martial", prerequis: "Armure niv.2", effet: "Toutes armures (3 PA/zone) - Annule Natation" },
   { nom: "Artilleur", cout: 3, categorie: "Martial", prerequis: "", effet: "Maniement gatlings et engins siège" },
   { nom: "Bouclier", cout: 0, categorie: "Martial", prerequis: "", effet: "Tous types boucliers" },
-  { nom: "Brise-crâne", cout: 4, categorie: "Martial", prerequis: "Arme de mêlée", effet: "Annonce 'crush' 1×/heure" },
+  { nom: "Brise-crâne", cout: 4, categorie: "Martial", prerequis: "Manipulation d'armes", effet: "Annonce 'crush' 1×/heure" },
   { nom: "Combat en aveugle", cout: 4, categorie: "Martial", prerequis: "", effet: "Résiste 3 premiers flash/blind" },
   { nom: "Coupe jarret", cout: 4, categorie: "Martial", prerequis: "Assommement", effet: "Annonce 'through' (dos/contournement)" },
   { nom: "Endurance accrue", cout: 3, categorie: "Martial", prerequis: "", effet: "+1 PV/localisation" },
   { nom: "Manipulation d'armes", cout: 0, categorie: "Martial", prerequis: "", effet: "Toutes armes autorisées" },
-  { nom: "Perce-ligne", cout: 4, categorie: "Martial", prerequis: "Arme de mêlée", effet: "Annonce 'strike down' 1×/heure" },
+  { nom: "Perce-ligne", cout: 4, categorie: "Martial", prerequis: "Manipulation d'armes", effet: "Annonce 'strike down' 1×/heure" },
   
   // LOUCHES
   { nom: "Crochetage niv.1", cout: 2, categorie: "Louche", prerequis: "", effet: "Défaire 1 nœud en 3 min" },
