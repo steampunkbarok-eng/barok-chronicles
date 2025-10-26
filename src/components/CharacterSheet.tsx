@@ -374,6 +374,26 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <h2>Remarques</h2>
     <div class="long-box"></div>
 
+    <h2>Récapitulatif</h2>
+    <div class="two-columns">
+      <div>
+        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Gratuites de l'Espèce</h3>
+        <div class="competences-box" style="min-height: 2.5cm;">
+          ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
+            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
+            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Interdites</h3>
+        <div class="competences-box" style="min-height: 2.5cm;">
+          ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
+            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
+            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
+        </div>
+      </div>
+    </div>
+
     <div class="footer">
       <strong>Contact:</strong> ${character.email} | 
       <strong>Date de création:</strong> ${new Date().toLocaleDateString('fr-FR')}
@@ -381,31 +401,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
   </div>
 
   <!-- PAGE 2 -->
-  <div class="page">
-    <h1>RÉCAPITULATIF - ${character.prenom} ${character.nom}</h1>
-    
-    <h2>Compétences Gratuites de l'Espèce</h2>
-    <div class="competences-box" style="min-height: 3cm;">
-      ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
-        `<div style="font-size: 9pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
-        '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
-    </div>
-
-    <h2>Compétences Interdites</h2>
-    <div class="competences-box" style="min-height: 3cm;">
-      ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
-        `<div style="font-size: 9pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
-        '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
-    </div>
-
-
-    <div class="footer" style="margin-top: 1cm;">
-      <strong>Fiche générée automatiquement</strong> | 
-      Pour toute modification, contactez l'organisation
-    </div>
-  </div>
-
-  <!-- PAGE 3 -->
   <div class="page">
     <h1>ANNONCES DE JEU</h1>
     
@@ -547,11 +542,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <li>Les mineurs ne peuvent JAMAIS faire de bagarre</li>
       </ul>
     </div>
-
-    <div class="footer" style="margin-top: 0.5cm;">
-      <strong>Référence rapide</strong> | 
-      Ces annonces doivent être clairement énoncées lors de leur utilisation
-    </div>
   </div>
 </body>
 </html>`;
@@ -568,18 +558,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     }
   };
 
-  const handleDownloadWord = () => {
-    const html = generateSheetHTML();
-    const blob = new Blob([html], { type: 'application/msword' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Fiche_${character.prenom}_${character.nom}.doc`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Fiche téléchargée en format Word");
-  };
-
   const handleDownloadPDF = () => {
     // Pour le PDF, on utilise l'impression vers PDF du navigateur
     toast.info("Utilisez l'option 'Imprimer' puis sélectionnez 'Enregistrer en PDF' dans les options d'impression");
@@ -591,10 +569,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       <Button onClick={handlePrint} variant="outline" className="gap-2">
         <Printer className="h-4 w-4" />
         Imprimer
-      </Button>
-      <Button onClick={handleDownloadWord} variant="outline" className="gap-2">
-        <FileDown className="h-4 w-4" />
-        Télécharger Word
       </Button>
       <Button onClick={handleDownloadPDF} variant="outline" className="gap-2">
         <FileDown className="h-4 w-4" />
