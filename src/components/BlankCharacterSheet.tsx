@@ -1,35 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { FileDown, Printer } from "lucide-react";
+import { FileDown } from "lucide-react";
 import { toast } from "sonner";
 
-interface CharacterSheetProps {
-  character: {
-    nom: string;
-    prenom: string;
-    faction: string;
-    espece: string;
-    competences: string[];
-    pvTotal: number;
-    paTotal: number;
-    scoreBagarre: number;
-    email: string;
-    pierresDeVie: number;
-    abime: number;
-    goOrigine?: number;
-    especeGratuit?: string;
-    especeInterdit?: string;
-    factionInterdit?: string;
-  };
-}
-
-export const CharacterSheet = ({ character }: CharacterSheetProps) => {
-  const generateSheetHTML = () => {
+export const BlankCharacterSheet = () => {
+  const generateBlankSheetHTML = () => {
     return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Fiche Personnage - ${character.prenom} ${character.nom}</title>
+  <title>Fiche Personnage Vierge</title>
   <style>
     @page {
       size: A4;
@@ -91,6 +71,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     }
     .info-value {
       font-size: 10pt;
+      min-height: 0.8cm;
     }
     .stats-row {
       display: flex;
@@ -112,6 +93,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       font-size: 16pt;
       font-weight: bold;
       margin-top: 0.1cm;
+      min-height: 0.8cm;
     }
     .two-columns {
       display: grid;
@@ -203,34 +185,34 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div class="info-grid">
       <div class="info-item">
         <div class="info-label">Prénom</div>
-        <div class="info-value">${character.prenom}</div>
+        <div class="info-value"></div>
       </div>
       <div class="info-item">
         <div class="info-label">Nom</div>
-        <div class="info-value">${character.nom}</div>
+        <div class="info-value"></div>
       </div>
       <div class="info-item">
         <div class="info-label">Faction</div>
-        <div class="info-value">${character.faction || 'Aucune'}</div>
+        <div class="info-value"></div>
       </div>
       <div class="info-item">
         <div class="info-label">Espèce</div>
-        <div class="info-value">${character.espece}</div>
+        <div class="info-value"></div>
       </div>
     </div>
 
     <div class="stats-row">
       <div class="stat">
         <div class="stat-label">PV Total</div>
-        <div class="stat-value">${character.pvTotal}</div>
+        <div class="stat-value"></div>
       </div>
       <div class="stat">
         <div class="stat-label">PA Total</div>
-        <div class="stat-value">${character.paTotal}</div>
+        <div class="stat-value"></div>
       </div>
       <div class="stat">
         <div class="stat-label">Score de Bagarre</div>
-        <div class="stat-value">${character.scoreBagarre}</div>
+        <div class="stat-value"></div>
       </div>
       <div class="stat">
         <div class="stat-label">GM</div>
@@ -238,7 +220,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
       <div class="stat">
         <div class="stat-label">GO</div>
-        <div class="stat-value">${character.goOrigine || ''}</div>
+        <div class="stat-value"></div>
       </div>
       <div class="stat">
         <div class="stat-label">GA</div>
@@ -249,22 +231,18 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div class="info-grid" style="margin-bottom: 0.3cm;">
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Pierres de Vie</div>
-        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;">${character.pierresDeVie}</div>
+        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;"></div>
       </div>
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Points d'Abîme</div>
-        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;">${character.abime}</div>
+        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;"></div>
       </div>
     </div>
 
-    <h2>Compétences Choisies (${character.competences.length})</h2>
+    <h2>Compétences Choisies</h2>
     <div class="two-columns">
-      <div class="competences-box" style="min-height: 4cm;">
-        ${character.competences.slice(0, Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
-      </div>
-      <div class="competences-box" style="min-height: 4cm;">
-        ${character.competences.slice(Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
-      </div>
+      <div class="competences-box" style="min-height: 4cm;"></div>
+      <div class="competences-box" style="min-height: 4cm;"></div>
     </div>
 
     <h2>Sortilèges</h2>
@@ -286,11 +264,11 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <h2>Rituels Magiques</h2>
     <table>
       <tr>
-        <th style="width: 16.66%;">École 1 Sort 1</th>
-        <th style="width: 16.66%;">École 1 Sort 2</th>
-        <th style="width: 16.66%;">École 1 Sort 3</th>
-        <th style="width: 16.66%;">École 1 Sort 4</th>
-        <th style="width: 16.66%;">École 1 Sort 5</th>
+        <th style="width: 20%;">École 1 Sort 1</th>
+        <th style="width: 20%;">École 1 Sort 2</th>
+        <th style="width: 20%;">École 1 Sort 3</th>
+        <th style="width: 20%;">École 1 Sort 4</th>
+        <th style="width: 20%;">École 1 Sort 5</th>
       </tr>
       <tr>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
@@ -300,11 +278,11 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>
       <tr>
-        <th style="width: 16.66%;">École 2 Sort 1</th>
-        <th style="width: 16.66%;">École 2 Sort 2</th>
-        <th style="width: 16.66%;">École 2 Sort 3</th>
-        <th style="width: 16.66%;">École 2 Sort 4</th>
-        <th style="width: 16.66%;">École 2 Sort 5</th>
+        <th style="width: 20%;">École 2 Sort 1</th>
+        <th style="width: 20%;">École 2 Sort 2</th>
+        <th style="width: 20%;">École 2 Sort 3</th>
+        <th style="width: 20%;">École 2 Sort 4</th>
+        <th style="width: 20%;">École 2 Sort 5</th>
       </tr>
       <tr>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
@@ -375,29 +353,19 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div class="long-box"></div>
 
     <div class="footer">
-      <strong>Contact:</strong> ${character.email} | 
-      <strong>Date de création:</strong> ${new Date().toLocaleDateString('fr-FR')}
+      <strong>Fiche vierge de personnage</strong>
     </div>
   </div>
 
   <!-- PAGE 2 -->
   <div class="page">
-    <h1>RÉCAPITULATIF - ${character.prenom} ${character.nom}</h1>
+    <h1>RÉCAPITULATIF</h1>
     
     <h2>Compétences Gratuites de l'Espèce</h2>
-    <div class="competences-box" style="min-height: 3cm;">
-      ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
-        `<div style="font-size: 9pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
-        '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
-    </div>
+    <div class="competences-box" style="min-height: 3cm;"></div>
 
     <h2>Compétences Interdites</h2>
-    <div class="competences-box" style="min-height: 3cm;">
-      ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
-        `<div style="font-size: 9pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
-        '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
-    </div>
-
+    <div class="competences-box" style="min-height: 3cm;"></div>
 
     <div class="footer" style="margin-top: 1cm;">
       <strong>Fiche générée automatiquement</strong> | 
@@ -557,10 +525,10 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
 </html>`;
   };
 
-  const handlePrint = () => {
+  const handleDownloadBlankSheet = () => {
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      printWindow.document.write(generateSheetHTML());
+      printWindow.document.write(generateBlankSheetHTML());
       printWindow.document.close();
       setTimeout(() => {
         printWindow.print();
@@ -568,38 +536,10 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     }
   };
 
-  const handleDownloadWord = () => {
-    const html = generateSheetHTML();
-    const blob = new Blob([html], { type: 'application/msword' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Fiche_${character.prenom}_${character.nom}.doc`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Fiche téléchargée en format Word");
-  };
-
-  const handleDownloadPDF = () => {
-    // Pour le PDF, on utilise l'impression vers PDF du navigateur
-    toast.info("Utilisez l'option 'Imprimer' puis sélectionnez 'Enregistrer en PDF' dans les options d'impression");
-    handlePrint();
-  };
-
   return (
-    <div className="flex gap-2 mt-4">
-      <Button onClick={handlePrint} variant="outline" className="gap-2">
-        <Printer className="h-4 w-4" />
-        Imprimer
-      </Button>
-      <Button onClick={handleDownloadWord} variant="outline" className="gap-2">
-        <FileDown className="h-4 w-4" />
-        Télécharger Word
-      </Button>
-      <Button onClick={handleDownloadPDF} variant="outline" className="gap-2">
-        <FileDown className="h-4 w-4" />
-        Télécharger PDF
-      </Button>
-    </div>
+    <Button onClick={handleDownloadBlankSheet} variant="outline" className="gap-2">
+      <FileDown className="h-4 w-4" />
+      Fiche vierge de personnage
+    </Button>
   );
 };

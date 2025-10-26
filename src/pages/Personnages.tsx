@@ -13,6 +13,7 @@ import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
+import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 
 interface Personnage {
   id: string;
@@ -20,6 +21,8 @@ interface Personnage {
   nomTI: string;
   faction: string;
   espece: string;
+  origine: string;
+  goOrigine: number;
   pa: number;
   pv: number;
   abime: number;
@@ -45,6 +48,8 @@ const Personnages = () => {
     nomTI: "",
     faction: "",
     espece: "",
+    origine: "",
+    goOrigine: 0,
     pa: 0,
     pv: 1,
     abime: 10,
@@ -304,6 +309,8 @@ const Personnages = () => {
       nomTI: "",
       faction: "",
       espece: "",
+      origine: "",
+      goOrigine: 0,
       pa: 0,
       pv: 1,
       abime: 10,
@@ -339,12 +346,15 @@ const Personnages = () => {
               <Scroll className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold text-primary">Gestion des Personnages</h1>
             </div>
-            {!showForm && (
-              <Button onClick={() => setShowForm(true)} className="gap-2">
-                <Plus className="h-5 w-5" />
-                Créer un Personnage
-              </Button>
-            )}
+            <div className="flex gap-2">
+              <BlankCharacterSheet />
+              {!showForm && (
+                <Button onClick={() => setShowForm(true)} className="gap-2">
+                  <Plus className="h-5 w-5" />
+                  Créer un Personnage
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -416,7 +426,7 @@ const Personnages = () => {
                       <SelectContent className="max-h-[400px]">
                         <SelectGroup>
                           <SelectLabel>Espèces Standard</SelectLabel>
-                          {especes.slice(0, 1).map((esp) => (
+                          {especes.slice(0, 32).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{esp.nom}</span>
@@ -428,7 +438,7 @@ const Personnages = () => {
                         </SelectGroup>
                         <SelectGroup>
                           <SelectLabel className="text-primary font-bold">Avec accord de l'Orga</SelectLabel>
-                          {especes.slice(1, 14).map((esp) => (
+                          {especes.slice(32).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{esp.nom}</span>
@@ -438,18 +448,36 @@ const Personnages = () => {
                             </SelectItem>
                           ))}
                         </SelectGroup>
-                        <SelectGroup>
-                          <SelectLabel>Espèces Standard (suite)</SelectLabel>
-                          {especes.slice(14).map((esp) => (
-                            <SelectItem key={esp.nom} value={esp.nom}>
-                              <div className="flex flex-col">
-                                <span className="font-medium">{esp.nom}</span>
-                                <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
-                                <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="origine">Origine de votre personnage *</Label>
+                    <Select 
+                      value={formData.origine} 
+                      onValueChange={(value) => {
+                        const goValues: { [key: string]: number } = {
+                          "Parlos": 12,
+                          "Îles éparses": 6,
+                          "Nations du Dominion": 6,
+                          "Nations extérieures": 6
+                        };
+                        setFormData({ 
+                          ...formData, 
+                          origine: value,
+                          goOrigine: goValues[value] || 0
+                        });
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choisir une origine" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Parlos">Parlos (12 GO)</SelectItem>
+                        <SelectItem value="Îles éparses">Îles éparses (6 GO)</SelectItem>
+                        <SelectItem value="Nations du Dominion">Nations du Dominion (6 GO)</SelectItem>
+                        <SelectItem value="Nations extérieures">Nations extérieures (6 GO)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -650,7 +678,7 @@ const Personnages = () => {
                         <span className="text-muted-foreground">Points utilisés:</span>
                         <span className="font-bold">{perso.pointsDepenses}/{perso.pointsCreation}</span>
                       </div>
-                      <CharacterSheet 
+                       <CharacterSheet 
                         character={{
                           nom: perso.nomTI,
                           prenom: perso.nomTO,
@@ -663,6 +691,7 @@ const Personnages = () => {
                           email: perso.email,
                           pierresDeVie: perso.pierresDeVie,
                           abime: perso.abime,
+                          goOrigine: perso.goOrigine,
                           especeGratuit: especes.find(e => e.nom === perso.espece)?.gratuit,
                           especeInterdit: especes.find(e => e.nom === perso.espece)?.interdit
                         }}
