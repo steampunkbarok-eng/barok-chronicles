@@ -236,9 +236,40 @@ const Personnages = () => {
 
     // Ajouter la compétence
     let nouveauxPierres = formData.pierresDeVie;
-    if (competence.nom === "Tisseur" || competence.nom === "Clerc" || competence.nom === "Cérémonialiste" || competence.nom === "Initié") {
+    
+    // Calcul des pierres de vie pour les compétences magiques/spirituelles
+    if (competence.nom === "Tisseur" || competence.nom === "Clerc") {
+      // Pour Tisseur et Clerc: Calcul basé sur les sorts
+      // Pierres = 10 + (nb sorts × plus haut niveau de sort)
+      const sortsDansCompetences = [...formData.competences, { nom: competence.nom, cout: competence.cout }]
+        .filter(c => {
+          const sortKeywords = ["Sort", "Magie", "Rituel", "Arcane"];
+          return sortKeywords.some(keyword => c.nom.includes(keyword)) && c.cout >= 1 && c.cout <= 4;
+        });
+      
+      const plusHautNiveau = sortsDansCompetences.length > 0 
+        ? Math.max(...sortsDansCompetences.map(s => s.cout))
+        : 0;
+      
+      const nbSorts = sortsDansCompetences.length;
+      
+      // Enlever l'ancien calcul si Tisseur/Clerc était déjà présent
+      const tisseurOuClercDejaPresent = formData.competences.some(c => 
+        c.nom === "Tisseur" || c.nom === "Clerc"
+      );
+      
+      if (tisseurOuClercDejaPresent) {
+        // Recalculer depuis zéro
+        nouveauxPierres = 10 + (nbSorts * plusHautNiveau);
+      } else {
+        nouveauxPierres += 10 + (nbSorts * plusHautNiveau);
+      }
+    } else if (competence.nom === "Cérémonialiste" || competence.nom === "Ritualiste") {
       nouveauxPierres += 10;
+    } else if (competence.nom === "Initié") {
+      nouveauxPierres += 20;
     }
+    
     if (competence.nom.includes("Transcendance")) {
       if (competence.nom === "Transcendance niv.1") nouveauxPierres += 2;
       if (competence.nom === "Transcendance niv.2") nouveauxPierres += 4;
@@ -261,9 +292,28 @@ const Personnages = () => {
     
     let nouveauxPierres = formData.pierresDeVie;
     if (competence) {
-      if (competence.nom === "Tisseur" || competence.nom === "Clerc" || competence.nom === "Cérémonialiste" || competence.nom === "Initié") {
+      if (competence.nom === "Tisseur" || competence.nom === "Clerc") {
+        // Recalculer les pierres pour Tisseur/Clerc en fonction des sorts restants
+        const competencesRestantes = formData.competences.filter((_, i) => i !== index);
+        const sortsDansCompetences = competencesRestantes
+          .filter(c => {
+            const sortKeywords = ["Sort", "Magie", "Rituel", "Arcane"];
+            return sortKeywords.some(keyword => c.nom.includes(keyword)) && c.cout >= 1 && c.cout <= 4;
+          });
+        
+        const plusHautNiveau = sortsDansCompetences.length > 0 
+          ? Math.max(...sortsDansCompetences.map(s => s.cout))
+          : 0;
+        
+        const nbSorts = sortsDansCompetences.length;
+        nouveauxPierres = 10 + (nbSorts * plusHautNiveau);
+        
+      } else if (competence.nom === "Cérémonialiste" || competence.nom === "Ritualiste") {
         nouveauxPierres -= 10;
+      } else if (competence.nom === "Initié") {
+        nouveauxPierres -= 20;
       }
+      
       if (competence.nom.includes("Transcendance")) {
         if (competence.nom === "Transcendance niv.1") nouveauxPierres -= 2;
         if (competence.nom === "Transcendance niv.2") nouveauxPierres -= 4;
