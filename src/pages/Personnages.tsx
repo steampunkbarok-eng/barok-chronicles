@@ -32,6 +32,7 @@ interface Personnage {
   pointsCreation: number;
   pointsDepenses: number;
   competences: { nom: string; cout: number }[];
+  sorts: { niv1: number; niv2: number; niv3: number; niv4: number };
   pierresDeVie: number;
   materielTO: string[];
   email: string;
@@ -59,12 +60,20 @@ const Personnages = () => {
     pointsCreation: 12,
     pointsDepenses: 0,
     competences: [],
+    sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
     pierresDeVie: 0,
     materielTO: [],
     email: ""
   });
 
-  const pointsRestants = formData.pointsCreation - formData.pointsDepenses;
+  // Calculer le coût des sorts
+  const coutSorts = 
+    formData.sorts.niv1 * 1 + 
+    formData.sorts.niv2 * 2 + 
+    formData.sorts.niv3 * 3 + 
+    formData.sorts.niv4 * 4;
+
+  const pointsRestants = formData.pointsCreation - formData.pointsDepenses - coutSorts;
 
   useEffect(() => {
     const fetchFactions = async () => {
@@ -239,19 +248,16 @@ const Personnages = () => {
     
     // Calcul des pierres de vie pour les compétences magiques/spirituelles
     if (competence.nom === "Tisseur" || competence.nom === "Clerc") {
-      // Pour Tisseur et Clerc: Calcul basé sur les sorts
+      // Pour Tisseur et Clerc: Calcul basé sur les sorts sélectionnés
       // Pierres = 10 + (nb sorts × plus haut niveau de sort)
-      const sortsDansCompetences = [...formData.competences, { nom: competence.nom, cout: competence.cout }]
-        .filter(c => {
-          const sortKeywords = ["Sort", "Magie", "Rituel", "Arcane"];
-          return sortKeywords.some(keyword => c.nom.includes(keyword)) && c.cout >= 1 && c.cout <= 4;
-        });
+      const nbSortsTotal = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
       
-      const plusHautNiveau = sortsDansCompetences.length > 0 
-        ? Math.max(...sortsDansCompetences.map(s => s.cout))
-        : 0;
-      
-      const nbSorts = sortsDansCompetences.length;
+      // Trouver le plus haut niveau de sort sélectionné
+      let plusHautNiveau = 0;
+      if (formData.sorts.niv4 > 0) plusHautNiveau = 4;
+      else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
+      else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
+      else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
       
       // Enlever l'ancien calcul si Tisseur/Clerc était déjà présent
       const tisseurOuClercDejaPresent = formData.competences.some(c => 
@@ -260,9 +266,9 @@ const Personnages = () => {
       
       if (tisseurOuClercDejaPresent) {
         // Recalculer depuis zéro
-        nouveauxPierres = 10 + (nbSorts * plusHautNiveau);
+        nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
       } else {
-        nouveauxPierres += 10 + (nbSorts * plusHautNiveau);
+        nouveauxPierres += 10 + (nbSortsTotal * plusHautNiveau);
       }
     } else if (competence.nom === "Cérémonialiste" || competence.nom === "Ritualiste") {
       nouveauxPierres += 10;
@@ -293,20 +299,17 @@ const Personnages = () => {
     let nouveauxPierres = formData.pierresDeVie;
     if (competence) {
       if (competence.nom === "Tisseur" || competence.nom === "Clerc") {
-        // Recalculer les pierres pour Tisseur/Clerc en fonction des sorts restants
-        const competencesRestantes = formData.competences.filter((_, i) => i !== index);
-        const sortsDansCompetences = competencesRestantes
-          .filter(c => {
-            const sortKeywords = ["Sort", "Magie", "Rituel", "Arcane"];
-            return sortKeywords.some(keyword => c.nom.includes(keyword)) && c.cout >= 1 && c.cout <= 4;
-          });
+        // Recalculer les pierres pour Tisseur/Clerc en fonction des sorts sélectionnés
+        const nbSortsTotal = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
         
-        const plusHautNiveau = sortsDansCompetences.length > 0 
-          ? Math.max(...sortsDansCompetences.map(s => s.cout))
-          : 0;
+        // Trouver le plus haut niveau de sort sélectionné
+        let plusHautNiveau = 0;
+        if (formData.sorts.niv4 > 0) plusHautNiveau = 4;
+        else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
+        else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
+        else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
         
-        const nbSorts = sortsDansCompetences.length;
-        nouveauxPierres = 10 + (nbSorts * plusHautNiveau);
+        nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
         
       } else if (competence.nom === "Cérémonialiste" || competence.nom === "Ritualiste") {
         nouveauxPierres -= 10;
@@ -370,6 +373,7 @@ const Personnages = () => {
       pointsCreation: 12,
       pointsDepenses: 0,
       competences: [],
+      sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
       pierresDeVie: 0,
       materielTO: [],
       email: ""
@@ -612,6 +616,197 @@ const Personnages = () => {
                       <p>Aucune compétence sélectionnée</p>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+
+              <Card className="ornament-border">
+                <CardHeader>
+                  <CardTitle>Sorts (Tisseur/Clerc)</CardTitle>
+                  <CardDescription>
+                    Sélectionnez vos sorts (Maximum 3 par niveau) - Coût: {coutSorts} pts
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="sorts-niv1">Sorts Niveau 1 (1 pt/sort)</Label>
+                      <Select 
+                        value={formData.sorts.niv1.toString()} 
+                        onValueChange={(value) => {
+                          const newValue = parseInt(value);
+                          const newSorts = { ...formData.sorts, niv1: newValue };
+                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
+                          
+                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
+                            toast.error("Points de création insuffisants !");
+                            return;
+                          }
+                          
+                          // Recalculer les pierres de vie si Tisseur ou Clerc
+                          let nouveauxPierres = formData.pierresDeVie;
+                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
+                          if (hasTisseurOrClerc) {
+                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
+                            let plusHautNiveau = 0;
+                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
+                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
+                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
+                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
+                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+                          }
+                          
+                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0 sort</SelectItem>
+                          <SelectItem value="1">1 sort</SelectItem>
+                          <SelectItem value="2">2 sorts</SelectItem>
+                          <SelectItem value="3">3 sorts</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="sorts-niv2">Sorts Niveau 2 (2 pts/sort)</Label>
+                      <Select 
+                        value={formData.sorts.niv2.toString()} 
+                        onValueChange={(value) => {
+                          const newValue = parseInt(value);
+                          const newSorts = { ...formData.sorts, niv2: newValue };
+                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
+                          
+                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
+                            toast.error("Points de création insuffisants !");
+                            return;
+                          }
+                          
+                          // Recalculer les pierres de vie si Tisseur ou Clerc
+                          let nouveauxPierres = formData.pierresDeVie;
+                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
+                          if (hasTisseurOrClerc) {
+                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
+                            let plusHautNiveau = 0;
+                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
+                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
+                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
+                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
+                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+                          }
+                          
+                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0 sort</SelectItem>
+                          <SelectItem value="1">1 sort</SelectItem>
+                          <SelectItem value="2">2 sorts</SelectItem>
+                          <SelectItem value="3">3 sorts</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="sorts-niv3">Sorts Niveau 3 (3 pts/sort)</Label>
+                      <Select 
+                        value={formData.sorts.niv3.toString()} 
+                        onValueChange={(value) => {
+                          const newValue = parseInt(value);
+                          const newSorts = { ...formData.sorts, niv3: newValue };
+                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
+                          
+                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
+                            toast.error("Points de création insuffisants !");
+                            return;
+                          }
+                          
+                          // Recalculer les pierres de vie si Tisseur ou Clerc
+                          let nouveauxPierres = formData.pierresDeVie;
+                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
+                          if (hasTisseurOrClerc) {
+                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
+                            let plusHautNiveau = 0;
+                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
+                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
+                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
+                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
+                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+                          }
+                          
+                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0 sort</SelectItem>
+                          <SelectItem value="1">1 sort</SelectItem>
+                          <SelectItem value="2">2 sorts</SelectItem>
+                          <SelectItem value="3">3 sorts</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="sorts-niv4">Sorts Niveau 4 (4 pts/sort)</Label>
+                      <Select 
+                        value={formData.sorts.niv4.toString()} 
+                        onValueChange={(value) => {
+                          const newValue = parseInt(value);
+                          const newSorts = { ...formData.sorts, niv4: newValue };
+                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
+                          
+                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
+                            toast.error("Points de création insuffisants !");
+                            return;
+                          }
+                          
+                          // Recalculer les pierres de vie si Tisseur ou Clerc
+                          let nouveauxPierres = formData.pierresDeVie;
+                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
+                          if (hasTisseurOrClerc) {
+                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
+                            let plusHautNiveau = 0;
+                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
+                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
+                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
+                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
+                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+                          }
+                          
+                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0 sort</SelectItem>
+                          <SelectItem value="1">1 sort</SelectItem>
+                          <SelectItem value="2">2 sorts</SelectItem>
+                          <SelectItem value="3">3 sorts</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="bg-accent/20 p-4 rounded-lg">
+                    <p className="text-sm font-medium">Résumé des sorts:</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
+                      <div>Niv.1: <span className="font-bold text-primary">{formData.sorts.niv1}</span></div>
+                      <div>Niv.2: <span className="font-bold text-primary">{formData.sorts.niv2}</span></div>
+                      <div>Niv.3: <span className="font-bold text-primary">{formData.sorts.niv3}</span></div>
+                      <div>Niv.4: <span className="font-bold text-primary">{formData.sorts.niv4}</span></div>
+                    </div>
+                    <p className="text-sm mt-2">Total: <span className="font-bold text-primary">{formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4} sorts</span> - Coût: <span className="font-bold text-primary">{coutSorts} pts</span></p>
+                  </div>
                 </CardContent>
               </Card>
 
