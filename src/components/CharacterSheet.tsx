@@ -202,11 +202,11 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     
     <div class="info-grid">
       <div class="info-item">
-        <div class="info-label">Prénom</div>
+        <div class="info-label">Nom Time-Out (TO)</div>
         <div class="info-value">${character.prenom}</div>
       </div>
       <div class="info-item">
-        <div class="info-label">Nom</div>
+        <div class="info-label">Nom Time-In (TI)</div>
         <div class="info-value">${character.nom}</div>
       </div>
       <div class="info-item">

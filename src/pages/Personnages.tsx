@@ -192,7 +192,21 @@ const Personnages = () => {
     } else {
       recap.push(`   Abîme: N/A (Être Mécanique)`);
     }
-    recap.push(`   Pierres de Vie: ${formData.pierresDeVie}`);
+    
+    // Calcul et affichage des Pierres de Vie avec détail pour Tisseur/Clerc
+    const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
+    if (hasTisseurOrClerc) {
+      const nbSortsTotal = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
+      let plusHautNiveau = 0;
+      if (formData.sorts.niv4 > 0) plusHautNiveau = 4;
+      else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
+      else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
+      else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
+      recap.push(`   Pierres de Vie: ${formData.pierresDeVie} (10 + ${nbSortsTotal} sorts × niv.${plusHautNiveau})`);
+    } else {
+      recap.push(`   Pierres de Vie: ${formData.pierresDeVie}`);
+    }
+    
     recap.push(`   Cartes Foi: ${formData.foi}`);
 
     setRecapitulatif(recap);
@@ -619,14 +633,17 @@ const Personnages = () => {
                 </CardContent>
               </Card>
 
-              <Card className="ornament-border">
-                <CardHeader>
-                  <CardTitle>Sorts (Tisseur/Clerc)</CardTitle>
-                  <CardDescription>
-                    Sélectionnez vos sorts (Maximum 3 par niveau) - Coût: {coutSorts} pts
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              {/* Section Sorts - Seulement visible si Tisseur ou Clerc sélectionné */}
+              {formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc") && (
+                <Card className="ornament-border">
+                  <CardHeader>
+                    <CardTitle>Sorts (Tisseur/Clerc)</CardTitle>
+                    <CardDescription>
+                      Sélectionnez vos sorts (Maximum 3 par niveau) - Coût: {coutSorts} pts
+                      {pointsRestants <= 0 && <span className="text-destructive ml-2">(Plus de points disponibles)</span>}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="sorts-niv1">Sorts Niveau 1 (1 pt/sort)</Label>
@@ -809,6 +826,7 @@ const Personnages = () => {
                   </div>
                 </CardContent>
               </Card>
+              )}
 
               <Card className="ornament-border">
                 <CardHeader>
