@@ -309,6 +309,9 @@ const Factions = () => {
                             <div className="flex flex-col">
                               <span className="font-medium">{bat.nom}</span>
                               <span className="text-xs text-muted-foreground">{bat.avantages}</span>
+                              {bat.condition && (
+                                <span className="text-xs text-amber-600 dark:text-amber-400 mt-1">⚠️ {bat.condition}</span>
+                              )}
                             </div>
                           </SelectItem>
                         ))}
@@ -320,6 +323,9 @@ const Factions = () => {
                             <div className="flex flex-col">
                               <span className="font-medium">{nav.nom}</span>
                               <span className="text-xs text-muted-foreground">{nav.avantages}</span>
+                              {nav.condition && (
+                                <span className="text-xs text-amber-600 dark:text-amber-400 mt-1">⚠️ {nav.condition}</span>
+                              )}
                             </div>
                           </SelectItem>
                         ))}
