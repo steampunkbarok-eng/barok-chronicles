@@ -349,7 +349,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     </div>
 
     ${character.factionInterdit && character.factionInterdit !== 'Aucun' ? `
-    <div style="border: 2px solid #c00; background: #ffe0e0; padding: 0.3cm; margin: 0.3cm 0;">
+    <div style="border: 2px solid #c00; background: #ffe0e0; padding: 0.3cm; margin: 0.3cm 0; page-break-inside: avoid; page-break-after: auto;">
       <div style="font-weight: bold; font-size: 9pt; color: #c00; margin-bottom: 0.1cm;">⚠️ INTERDITS DE LA FACTION:</div>
       <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => `${comp.trim()}`).join(', ')}</div>
     </div>
