@@ -956,7 +956,8 @@ const Personnages = () => {
                           abime: perso.abime,
                           goOrigine: perso.goOrigine,
                           especeGratuit: especes.find(e => e.nom === perso.espece)?.gratuit,
-                          especeInterdit: especes.find(e => e.nom === perso.espece)?.interdit
+                          especeInterdit: especes.find(e => e.nom === perso.espece)?.interdit,
+                          sorts: perso.sorts
                         }}
                       />
                     </CardContent>

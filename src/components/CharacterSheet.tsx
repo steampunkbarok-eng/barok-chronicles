@@ -19,6 +19,7 @@ interface CharacterSheetProps {
     especeGratuit?: string;
     especeInterdit?: string;
     factionInterdit?: string;
+    sorts?: { niv1: number; niv2: number; niv3: number; niv4: number };
   };
 }
 
@@ -261,9 +262,22 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div class="two-columns">
       <div class="competences-box" style="min-height: 4cm;">
         ${character.competences.slice(0, Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+        ${character.sorts && (character.sorts.niv1 > 0 || character.sorts.niv2 > 0 || character.sorts.niv3 > 0 || character.sorts.niv4 > 0) ? `
+          <div style="margin-top: 0.3cm; padding-top: 0.2cm; border-top: 1px dashed #666;">
+            <div style="font-weight: bold; font-size: 8pt; margin-bottom: 0.1cm;">SORTS:</div>
+            ${character.sorts.niv1 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv1} Sort(s) Niveau 1</div>` : ''}
+            ${character.sorts.niv2 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv2} Sort(s) Niveau 2</div>` : ''}
+          </div>
+        ` : ''}
       </div>
       <div class="competences-box" style="min-height: 4cm;">
         ${character.competences.slice(Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+        ${character.sorts && (character.sorts.niv3 > 0 || character.sorts.niv4 > 0) ? `
+          <div style="margin-top: 0.3cm; padding-top: 0.2cm; border-top: 1px dashed #666;">
+            ${character.sorts.niv3 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv3} Sort(s) Niveau 3</div>` : ''}
+            ${character.sorts.niv4 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv4} Sort(s) Niveau 4</div>` : ''}
+          </div>
+        ` : ''}
       </div>
     </div>
 
