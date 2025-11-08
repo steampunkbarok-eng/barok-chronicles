@@ -182,6 +182,19 @@ const Personnages = () => {
       });
     }
 
+    // Ajouter les sorts si Tisseur ou Clerc
+    if (formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc") && 
+        (formData.sorts.niv1 > 0 || formData.sorts.niv2 > 0 || formData.sorts.niv3 > 0 || formData.sorts.niv4 > 0)) {
+      recap.push('');
+      recap.push('✨ SORTS:');
+      if (formData.sorts.niv1 > 0) recap.push(`   • Niveau 1: ${formData.sorts.niv1} sort(s)`);
+      if (formData.sorts.niv2 > 0) recap.push(`   • Niveau 2: ${formData.sorts.niv2} sort(s)`);
+      if (formData.sorts.niv3 > 0) recap.push(`   • Niveau 3: ${formData.sorts.niv3} sort(s)`);
+      if (formData.sorts.niv4 > 0) recap.push(`   • Niveau 4: ${formData.sorts.niv4} sort(s)`);
+      const totalSorts = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
+      recap.push(`   Total: ${totalSorts} sort(s) - Coût: ${coutSorts} pts`);
+    }
+
     recap.push('');
     recap.push('📊 STATISTIQUES:');
     recap.push(`   PV par localisation: ${formData.pv}`);
@@ -957,6 +970,19 @@ const Personnages = () => {
                           goOrigine: perso.goOrigine,
                           especeGratuit: especes.find(e => e.nom === perso.espece)?.gratuit,
                           especeInterdit: especes.find(e => e.nom === perso.espece)?.interdit,
+                          factionInterdit: (() => {
+                            const faction = factions.find(f => f.nom === perso.faction);
+                            if (!faction || !faction.titres) return 'Aucun';
+                            const interdits: string[] = [];
+                            faction.titres.forEach(titreNom => {
+                              const titre = titresCarrieres.find(t => t.nom === titreNom);
+                              if (titre && titre.incompatible) {
+                                const incompatibles = titre.incompatible.split(',').map(s => s.trim());
+                                interdits.push(...incompatibles);
+                              }
+                            });
+                            return interdits.length > 0 ? interdits.join(' + ') : 'Aucun';
+                          })(),
                           sorts: perso.sorts
                         }}
                       />

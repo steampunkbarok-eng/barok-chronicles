@@ -329,6 +329,32 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </tr>
     </table>
 
+    <div class="two-columns">
+      <div>
+        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Gratuites de l'Espèce</h3>
+        <div class="competences-box" style="min-height: 2.5cm;">
+          ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
+            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
+            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Interdites</h3>
+        <div class="competences-box" style="min-height: 2.5cm;">
+          ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
+            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
+            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
+        </div>
+      </div>
+    </div>
+
+    ${character.factionInterdit && character.factionInterdit !== 'Aucun' ? `
+    <div style="border: 2px solid #c00; background: #ffe0e0; padding: 0.3cm; margin: 0.3cm 0;">
+      <div style="font-weight: bold; font-size: 9pt; color: #c00; margin-bottom: 0.1cm;">⚠️ INTERDITS DE LA FACTION:</div>
+      <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => `${comp.trim()}`).join(', ')}</div>
+    </div>
+    ` : ''}
+
     <h2>Compétences Apprises</h2>
     <div class="two-columns">
       <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">
@@ -387,26 +413,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
 
     <h2>Remarques</h2>
     <div class="long-box"></div>
-
-    <h2>Récapitulatif</h2>
-    <div class="two-columns">
-      <div>
-        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Gratuites de l'Espèce</h3>
-        <div class="competences-box" style="min-height: 2.5cm;">
-          ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
-            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
-            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
-        </div>
-      </div>
-      <div>
-        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Interdites</h3>
-        <div class="competences-box" style="min-height: 2.5cm;">
-          ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
-            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
-            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
-        </div>
-      </div>
-    </div>
 
     <div class="footer">
       <strong>Contact:</strong> ${character.email} | 
