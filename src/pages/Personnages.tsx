@@ -606,7 +606,17 @@ const Personnages = () => {
                 <CardHeader>
                   <CardTitle>Compétences</CardTitle>
                   <CardDescription>
-                    Sélectionnez vos compétences (Points restants: {pointsRestants})
+                    <div className="space-y-1">
+                      <div>Points de création restants: <span className="font-bold text-primary">{pointsRestants}</span></div>
+                      {formData.nbEvenements > 0 && (
+                        <div className="text-xs bg-accent/30 px-2 py-1 rounded">
+                          📚 Compétences gratuites (événements): <span className="font-bold text-primary">{formData.nbEvenements * 2}</span> disponibles
+                          <div className="text-muted-foreground mt-1">
+                            Vous pouvez apprendre {formData.nbEvenements * 2} compétences supplémentaires grâce à vos {formData.nbEvenements} événement(s) réalisé(s)
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
