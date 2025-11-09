@@ -38,6 +38,7 @@ interface Personnage {
   email: string;
   nbEvenements: number;
   afficherSortilleges: boolean;
+  competencesGratuitesUtilisees: number;
 }
 
 const Personnages = () => {
@@ -67,7 +68,8 @@ const Personnages = () => {
     materielTO: [],
     email: "",
     nbEvenements: 0,
-    afficherSortilleges: false
+    afficherSortilleges: false,
+    competencesGratuitesUtilisees: 0
   });
 
   // Calculer le coût des sorts
@@ -78,6 +80,8 @@ const Personnages = () => {
     formData.sorts.niv4 * 4;
 
   const pointsRestants = formData.pointsCreation - formData.pointsDepenses - coutSorts;
+  const competencesGratuitesDisponibles = formData.nbEvenements * 2;
+  const competencesGratuitesRestantes = competencesGratuitesDisponibles - formData.competencesGratuitesUtilisees;
 
   useEffect(() => {
     const fetchFactions = async () => {
@@ -248,9 +252,12 @@ const Personnages = () => {
       return;
     }
 
-    // Vérifier les points
-    if (formData.pointsDepenses + competence.cout > formData.pointsCreation) {
-      toast.error(`Points de création insuffisants ! Disponible: ${pointsRestants} pts`);
+    // Vérifier les points (points de création OU compétences gratuites)
+    const peutUtiliserPointsCreation = formData.pointsDepenses + competence.cout <= formData.pointsCreation;
+    const peutUtiliserCompetenceGratuite = competencesGratuitesRestantes > 0;
+    
+    if (!peutUtiliserPointsCreation && !peutUtiliserCompetenceGratuite) {
+      toast.error(`Plus de points ni de compétences gratuites disponibles ! Points: ${pointsRestants}, Gratuites: ${competencesGratuitesRestantes}`);
       return;
     }
 
@@ -283,6 +290,9 @@ const Personnages = () => {
       return;
     }
 
+    // Déterminer si on utilise une compétence gratuite ou des points
+    const utiliseCompetenceGratuite = !peutUtiliserPointsCreation && peutUtiliserCompetenceGratuite;
+    
     // Ajouter la compétence
     let nouveauxPierres = formData.pierresDeVie;
     
@@ -325,16 +335,25 @@ const Personnages = () => {
     setFormData({
       ...formData,
       competences: [...formData.competences, { nom: competence.nom, cout: competence.cout }],
-      pointsDepenses: formData.pointsDepenses + competence.cout,
+      pointsDepenses: utiliseCompetenceGratuite ? formData.pointsDepenses : formData.pointsDepenses + competence.cout,
+      competencesGratuitesUtilisees: utiliseCompetenceGratuite ? formData.competencesGratuitesUtilisees + 1 : formData.competencesGratuitesUtilisees,
       pierresDeVie: nouveauxPierres
     });
 
-    toast.success(`${competence.nom} ajoutée !`);
+    if (utiliseCompetenceGratuite) {
+      toast.success(`${competence.nom} ajoutée (compétence gratuite) !`);
+    } else {
+      toast.success(`${competence.nom} ajoutée !`);
+    }
   };
 
   const retirerCompetence = (index: number) => {
     const comp = formData.competences[index];
     const competence = competencesDisponibles.find(c => c.nom === comp.nom);
+    
+    // Déterminer si cette compétence a été payée avec des points ou une compétence gratuite
+    // On retire d'abord les compétences gratuites (LIFO)
+    const competencePayeeAvecGratuite = index >= formData.competences.length - formData.competencesGratuitesUtilisees;
     
     let nouveauxPierres = formData.pierresDeVie;
     if (competence) {
@@ -367,7 +386,8 @@ const Personnages = () => {
     setFormData({
       ...formData,
       competences: formData.competences.filter((_, i) => i !== index),
-      pointsDepenses: formData.pointsDepenses - (competence?.cout || 0),
+      pointsDepenses: competencePayeeAvecGratuite ? formData.pointsDepenses : formData.pointsDepenses - (competence?.cout || 0),
+      competencesGratuitesUtilisees: competencePayeeAvecGratuite ? Math.max(0, formData.competencesGratuitesUtilisees - 1) : formData.competencesGratuitesUtilisees,
       pierresDeVie: nouveauxPierres
     });
   };
@@ -418,7 +438,8 @@ const Personnages = () => {
       materielTO: [],
       email: "",
       nbEvenements: 0,
-      afficherSortilleges: false
+      afficherSortilleges: false,
+      competencesGratuitesUtilisees: 0
     });
     setRecapitulatif([]);
     
@@ -610,9 +631,9 @@ const Personnages = () => {
                       <div>Points de création restants: <span className="font-bold text-primary">{pointsRestants}</span></div>
                       {formData.nbEvenements > 0 && (
                         <div className="text-xs bg-accent/30 px-2 py-1 rounded">
-                          📚 Compétences gratuites (événements): <span className="font-bold text-primary">{formData.nbEvenements * 2}</span> disponibles
+                          📚 Compétences gratuites: <span className="font-bold text-primary">{competencesGratuitesRestantes}/{competencesGratuitesDisponibles}</span> disponibles
                           <div className="text-muted-foreground mt-1">
-                            Vous pouvez apprendre {formData.nbEvenements * 2} compétences supplémentaires grâce à vos {formData.nbEvenements} événement(s) réalisé(s)
+                            Utilisées: {formData.competencesGratuitesUtilisees} | {formData.nbEvenements} événement(s) × 2 compétences
                           </div>
                         </div>
                       )}
