@@ -142,7 +142,7 @@ const Personnages = () => {
         genererRecapitulatif();
       }
     }
-  }, [formData.espece, formData.competences]);
+  }, [formData.espece, formData.competences, formData.nbEvenements]);
 
   const getInterditsFromFaction = (): string[] => {
     const faction = factions.find(f => f.nom === formData.faction);
@@ -162,6 +162,15 @@ const Personnages = () => {
 
   const genererRecapitulatif = () => {
     const recap: string[] = [];
+    
+    // Événements et compétences gratuites
+    if (formData.nbEvenements > 0) {
+      const competencesGratuites = formData.nbEvenements * 2;
+      recap.push(`🎭 ÉVÉNEMENTS: ${formData.nbEvenements}`);
+      recap.push(`   Compétences gratuites disponibles: ${competencesGratuites}`);
+      recap.push(`   ⚠️ Respecter les règles d'apprentissage et le Roleplay en jeu`);
+      recap.push('');
+    }
     
     if (formData.espece) {
       const especeData = especes.find(e => e.nom === formData.espece);
