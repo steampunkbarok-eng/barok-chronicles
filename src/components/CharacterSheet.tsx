@@ -20,11 +20,17 @@ interface CharacterSheetProps {
     especeInterdit?: string;
     factionInterdit?: string;
     sorts?: { niv1: number; niv2: number; niv3: number; niv4: number };
+    afficherSortilleges?: boolean;
   };
 }
 
 export const CharacterSheet = ({ character }: CharacterSheetProps) => {
   const generateSheetHTML = () => {
+    // Vérifier si on doit afficher les sortilèges et rituels
+    const competencesMagiques = ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"];
+    const aCompetenceMagique = character.competences.some(c => competencesMagiques.includes(c));
+    const afficherMagie = aCompetenceMagique || character.afficherSortilleges;
+    
     return `
 <!DOCTYPE html>
 <html>
@@ -281,7 +287,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
-    <h2>Sortilèges</h2>
+    ${afficherMagie ? `<h2>Sortilèges</h2>
     <table>
       <tr>
         <th style="width: 25%;">Niveau 1</th>
@@ -295,9 +301,9 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>`).join('')}
-    </table>
+    </table>` : ''}
 
-    <h2>Rituels Magiques</h2>
+    ${afficherMagie ? `<h2>Rituels Magiques</h2>
     <table>
       <tr>
         <th style="width: 16.66%;">École 1 Sort 1</th>
@@ -327,7 +333,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>
-    </table>
+    </table>` : ''}
 
     <div class="two-columns">
       <div>
@@ -401,6 +407,10 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       <div class="empty-box" style="min-height: 1.2cm;">
         <div class="empty-box-label">5.</div>
       </div>
+    </div>
+
+    <div style="font-size: 7pt; color: #666; font-style: italic; margin: 0.3cm 0; padding: 0.2cm; background: #f9f9f9; border-left: 2px solid #666;">
+      ℹ️ Note: Les séquelles, maladies et autres traits non obligatoires sont à remplir uniquement si mentionné par l'Organisation, les PNJ responsables ou une compétence autorisant cela.
     </div>
 
     <h2>Perles Obsidiennes</h2>
@@ -558,7 +568,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </ul>
       <p style="margin: 0.2cm 0; color: #c00;"><strong>⚠ INTERDICTIONS ABSOLUES :</strong></p>
       <ul style="margin: 0.1cm 0; padding-left: 0.5cm; color: #c00;">
-        <li>Les personnes non-combattantes ne peuvent PAS participer aux bagarres</li>
+        <li>Les personnes non-combattantes et portant un brassard jaune ne peuvent PAS participer aux bagarres</li>
         <li>Les mineurs ne peuvent JAMAIS faire de bagarre</li>
       </ul>
     </div>

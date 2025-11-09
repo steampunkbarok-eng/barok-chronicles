@@ -36,6 +36,8 @@ interface Personnage {
   pierresDeVie: number;
   materielTO: string[];
   email: string;
+  nbEvenements: number;
+  afficherSortilleges: boolean;
 }
 
 const Personnages = () => {
@@ -63,7 +65,9 @@ const Personnages = () => {
     sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
     pierresDeVie: 0,
     materielTO: [],
-    email: ""
+    email: "",
+    nbEvenements: 0,
+    afficherSortilleges: false
   });
 
   // Calculer le coût des sorts
@@ -403,7 +407,9 @@ const Personnages = () => {
       sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
       pierresDeVie: 0,
       materielTO: [],
-      email: ""
+      email: "",
+      nbEvenements: 0,
+      afficherSortilleges: false
     });
     setRecapitulatif([]);
     
@@ -445,6 +451,28 @@ const Personnages = () => {
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Formulaire principal */}
             <div className="lg:col-span-2 space-y-6">
+              <Card className="ornament-border">
+                <CardHeader>
+                  <CardTitle>Nombre d'événements réalisés</CardTitle>
+                  <CardDescription>
+                    Compétences gratuites par événement: 2 compétences
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Label htmlFor="nbEvenements">Événements réalisés</Label>
+                  <Input
+                    id="nbEvenements"
+                    type="number"
+                    min="0"
+                    value={formData.nbEvenements}
+                    onChange={(e) => setFormData({ ...formData, nbEvenements: parseInt(e.target.value) || 0 })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    ⚠️ Respecter les règles d'apprentissage et le Roleplay en jeu pour valider ces apprentissages de nouvelles compétences en jeu !
+                  </p>
+                </CardContent>
+              </Card>
+
               <Card className="ornament-border">
                 <CardHeader>
                   <CardTitle>Informations de base</CardTitle>
@@ -573,6 +601,18 @@ const Personnages = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-2 bg-accent/20 p-3 rounded-lg">
+                    <input
+                      type="checkbox"
+                      id="afficherSortilleges"
+                      checked={formData.afficherSortilleges}
+                      onChange={(e) => setFormData({ ...formData, afficherSortilleges: e.target.checked })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="afficherSortilleges" className="text-sm cursor-pointer">
+                      En cochant cette case, les sortilèges et rituels magiques apparaîtront sur votre fiche de personnage
+                    </Label>
+                  </div>
                   {formData.faction && getInterditsFromFaction().length > 0 && (
                     <div className="text-xs text-destructive bg-destructive/10 p-3 rounded-lg">
                       <strong>Compétences interdites par votre faction:</strong> {getInterditsFromFaction().join(", ")}
@@ -646,8 +686,10 @@ const Personnages = () => {
                 </CardContent>
               </Card>
 
-              {/* Section Sorts - Seulement visible si Tisseur ou Clerc sélectionné */}
-              {formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc") && (
+              {/* Section Sorts - Visible si compétence magique OU case cochée */}
+              {(formData.competences.some(c => 
+                ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"].includes(c.nom)
+              ) || formData.afficherSortilleges) && (
                 <Card className="ornament-border">
                   <CardHeader>
                     <CardTitle>Sorts (Tisseur/Clerc)</CardTitle>
@@ -983,7 +1025,8 @@ const Personnages = () => {
                             });
                             return interdits.length > 0 ? interdits.join(' + ') : 'Aucun';
                           })(),
-                          sorts: perso.sorts
+                          sorts: perso.sorts,
+                          afficherSortilleges: perso.afficherSortilleges || false
                         }}
                       />
                     </CardContent>
