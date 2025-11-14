@@ -87,6 +87,47 @@ const Personnages = () => {
   const competencesGratuitesDisponibles = formData.nbEvenements * 2;
   const competencesGratuitesRestantes = competencesGratuitesDisponibles - formData.competencesGratuitesUtilisees;
 
+  // Sauvegarde automatique dans localStorage
+  useEffect(() => {
+    if (showForm && (formData.nomTO || formData.nomTI || formData.espece || formData.competences.length > 0)) {
+      localStorage.setItem('personnage_en_cours', JSON.stringify(formData));
+    }
+  }, [formData, showForm]);
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const savedData = localStorage.getItem('personnage_en_cours');
+    if (savedData && !showForm) {
+      try {
+        const parsed = JSON.parse(savedData);
+        // Vérifier si des données significatives existent
+        if (parsed.nomTO || parsed.nomTI || parsed.espece || parsed.competences?.length > 0) {
+          toast.info("Brouillon trouvé ! Cliquez sur 'Créer un Personnage' pour le restaurer.");
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement du brouillon:", error);
+      }
+    }
+  }, []);
+
+  // Restaurer le brouillon lors de l'ouverture du formulaire
+  useEffect(() => {
+    if (showForm) {
+      const savedData = localStorage.getItem('personnage_en_cours');
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          if (parsed.nomTO || parsed.nomTI || parsed.espece || parsed.competences?.length > 0) {
+            setFormData(parsed);
+            toast.success("Brouillon restauré !");
+          }
+        } catch (error) {
+          console.error("Erreur lors de la restauration du brouillon:", error);
+        }
+      }
+    }
+  }, [showForm]);
+
   useEffect(() => {
     const fetchFactions = async () => {
       const { data, error } = await supabase
@@ -460,6 +501,22 @@ const Personnages = () => {
     }
   };
 
+  const handleAnnulerCreation = () => {
+    const hasData = formData.nomTO || formData.nomTI || formData.espece || formData.competences.length > 0;
+    
+    if (hasData) {
+      const confirmer = window.confirm("Voulez-vous supprimer le brouillon en cours ? (Cliquez sur Annuler pour conserver le brouillon)");
+      if (confirmer) {
+        localStorage.removeItem('personnage_en_cours');
+        toast.info("Brouillon supprimé");
+      } else {
+        toast.info("Brouillon conservé pour plus tard");
+      }
+    }
+    
+    setShowForm(false);
+  };
+
   const sauvegarderPersonnage = () => {
     if (!formData.nomTO.trim() || !formData.nomTI.trim()) {
       toast.error("Les noms TO et TI sont requis");
@@ -485,6 +542,10 @@ const Personnages = () => {
 
     setPersonnages([...personnages, nouveauPersonnage]);
     setShowForm(false);
+    
+    // Nettoyer le localStorage après sauvegarde réussie
+    localStorage.removeItem('personnage_en_cours');
+    
     setFormData({
       nomTO: "",
       nomTI: "",
@@ -925,7 +986,7 @@ const Personnages = () => {
                   <Save className="h-4 w-4" />
                   Sauvegarder le Personnage
                 </Button>
-                <Button onClick={() => setShowForm(false)} variant="outline">
+                <Button onClick={handleAnnulerCreation} variant="outline">
                   Annuler
                 </Button>
               </div>
