@@ -39,6 +39,7 @@ interface Personnage {
   nbEvenements: number;
   afficherSortilleges: boolean;
   competencesGratuitesUtilisees: number;
+  niveauxSortsGratuitsUtilises: number;
 }
 
 const Personnages = () => {
@@ -69,7 +70,8 @@ const Personnages = () => {
     email: "",
     nbEvenements: 0,
     afficherSortilleges: false,
-    competencesGratuitesUtilisees: 0
+    competencesGratuitesUtilisees: 0,
+    niveauxSortsGratuitsUtilises: 0
   });
 
   // Calculer le coût des sorts
@@ -80,6 +82,8 @@ const Personnages = () => {
     formData.sorts.niv4 * 4;
 
   const pointsRestants = formData.pointsCreation - formData.pointsDepenses - coutSorts;
+  const niveauxSortsGratuitsDisponibles = formData.nbEvenements * 2;
+  const niveauxSortsGratuitsRestants = niveauxSortsGratuitsDisponibles - formData.niveauxSortsGratuitsUtilises;
   const competencesGratuitesDisponibles = formData.nbEvenements * 2;
   const competencesGratuitesRestantes = competencesGratuitesDisponibles - formData.competencesGratuitesUtilisees;
 
@@ -392,6 +396,70 @@ const Personnages = () => {
     });
   };
 
+  const handleSortChange = (niveau: 'niv1' | 'niv2' | 'niv3' | 'niv4', newValue: number) => {
+    const newSorts = { ...formData.sorts, [niveau]: newValue };
+    const oldCoutSorts = formData.sorts.niv1 * 1 + formData.sorts.niv2 * 2 + formData.sorts.niv3 * 3 + formData.sorts.niv4 * 4;
+    const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
+    const coutDifference = newCoutSorts - oldCoutSorts;
+    
+    // Calculer combien on peut encore payer avec les points de création
+    const pointsDisponibles = formData.pointsCreation - formData.pointsDepenses;
+    const niveauxGratuitsDisponibles = niveauxSortsGratuitsRestants;
+    
+    // Déterminer comment allouer le coût (niveaux gratuits d'abord si points insuffisants)
+    let nouveauxNiveauxGratuitsUtilises = formData.niveauxSortsGratuitsUtilises;
+    let nouveauxPointsDepenses = formData.pointsDepenses;
+    
+    if (coutDifference > 0) {
+      // Augmentation du coût
+      if (coutDifference > pointsDisponibles) {
+        // Pas assez de points, utiliser les niveaux gratuits
+        const niveauxGratuitsNecessaires = coutDifference - pointsDisponibles;
+        if (niveauxGratuitsNecessaires > niveauxGratuitsDisponibles) {
+          toast.error("Points de création et niveaux gratuits insuffisants !");
+          return;
+        }
+        nouveauxNiveauxGratuitsUtilises += niveauxGratuitsNecessaires;
+        nouveauxPointsDepenses += pointsDisponibles;
+      } else {
+        // Assez de points disponibles
+        nouveauxPointsDepenses += coutDifference;
+      }
+    } else if (coutDifference < 0) {
+      // Diminution du coût - libérer les niveaux gratuits d'abord (LIFO)
+      const niveauxALiberer = Math.abs(coutDifference);
+      const niveauxGratuitsALiberer = Math.min(niveauxALiberer, formData.niveauxSortsGratuitsUtilises);
+      nouveauxNiveauxGratuitsUtilises -= niveauxGratuitsALiberer;
+      const pointsALiberer = niveauxALiberer - niveauxGratuitsALiberer;
+      nouveauxPointsDepenses -= pointsALiberer;
+    }
+    
+    // Recalculer les pierres de vie si Tisseur ou Clerc
+    let nouveauxPierres = formData.pierresDeVie;
+    const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
+    if (hasTisseurOrClerc) {
+      const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
+      let plusHautNiveau = 0;
+      if (newSorts.niv4 > 0) plusHautNiveau = 4;
+      else if (newSorts.niv3 > 0) plusHautNiveau = 3;
+      else if (newSorts.niv2 > 0) plusHautNiveau = 2;
+      else if (newSorts.niv1 > 0) plusHautNiveau = 1;
+      nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+    }
+    
+    setFormData({ 
+      ...formData, 
+      sorts: newSorts, 
+      pierresDeVie: nouveauxPierres,
+      niveauxSortsGratuitsUtilises: nouveauxNiveauxGratuitsUtilises,
+      pointsDepenses: nouveauxPointsDepenses
+    });
+    
+    if (coutDifference > 0 && nouveauxNiveauxGratuitsUtilises > formData.niveauxSortsGratuitsUtilises) {
+      toast.success(`Sort ajouté (niveaux gratuits utilisés) !`);
+    }
+  };
+
   const sauvegarderPersonnage = () => {
     if (!formData.nomTO.trim() || !formData.nomTI.trim()) {
       toast.error("Les noms TO et TI sont requis");
@@ -439,7 +507,8 @@ const Personnages = () => {
       email: "",
       nbEvenements: 0,
       afficherSortilleges: false,
-      competencesGratuitesUtilisees: 0
+      competencesGratuitesUtilisees: 0,
+      niveauxSortsGratuitsUtilises: 0
     });
     setRecapitulatif([]);
     
@@ -736,6 +805,9 @@ const Personnages = () => {
                     <CardDescription>
                       Sélectionnez vos sorts (Maximum 3 par niveau) - Coût: {coutSorts} pts
                       {pointsRestants <= 0 && <span className="text-destructive ml-2">(Plus de points disponibles)</span>}
+                      <div className="mt-2">
+                        Niveaux de sorts gratuits (événements): <span className="font-bold">{niveauxSortsGratuitsRestants}/{niveauxSortsGratuitsDisponibles} disponibles</span>
+                      </div>
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -744,31 +816,7 @@ const Personnages = () => {
                       <Label htmlFor="sorts-niv1">Sorts Niveau 1 (1 pt/sort)</Label>
                       <Select 
                         value={formData.sorts.niv1.toString()} 
-                        onValueChange={(value) => {
-                          const newValue = parseInt(value);
-                          const newSorts = { ...formData.sorts, niv1: newValue };
-                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
-                          
-                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
-                            toast.error("Points de création insuffisants !");
-                            return;
-                          }
-                          
-                          // Recalculer les pierres de vie si Tisseur ou Clerc
-                          let nouveauxPierres = formData.pierresDeVie;
-                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
-                          if (hasTisseurOrClerc) {
-                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
-                            let plusHautNiveau = 0;
-                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
-                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
-                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
-                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
-                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
-                          }
-                          
-                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
-                        }}
+                        onValueChange={(value) => handleSortChange('niv1', parseInt(value))}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -786,31 +834,7 @@ const Personnages = () => {
                       <Label htmlFor="sorts-niv2">Sorts Niveau 2 (2 pts/sort)</Label>
                       <Select 
                         value={formData.sorts.niv2.toString()} 
-                        onValueChange={(value) => {
-                          const newValue = parseInt(value);
-                          const newSorts = { ...formData.sorts, niv2: newValue };
-                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
-                          
-                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
-                            toast.error("Points de création insuffisants !");
-                            return;
-                          }
-                          
-                          // Recalculer les pierres de vie si Tisseur ou Clerc
-                          let nouveauxPierres = formData.pierresDeVie;
-                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
-                          if (hasTisseurOrClerc) {
-                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
-                            let plusHautNiveau = 0;
-                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
-                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
-                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
-                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
-                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
-                          }
-                          
-                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
-                        }}
+                        onValueChange={(value) => handleSortChange('niv2', parseInt(value))}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -826,33 +850,9 @@ const Personnages = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="sorts-niv3">Sorts Niveau 3 (3 pts/sort)</Label>
-                      <Select 
+                      <Select
                         value={formData.sorts.niv3.toString()} 
-                        onValueChange={(value) => {
-                          const newValue = parseInt(value);
-                          const newSorts = { ...formData.sorts, niv3: newValue };
-                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
-                          
-                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
-                            toast.error("Points de création insuffisants !");
-                            return;
-                          }
-                          
-                          // Recalculer les pierres de vie si Tisseur ou Clerc
-                          let nouveauxPierres = formData.pierresDeVie;
-                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
-                          if (hasTisseurOrClerc) {
-                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
-                            let plusHautNiveau = 0;
-                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
-                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
-                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
-                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
-                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
-                          }
-                          
-                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
-                        }}
+                        onValueChange={(value) => handleSortChange('niv3', parseInt(value))}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -870,31 +870,7 @@ const Personnages = () => {
                       <Label htmlFor="sorts-niv4">Sorts Niveau 4 (4 pts/sort)</Label>
                       <Select 
                         value={formData.sorts.niv4.toString()} 
-                        onValueChange={(value) => {
-                          const newValue = parseInt(value);
-                          const newSorts = { ...formData.sorts, niv4: newValue };
-                          const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
-                          
-                          if (formData.pointsDepenses + newCoutSorts > formData.pointsCreation) {
-                            toast.error("Points de création insuffisants !");
-                            return;
-                          }
-                          
-                          // Recalculer les pierres de vie si Tisseur ou Clerc
-                          let nouveauxPierres = formData.pierresDeVie;
-                          const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
-                          if (hasTisseurOrClerc) {
-                            const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
-                            let plusHautNiveau = 0;
-                            if (newSorts.niv4 > 0) plusHautNiveau = 4;
-                            else if (newSorts.niv3 > 0) plusHautNiveau = 3;
-                            else if (newSorts.niv2 > 0) plusHautNiveau = 2;
-                            else if (newSorts.niv1 > 0) plusHautNiveau = 1;
-                            nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
-                          }
-                          
-                          setFormData({ ...formData, sorts: newSorts, pierresDeVie: nouveauxPierres });
-                        }}
+                        onValueChange={(value) => handleSortChange('niv4', parseInt(value))}
                       >
                         <SelectTrigger>
                           <SelectValue />

@@ -62,101 +62,101 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     }
     h1 {
       text-align: center;
-      font-size: 16pt;
+      font-size: 14pt;
       font-weight: bold;
-      margin: 0 0 0.3cm 0;
-      padding: 0.2cm;
+      margin: 0 0 0.2cm 0;
+      padding: 0.15cm;
       border: 2px solid #000;
       background: #e0e0e0;
     }
     h2 {
-      font-size: 11pt;
+      font-size: 10pt;
       font-weight: bold;
-      margin: 0.4cm 0 0.2cm 0;
-      padding: 0.15cm 0.2cm;
+      margin: 0.3cm 0 0.15cm 0;
+      padding: 0.1cm 0.15cm;
       border-bottom: 2px solid #000;
       background: #f0f0f0;
     }
     .section {
-      margin-bottom: 0.3cm;
+      margin-bottom: 0.2cm;
     }
     .info-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.2cm;
-      margin-bottom: 0.3cm;
+      gap: 0.15cm;
+      margin-bottom: 0.2cm;
     }
     .info-item {
       border: 1px solid #000;
-      padding: 0.15cm;
+      padding: 0.1cm;
     }
     .info-label {
       font-weight: bold;
       font-size: 7pt;
       text-transform: uppercase;
-      margin-bottom: 0.1cm;
+      margin-bottom: 0.08cm;
     }
     .info-value {
-      font-size: 10pt;
+      font-size: 9pt;
     }
     .stats-row {
       display: flex;
       justify-content: space-around;
-      padding: 0.3cm;
+      padding: 0.2cm;
       border: 2px solid #000;
       background: #f5f5f5;
-      margin-bottom: 0.3cm;
+      margin-bottom: 0.2cm;
     }
     .stat {
       text-align: center;
     }
     .stat-label {
       font-weight: bold;
-      font-size: 8pt;
+      font-size: 7pt;
       text-transform: uppercase;
     }
     .stat-value {
-      font-size: 16pt;
+      font-size: 14pt;
       font-weight: bold;
-      margin-top: 0.1cm;
+      margin-top: 0.08cm;
     }
     .two-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.3cm;
+      gap: 0.2cm;
     }
     .competences-box {
       border: 1px solid #000;
-      padding: 0.2cm;
-      min-height: 6cm;
+      padding: 0.15cm;
+      min-height: 4cm;
     }
     .competence-item {
-      padding: 0.1cm;
-      margin-bottom: 0.1cm;
+      padding: 0.08cm;
+      margin-bottom: 0.08cm;
       border-left: 2px solid #000;
-      padding-left: 0.2cm;
+      padding-left: 0.15cm;
     }
     .empty-boxes {
       display: flex;
-      gap: 0.2cm;
-      margin-bottom: 0.3cm;
+      gap: 0.15cm;
+      margin-bottom: 0.2cm;
     }
     .empty-box {
       flex: 1;
       border: 1px solid #000;
-      padding: 0.2cm;
-      min-height: 1.2cm;
+      padding: 0.15cm;
+      min-height: 1cm;
     }
     .empty-box-label {
       font-weight: bold;
       font-size: 8pt;
-      margin-bottom: 0.2cm;
+      margin-bottom: 0.1cm;
     }
     .long-box {
       border: 1px solid #000;
-      padding: 0.2cm;
-      min-height: 2cm;
-      margin-bottom: 0.3cm;
+      padding: 0.15cm;
+      min-height: 1.5cm;
+      margin-bottom: 0.2cm;
     }
     .rect-box {
       border: 2px solid #000;
@@ -253,14 +253,14 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
-    <div class="info-grid" style="margin-bottom: 0.3cm;">
+    <div class="info-grid" style="margin-bottom: 0.2cm;">
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Pierres de Vie</div>
-        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;">${character.pierresDeVie}</div>
+        <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;">${character.pierresDeVie}</div>
       </div>
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Points d'Abîme</div>
-        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;">${character.abime}</div>
+        <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;">${character.abime}</div>
       </div>
     </div>
 
@@ -413,10 +413,8 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       ℹ️ Note: Les séquelles, maladies et autres traits non obligatoires sont à remplir uniquement si mentionné par l'Organisation, les PNJ responsables ou une compétence autorisant cela.
     </div>
 
-    <h2>Perles Obsidiennes</h2>
-    <div class="rect-box">
-      <div style="font-size: 20pt; font-weight: bold; min-height: 0.8cm;"></div>
-    </div>
+    <h2>Perles obsydiennes :</h2>
+    <div class="long-box" style="min-height: 1cm;"></div>
 
     <h2>Contrat Argousin-e</h2>
     <div class="long-box"></div>
