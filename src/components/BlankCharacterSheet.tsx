@@ -239,8 +239,8 @@ export const BlankCharacterSheet = () => {
       </div>
     </div>
 
-    <div style="font-weight: bold; font-size: 8pt; margin: 0.3cm 0 0.1cm 0;">Perles obsydiennes :</div>
-    <div style="min-height: 1cm; padding: 0.2cm; margin-bottom: 0.3cm;"></div>
+    <div style="font-weight: bold; font-size: 8pt; margin: 0.15cm 0 0.05cm 0;">Perles obsydiennes :</div>
+    <div style="min-height: 1cm; padding: 0.2cm; margin-bottom: 0.1cm;"></div>
 
     <h2>Compétences Choisies</h2>
     <div class="two-columns">
