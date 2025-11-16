@@ -264,6 +264,9 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
+    <div style="font-weight: bold; font-size: 8pt; margin: 0.3cm 0 0.1cm 0;">Perles obsydiennes :</div>
+    <div style="min-height: 1cm; padding: 0.2cm; margin-bottom: 0.3cm;"></div>
+
     <h2>Compétences Choisies (${character.competences.length})</h2>
     <div class="two-columns">
       <div class="competences-box" style="min-height: 4cm;">
@@ -412,9 +415,6 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     <div style="font-size: 7pt; color: #666; font-style: italic; margin: 0.3cm 0; padding: 0.2cm; background: #f9f9f9; border-left: 2px solid #666;">
       ℹ️ Note: Les séquelles, maladies et autres traits non obligatoires sont à remplir uniquement si mentionné par l'Organisation, les PNJ responsables ou une compétence autorisant cela.
     </div>
-
-    <div style="font-weight: bold; font-size: 8pt; margin: 0.3cm 0 0.1cm 0;">Perles obsydiennes :</div>
-    <div style="min-height: 1cm; padding: 0.2cm;"></div>
 
     <h2>Contrat Argousin-e</h2>
     <div class="long-box"></div>
