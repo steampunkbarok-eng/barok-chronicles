@@ -413,8 +413,8 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       ℹ️ Note: Les séquelles, maladies et autres traits non obligatoires sont à remplir uniquement si mentionné par l'Organisation, les PNJ responsables ou une compétence autorisant cela.
     </div>
 
-    <h2>Perles obsydiennes :</h2>
-    <div class="long-box" style="min-height: 1cm;"></div>
+    <div style="font-weight: bold; font-size: 8pt; margin: 0.3cm 0 0.1cm 0;">Perles obsydiennes :</div>
+    <div style="min-height: 1cm; padding: 0.2cm;"></div>
 
     <h2>Contrat Argousin-e</h2>
     <div class="long-box"></div>

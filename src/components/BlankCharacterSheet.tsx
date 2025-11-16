@@ -35,103 +35,103 @@ export const BlankCharacterSheet = () => {
     }
     h1 {
       text-align: center;
-      font-size: 16pt;
+      font-size: 14pt;
       font-weight: bold;
-      margin: 0 0 0.3cm 0;
-      padding: 0.2cm;
+      margin: 0 0 0.2cm 0;
+      padding: 0.15cm;
       border: 2px solid #000;
       background: #e0e0e0;
     }
     h2 {
-      font-size: 11pt;
+      font-size: 10pt;
       font-weight: bold;
-      margin: 0.4cm 0 0.2cm 0;
-      padding: 0.15cm 0.2cm;
+      margin: 0.3cm 0 0.15cm 0;
+      padding: 0.1cm 0.15cm;
       border-bottom: 2px solid #000;
       background: #f0f0f0;
     }
     .section {
-      margin-bottom: 0.3cm;
+      margin-bottom: 0.2cm;
     }
     .info-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.2cm;
-      margin-bottom: 0.3cm;
+      gap: 0.15cm;
+      margin-bottom: 0.2cm;
     }
     .info-item {
       border: 1px solid #000;
-      padding: 0.15cm;
+      padding: 0.1cm;
     }
     .info-label {
       font-weight: bold;
       font-size: 7pt;
       text-transform: uppercase;
-      margin-bottom: 0.1cm;
+      margin-bottom: 0.08cm;
     }
     .info-value {
-      font-size: 10pt;
-      min-height: 0.8cm;
+      font-size: 9pt;
+      min-height: 0.6cm;
     }
     .stats-row {
       display: flex;
       justify-content: space-around;
-      padding: 0.3cm;
+      padding: 0.2cm;
       border: 2px solid #000;
       background: #f5f5f5;
-      margin-bottom: 0.3cm;
+      margin-bottom: 0.2cm;
     }
     .stat {
       text-align: center;
     }
     .stat-label {
       font-weight: bold;
-      font-size: 8pt;
+      font-size: 7pt;
       text-transform: uppercase;
     }
     .stat-value {
-      font-size: 16pt;
+      font-size: 14pt;
       font-weight: bold;
-      margin-top: 0.1cm;
-      min-height: 0.8cm;
+      margin-top: 0.08cm;
+      min-height: 0.6cm;
     }
     .two-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.3cm;
+      gap: 0.2cm;
     }
     .competences-box {
       border: 1px solid #000;
-      padding: 0.2cm;
-      min-height: 6cm;
+      padding: 0.15cm;
+      min-height: 4cm;
     }
     .competence-item {
-      padding: 0.1cm;
-      margin-bottom: 0.1cm;
+      padding: 0.08cm;
+      margin-bottom: 0.08cm;
       border-left: 2px solid #000;
-      padding-left: 0.2cm;
+      padding-left: 0.15cm;
     }
     .empty-boxes {
       display: flex;
-      gap: 0.2cm;
-      margin-bottom: 0.3cm;
+      gap: 0.15cm;
+      margin-bottom: 0.2cm;
     }
     .empty-box {
       flex: 1;
       border: 1px solid #000;
-      padding: 0.2cm;
-      min-height: 1.2cm;
+      padding: 0.15cm;
+      min-height: 1cm;
     }
     .empty-box-label {
       font-weight: bold;
-      font-size: 8pt;
-      margin-bottom: 0.2cm;
+      font-size: 7pt;
+      margin-bottom: 0.1cm;
     }
     .long-box {
       border: 1px solid #000;
-      padding: 0.2cm;
-      min-height: 2cm;
-      margin-bottom: 0.3cm;
+      padding: 0.15cm;
+      min-height: 1.5cm;
+      margin-bottom: 0.2cm;
     }
     .rect-box {
       border: 2px solid #000;
@@ -149,11 +149,11 @@ export const BlankCharacterSheet = () => {
       width: 100%;
       border-collapse: collapse;
       font-size: 8pt;
-      margin-bottom: 0.3cm;
+      margin-bottom: 0.2cm;
     }
     table td, table th {
       border: 1px solid #000;
-      padding: 0.1cm;
+      padding: 0.08cm;
       text-align: left;
     }
     table th {
@@ -228,14 +228,14 @@ export const BlankCharacterSheet = () => {
       </div>
     </div>
 
-    <div class="info-grid" style="margin-bottom: 0.3cm;">
+    <div class="info-grid" style="margin-bottom: 0.2cm;">
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Pierres de Vie</div>
-        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;"></div>
+        <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;"></div>
       </div>
       <div class="info-item" style="grid-column: span 2;">
         <div class="info-label">Points d'Abîme</div>
-        <div class="info-value" style="min-height: 0.8cm; font-size: 14pt; font-weight: bold;"></div>
+        <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;"></div>
       </div>
     </div>
 
@@ -253,98 +253,56 @@ export const BlankCharacterSheet = () => {
         <th style="width: 25%;">Niveau 3</th>
         <th style="width: 25%;">Niveau 4</th>
       </tr>
-      ${Array(6).fill(0).map(() => `<tr>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
+      ${Array(4).fill(0).map(() => `<tr>
+        <td style="min-height: 1cm; padding: 0.15cm;"></td>
+        <td style="min-height: 1cm; padding: 0.15cm;"></td>
+        <td style="min-height: 1cm; padding: 0.15cm;"></td>
+        <td style="min-height: 1cm; padding: 0.15cm;"></td>
       </tr>`).join('')}
     </table>
 
     <h2>Rituels Magiques</h2>
     <table>
       <tr>
-        <th style="width: 20%;">École 1 Sort 1</th>
-        <th style="width: 20%;">École 1 Sort 2</th>
-        <th style="width: 20%;">École 1 Sort 3</th>
-        <th style="width: 20%;">École 1 Sort 4</th>
-        <th style="width: 20%;">École 1 Sort 5</th>
+        <th style="width: 50%;">École 1</th>
+        <th style="width: 50%;">École 2</th>
       </tr>
-      <tr>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-      </tr>
-      <tr>
-        <th style="width: 20%;">École 2 Sort 1</th>
-        <th style="width: 20%;">École 2 Sort 2</th>
-        <th style="width: 20%;">École 2 Sort 3</th>
-        <th style="width: 20%;">École 2 Sort 4</th>
-        <th style="width: 20%;">École 2 Sort 5</th>
-      </tr>
-      <tr>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-        <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
-      </tr>
+      ${Array(3).fill(0).map(() => `<tr>
+        <td style="min-height: 0.8cm; padding: 0.15cm;"></td>
+        <td style="min-height: 0.8cm; padding: 0.15cm;"></td>
+      </tr>`).join('')}
     </table>
 
     <h2>Compétences Apprises</h2>
     <div class="two-columns">
-      <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">
-        ${Array(6).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 1}.</div></div>`).join('')}
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0.15cm;">
+        ${Array(5).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 1}.</div></div>`).join('')}
       </div>
-      <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">
-        ${Array(6).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 7}.</div></div>`).join('')}
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0.15cm;">
+        ${Array(5).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 6}.</div></div>`).join('')}
       </div>
     </div>
 
     <h2>Séquelles</h2>
     <div class="empty-boxes">
-      <div class="empty-box">
-        <div class="empty-box-label">1.</div>
-      </div>
-      <div class="empty-box">
-        <div class="empty-box-label">2.</div>
-      </div>
-      <div class="empty-box">
-        <div class="empty-box-label">3.</div>
-      </div>
-      <div class="empty-box">
-        <div class="empty-box-label">4.</div>
-      </div>
-      <div class="empty-box">
-        <div class="empty-box-label">5.</div>
-      </div>
+      ${Array(5).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 1cm;">
+        <div class="empty-box-label">${i + 1}.</div>
+      </div>`).join('')}
     </div>
 
     <h2>Maladies</h2>
     <div class="empty-boxes">
-      <div class="empty-box" style="min-height: 1.2cm;">
-        <div class="empty-box-label">1.</div>
-      </div>
-      <div class="empty-box" style="min-height: 1.2cm;">
-        <div class="empty-box-label">2.</div>
-      </div>
-      <div class="empty-box" style="min-height: 1.2cm;">
-        <div class="empty-box-label">3.</div>
-      </div>
-      <div class="empty-box" style="min-height: 1.2cm;">
-        <div class="empty-box-label">4.</div>
-      </div>
-      <div class="empty-box" style="min-height: 1.2cm;">
-        <div class="empty-box-label">5.</div>
-      </div>
+      ${Array(5).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 1cm;">
+        <div class="empty-box-label">${i + 1}.</div>
+      </div>`).join('')}
     </div>
 
-    <h2>Perles Obsidiennes</h2>
-    <div class="rect-box">
-      <div style="font-size: 20pt; font-weight: bold; min-height: 0.8cm;"></div>
+    <div style="font-size: 7pt; color: #666; font-style: italic; margin: 0.3cm 0; padding: 0.2cm; background: #f9f9f9; border-left: 2px solid #666;">
+      ℹ️ Note: Les séquelles, maladies et autres traits non obligatoires sont à remplir uniquement si mentionné par l'Organisation, les PNJ responsables ou une compétence autorisant cela.
     </div>
+
+    <div style="font-weight: bold; font-size: 8pt; margin: 0.3cm 0 0.1cm 0;">Perles obsydiennes :</div>
+    <div style="min-height: 1cm; padding: 0.2cm;"></div>
 
     <h2>Contrat Argousin-e</h2>
     <div class="long-box"></div>
@@ -359,13 +317,13 @@ export const BlankCharacterSheet = () => {
 
   <!-- PAGE 2 -->
   <div class="page">
-    <h1>RÉCAPITULATIF</h1>
-    
+    <h1>PROGRESSION & ÉTATS</h1>
+
     <h2>Compétences Gratuites de l'Espèce</h2>
-    <div class="competences-box" style="min-height: 3cm;"></div>
+    <div class="competences-box" style="min-height: 2.5cm;"></div>
 
     <h2>Compétences Interdites</h2>
-    <div class="competences-box" style="min-height: 3cm;"></div>
+    <div class="competences-box" style="min-height: 2.5cm;"></div>
 
     <div class="footer" style="margin-top: 1cm;">
       <strong>Fiche générée automatiquement</strong> | 
