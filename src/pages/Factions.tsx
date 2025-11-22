@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { typesBatiments, batimentsUniques, navires } from "@/data/batiments";
 import { titresCarrieres, Titre } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Faction {
   id: string;
@@ -29,6 +30,7 @@ interface Faction {
 }
 
 const Factions = () => {
+  const { t } = useLanguage();
   const [factions, setFactions] = useState<Faction[]>([]);
   const [showForm, setShowForm] = useState(false);
 
@@ -246,12 +248,12 @@ const Factions = () => {
                 </Button>
               </Link>
               <Shield className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-primary">Gestion des Factions</h1>
+              <h1 className="text-3xl font-bold text-primary">{t('factions.title')}</h1>
             </div>
             {!showForm && (
               <Button onClick={() => setShowForm(true)} className="gap-2">
                 <Plus className="h-5 w-5" />
-                Créer une Faction
+                {t('factions.create')}
               </Button>
             )}
           </div>
@@ -262,48 +264,48 @@ const Factions = () => {
         {showForm ? (
           <Card className="ornament-border max-w-4xl mx-auto">
             <CardHeader>
-              <CardTitle>Créer une Nouvelle Faction</CardTitle>
+              <CardTitle>{t('factions.createNew')}</CardTitle>
               <CardDescription>
-                Marques de destinée disponibles: {calculerMarquesDisponibles()}/{formData.marquesTotal}
+                {t('factions.marksAvailable')}: {calculerMarquesDisponibles()}/{formData.marquesTotal}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="nom">Nom de la Faction *</Label>
+                <Label htmlFor="nom">{t('factions.name')}</Label>
                 <Input
                   id="nom"
                   value={formData.nom}
                   onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                  placeholder="Ex: La Guilde des Ombres"
+                  placeholder={t('factions.namePlaceholder')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="propriete">Propriété Terrienne (gratuit - 1 seul)</Label>
+                <Label htmlFor="propriete">{t('factions.property')}</Label>
                 <Input
                   id="propriete"
                   value={formData.propriete}
                   onChange={(e) => setFormData({ ...formData, propriete: e.target.value })}
-                  placeholder="Nom de votre propriété"
+                  placeholder={t('factions.propertyPlaceholder')}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Une seule propriété terrienne peut être ajoutée gratuitement
+                  {t('factions.propertyNote')}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label>Bâtiment/Navire (Gratuit - 1 seul choix)</Label>
+                <Label>{t('factions.building')}</Label>
                 {!formData.batiment ? (
                   <Select onValueChange={(value) => {
                     const [nom, type, avantages] = value.split('||');
                     ajouterBatiment(nom, type, avantages);
                   }}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Choisir un bâtiment ou navire" />
+                      <SelectValue placeholder={t('factions.buildingPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent className="max-h-[400px]">
                       <SelectGroup>
-                        <SelectLabel>Bâtiments Uniques</SelectLabel>
+                        <SelectLabel>{t('factions.buildingsUnique')}</SelectLabel>
                         {batimentsUniques.map((bat) => (
                           <SelectItem key={bat.nom} value={`${bat.nom}||Bâtiment||${bat.avantages}`}>
                             <div className="flex flex-col">
@@ -317,7 +319,7 @@ const Factions = () => {
                         ))}
                       </SelectGroup>
                       <SelectGroup>
-                        <SelectLabel>Navires</SelectLabel>
+                        <SelectLabel>{t('factions.ships')}</SelectLabel>
                         {navires.map((nav) => (
                           <SelectItem key={nav.nom} value={`${nav.nom}||Navire||${nav.avantages}`}>
                             <div className="flex flex-col">
@@ -352,10 +354,10 @@ const Factions = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Titres/Carrières (2 Marques chacun - Max 2)</Label>
+                <Label>{t('factions.titles')}</Label>
                 <Select onValueChange={ajouterTitre} disabled={formData.titres.length >= 2}>
                   <SelectTrigger>
-                    <SelectValue placeholder={formData.titres.length >= 2 ? "Maximum atteint" : "Choisir un titre"} />
+                    <SelectValue placeholder={formData.titres.length >= 2 ? t('factions.titlesMaxReached') : t('factions.titlesPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[400px]">
                     {titresCarrieres.map((titre) => {
@@ -393,48 +395,48 @@ const Factions = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description Courte</Label>
+                <Label htmlFor="description">{t('factions.descriptionShort')}</Label>
                 <Textarea
                   id="description"
                   value={formData.descriptionCourte}
                   onChange={(e) => setFormData({ ...formData, descriptionCourte: e.target.value })}
-                  placeholder="Une brève description de votre faction..."
+                  placeholder={t('factions.descriptionPlaceholder')}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="background">Background Complet</Label>
+                <Label htmlFor="background">{t('factions.background')}</Label>
                 <Textarea
                   id="background"
                   value={formData.background}
                   onChange={(e) => setFormData({ ...formData, background: e.target.value })}
-                  placeholder="L'histoire complète de votre faction..."
+                  placeholder={t('factions.backgroundPlaceholder')}
                   rows={6}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contactEmail">Contact email de la Faction *</Label>
+                <Label htmlFor="contactEmail">{t('factions.email')}</Label>
                 <Input
                   id="contactEmail"
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                  placeholder="email@exemple.com"
+                  placeholder={t('factions.emailPlaceholder')}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Cet email recevra une confirmation de création de la faction
+                  {t('factions.emailNote')}
                 </p>
               </div>
 
               <div className="flex gap-3 pt-4">
                 <Button onClick={sauvegarderFaction} className="flex-1 gap-2">
                   <Save className="h-4 w-4" />
-                  Sauvegarder la Faction
+                  {t('factions.save')}
                 </Button>
                 <Button onClick={() => setShowForm(false)} variant="outline">
-                  Annuler
+                  {t('factions.cancel')}
                 </Button>
               </div>
             </CardContent>
@@ -445,10 +447,10 @@ const Factions = () => {
               <Card className="ornament-border text-center py-12">
                 <CardContent>
                   <Shield className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-xl text-muted-foreground mb-4">Aucune faction créée</p>
+                  <p className="text-xl text-muted-foreground mb-4">{t('factions.none')}</p>
                   <Button onClick={() => setShowForm(true)} className="gap-2">
                     <Plus className="h-5 w-5" />
-                    Créer votre première faction
+                    {t('factions.createFirst')}
                   </Button>
                 </CardContent>
               </Card>
@@ -466,17 +468,17 @@ const Factions = () => {
                         </span>
                       </CardTitle>
                       <CardDescription>
-                        Créée le {faction.dateCreation}
+                        {t('factions.createdOn')} {faction.dateCreation}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Marques disponibles:</span>
+                        <span className="text-muted-foreground">{t('factions.marksAvailableShort')}</span>
                         <span className="font-bold">{faction.marquesDisponibles}/{faction.marquesTotal}</span>
                       </div>
                       {faction.propriete && (
                         <div>
-                          <p className="text-sm font-medium mb-1">Propriété:</p>
+                          <p className="text-sm font-medium mb-1">{t('factions.propertyLabel')}</p>
                           <span className="text-xs bg-secondary/20 px-2 py-1 rounded">
                             {faction.propriete}
                           </span>
@@ -491,7 +493,7 @@ const Factions = () => {
                       )}
                       {faction.titres.length > 0 && (
                         <div>
-                          <p className="text-sm font-medium mb-1">Titres/Carrières:</p>
+                          <p className="text-sm font-medium mb-1">{t('factions.titlesCareer')}</p>
                           <div className="flex flex-wrap gap-1">
                             {faction.titres.map((titre, idx) => (
                               <span key={idx} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">

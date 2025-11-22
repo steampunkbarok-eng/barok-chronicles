@@ -14,6 +14,7 @@ import { titresCarrieres } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Personnage {
   id: string;
@@ -43,6 +44,7 @@ interface Personnage {
 }
 
 const Personnages = () => {
+  const { t } = useLanguage();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
@@ -591,14 +593,14 @@ const Personnages = () => {
                 </Button>
               </Link>
               <Scroll className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-primary">Gestion des Personnages</h1>
+              <h1 className="text-3xl font-bold text-primary">{t('characters.title')}</h1>
             </div>
             <div className="flex gap-2">
               <BlankCharacterSheet />
               {!showForm && (
                 <Button onClick={() => setShowForm(true)} className="gap-2">
                   <Plus className="h-5 w-5" />
-                  Créer un Personnage
+                  {t('characters.create')}
                 </Button>
               )}
             </div>
@@ -613,13 +615,13 @@ const Personnages = () => {
             <div className="lg:col-span-2 space-y-6">
               <Card className="ornament-border">
                 <CardHeader>
-                  <CardTitle>Nombre d'événements réalisés</CardTitle>
+                  <CardTitle>{t('characters.events')}</CardTitle>
                   <CardDescription>
-                    Compétences gratuites par événement: 2 compétences
+                    {t('characters.eventsDescription')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Label htmlFor="nbEvenements">Événements réalisés</Label>
+                  <Label htmlFor="nbEvenements">{t('characters.eventsCompleted')}</Label>
                   <Input
                     id="nbEvenements"
                     type="number"
@@ -628,48 +630,48 @@ const Personnages = () => {
                     onChange={(e) => setFormData({ ...formData, nbEvenements: parseInt(e.target.value) || 0 })}
                   />
                   <p className="text-xs text-muted-foreground">
-                    ⚠️ Respecter les règles d'apprentissage et le Roleplay en jeu pour valider ces apprentissages de nouvelles compétences en jeu !
+                    {t('characters.eventsNote')}
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="ornament-border">
                 <CardHeader>
-                  <CardTitle>Informations de base</CardTitle>
+                  <CardTitle>{t('characters.basicInfo')}</CardTitle>
                   <CardDescription>
-                    Points de création: {pointsRestants}/{formData.pointsCreation}
+                    {t('characters.creationPoints')}: {pointsRestants}/{formData.pointsCreation}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="nomTO">Nom Time-Out (TO) *</Label>
+                      <Label htmlFor="nomTO">{t('characters.nameTO')}</Label>
                       <Input
                         id="nomTO"
                         value={formData.nomTO}
                         onChange={(e) => setFormData({ ...formData, nomTO: e.target.value })}
-                        placeholder="Votre vrai prénom"
+                        placeholder={t('characters.nameTOPlaceholder')}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="nomTI">Nom Time-In (TI) *</Label>
+                      <Label htmlFor="nomTI">{t('characters.nameTI')}</Label>
                       <Input
                         id="nomTI"
                         value={formData.nomTI}
                         onChange={(e) => setFormData({ ...formData, nomTI: e.target.value })}
-                        placeholder="Nom du personnage"
+                        placeholder={t('characters.nameTIPlaceholder')}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="faction">Faction (optionnel)</Label>
+                    <Label htmlFor="faction">{t('characters.faction')}</Label>
                     <Select
                       value={formData.faction}
                       onValueChange={(value) => setFormData({ ...formData, faction: value })}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Aucune faction sélectionnée" />
+                        <SelectValue placeholder={t('characters.factionNone')} />
                       </SelectTrigger>
                       <SelectContent>
                         {factions.map((faction) => (
@@ -687,14 +689,14 @@ const Personnages = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="espece">Espèce *</Label>
+                    <Label htmlFor="espece">{t('characters.species')}</Label>
                     <Select value={formData.espece} onValueChange={(value) => setFormData({ ...formData, espece: value })}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Choisir une espèce" />
+                        <SelectValue placeholder={t('characters.speciesPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent className="max-h-[400px]">
                         <SelectGroup>
-                          <SelectLabel>Espèces Standard</SelectLabel>
+                          <SelectLabel>{t('characters.speciesStandard')}</SelectLabel>
                           {especes.slice(0, 32).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
@@ -706,7 +708,7 @@ const Personnages = () => {
                           ))}
                         </SelectGroup>
                         <SelectGroup>
-                          <SelectLabel className="text-primary font-bold">Avec accord de l'Orga</SelectLabel>
+                          <SelectLabel className="text-primary font-bold">{t('characters.speciesSpecial')}</SelectLabel>
                           {especes.slice(32).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
@@ -722,7 +724,7 @@ const Personnages = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="origine">Origine de votre personnage *</Label>
+                    <Label htmlFor="origine">{t('characters.origin')}</Label>
                     <Select 
                       value={formData.origine} 
                       onValueChange={(value) => {
@@ -740,7 +742,7 @@ const Personnages = () => {
                       }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Choisir une origine" />
+                        <SelectValue placeholder={t('characters.originPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Parlos">Parlos (12 GO)</SelectItem>
@@ -755,13 +757,13 @@ const Personnages = () => {
 
               <Card className="ornament-border">
                 <CardHeader>
-                  <CardTitle>Compétences</CardTitle>
+                  <CardTitle>{t('characters.skills')}</CardTitle>
                   <CardDescription>
                     <div className="space-y-1">
-                      <div>Points de création restants: <span className="font-bold text-primary">{pointsRestants}</span></div>
+                      <div>{t('characters.skillsRemaining')}: <span className="font-bold text-primary">{pointsRestants}</span></div>
                       {formData.nbEvenements > 0 && (
                         <div className="text-xs bg-accent/30 px-2 py-1 rounded">
-                          📚 Compétences gratuites: <span className="font-bold text-primary">{competencesGratuitesRestantes}/{competencesGratuitesDisponibles}</span> disponibles
+                          📚 {t('characters.skillsFree')}: <span className="font-bold text-primary">{competencesGratuitesRestantes}/{competencesGratuitesDisponibles}</span> disponibles
                           <div className="text-muted-foreground mt-1">
                             Utilisées: {formData.competencesGratuitesUtilisees} | {formData.nbEvenements} événement(s) × 2 compétences
                           </div>
@@ -790,7 +792,7 @@ const Personnages = () => {
                   )}
                   <Select onValueChange={ajouterCompetence}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Ajouter une compétence" />
+                      <SelectValue placeholder={t('characters.skillsAdd')} />
                     </SelectTrigger>
                     <SelectContent className="max-h-[400px]">
                       {categoriesCompetences.map((categorie) => (
@@ -962,20 +964,20 @@ const Personnages = () => {
 
               <Card className="ornament-border">
                 <CardHeader>
-                  <CardTitle>Email pour l'envoi de la Fiche</CardTitle>
+                  <CardTitle>{t('characters.email')}</CardTitle>
                   <CardDescription>
                     Recevez votre fiche de personnage par email
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email pour l'envoi de la Fiche de personnage *</Label>
+                    <Label htmlFor="email">{t('characters.email')}</Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="email@exemple.com"
+                      placeholder={t('characters.emailPlaceholder')}
                     />
                   </div>
                 </CardContent>
@@ -984,10 +986,10 @@ const Personnages = () => {
               <div className="flex gap-3">
                 <Button onClick={sauvegarderPersonnage} className="flex-1 gap-2">
                   <Save className="h-4 w-4" />
-                  Sauvegarder le Personnage
+                  {t('characters.save')}
                 </Button>
                 <Button onClick={handleAnnulerCreation} variant="outline">
-                  Annuler
+                  {t('characters.cancel')}
                 </Button>
               </div>
             </div>
@@ -998,7 +1000,7 @@ const Personnages = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Info className="h-5 w-5" />
-                    Récapitulatif
+                    {t('characters.summary')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -1023,10 +1025,10 @@ const Personnages = () => {
               <Card className="ornament-border text-center py-12">
                 <CardContent>
                   <Scroll className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-xl text-muted-foreground mb-4">Aucun personnage créé</p>
+                  <p className="text-xl text-muted-foreground mb-4">{t('characters.none')}</p>
                   <Button onClick={() => setShowForm(true)} className="gap-2">
                     <Plus className="h-5 w-5" />
-                    Créer votre premier personnage
+                    {t('characters.createFirst')}
                   </Button>
                 </CardContent>
               </Card>
