@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { FileDown, Printer } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translateGameData } from "@/i18n/gameData";
 
 interface CharacterSheetProps {
   character: {
@@ -25,6 +27,8 @@ interface CharacterSheetProps {
 }
 
 export const CharacterSheet = ({ character }: CharacterSheetProps) => {
+  const { language, t } = useLanguage();
+  
   const generateSheetHTML = () => {
     // Vérifier si on doit afficher les sortilèges et rituels
     const competencesMagiques = ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"];
@@ -205,38 +209,38 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
 <body>
   <!-- PAGE 1 -->
   <div class="page">
-    <h1>FICHE DE PERSONNAGE</h1>
+    <h1>${t('sheet.title')}</h1>
     
     <div class="info-grid">
       <div class="info-item">
-        <div class="info-label">Nom Time-Out (TO)</div>
+        <div class="info-label">${t('sheet.nameTO')}</div>
         <div class="info-value">${character.prenom}</div>
       </div>
       <div class="info-item">
-        <div class="info-label">Nom Time-In (TI)</div>
+        <div class="info-label">${t('sheet.nameTI')}</div>
         <div class="info-value">${character.nom}</div>
       </div>
       <div class="info-item">
-        <div class="info-label">Faction</div>
-        <div class="info-value">${character.faction || 'Aucune'}</div>
+        <div class="info-label">${t('sheet.faction')}</div>
+        <div class="info-value">${character.faction || t('sheet.none')}</div>
       </div>
       <div class="info-item">
-        <div class="info-label">Espèce</div>
-        <div class="info-value">${character.espece}</div>
+        <div class="info-label">${t('sheet.species')}</div>
+        <div class="info-value">${translateGameData(character.espece, 'espece', language)}</div>
       </div>
     </div>
 
     <div class="stats-row">
       <div class="stat">
-        <div class="stat-label">PV Total</div>
+        <div class="stat-label">${t('sheet.pvTotal')}</div>
         <div class="stat-value">${character.pvTotal}</div>
       </div>
       <div class="stat">
-        <div class="stat-label">PA Total</div>
+        <div class="stat-label">${t('sheet.paTotal')}</div>
         <div class="stat-value">${character.paTotal}</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Score de Bagarre</div>
+        <div class="stat-label">${t('sheet.bagarre')}</div>
         <div class="stat-value">${character.scoreBagarre}</div>
       </div>
       <div class="stat">
@@ -255,48 +259,48 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
 
     <div class="info-grid" style="margin-bottom: 0.2cm;">
       <div class="info-item" style="grid-column: span 2;">
-        <div class="info-label">Pierres de Vie</div>
+        <div class="info-label">${t('sheet.lifeStones')}</div>
         <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;">${character.pierresDeVie}</div>
       </div>
       <div class="info-item" style="grid-column: span 2;">
-        <div class="info-label">Points d'Abîme</div>
+        <div class="info-label">${t('sheet.abyss')}</div>
         <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;">${character.abime}</div>
       </div>
     </div>
 
-    <div style="font-weight: bold; font-size: 8pt; margin: 0.15cm 0 0.05cm 0;">Obsidiennes de la Mort</div>
+    <div style="font-weight: bold; font-size: 8pt; margin: 0.15cm 0 0.05cm 0;">${t('sheet.deathObsidian')}</div>
     <div style="min-height: 1cm; padding: 0.2cm; margin-bottom: 0.1cm;"></div>
 
-    <h2>Compétences Choisies (${character.competences.length})</h2>
+    <h2>${t('sheet.skillsChosen')} (${character.competences.length})</h2>
     <div class="two-columns">
       <div class="competences-box" style="min-height: 4cm;">
-        ${character.competences.slice(0, Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+        ${character.competences.slice(0, Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${translateGameData(comp, 'competence', language)}</div>`).join('')}
         ${character.sorts && (character.sorts.niv1 > 0 || character.sorts.niv2 > 0 || character.sorts.niv3 > 0 || character.sorts.niv4 > 0) ? `
           <div style="margin-top: 0.3cm; padding-top: 0.2cm; border-top: 1px dashed #666;">
-            <div style="font-weight: bold; font-size: 8pt; margin-bottom: 0.1cm;">SORTS:</div>
-            ${character.sorts.niv1 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv1} Sort(s) Niveau 1</div>` : ''}
-            ${character.sorts.niv2 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv2} Sort(s) Niveau 2</div>` : ''}
+            <div style="font-weight: bold; font-size: 8pt; margin-bottom: 0.1cm;">${t('sheet.spells').toUpperCase()}:</div>
+            ${character.sorts.niv1 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv1} ${t('sheet.spell')}(s) ${t('sheet.level')} 1</div>` : ''}
+            ${character.sorts.niv2 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv2} ${t('sheet.spell')}(s) ${t('sheet.level')} 2</div>` : ''}
           </div>
         ` : ''}
       </div>
       <div class="competences-box" style="min-height: 4cm;">
-        ${character.competences.slice(Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${comp}</div>`).join('')}
+        ${character.competences.slice(Math.ceil(character.competences.length / 2)).map(comp => `<div class="competence-item">✓ ${translateGameData(comp, 'competence', language)}</div>`).join('')}
         ${character.sorts && (character.sorts.niv3 > 0 || character.sorts.niv4 > 0) ? `
           <div style="margin-top: 0.3cm; padding-top: 0.2cm; border-top: 1px dashed #666;">
-            ${character.sorts.niv3 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv3} Sort(s) Niveau 3</div>` : ''}
-            ${character.sorts.niv4 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv4} Sort(s) Niveau 4</div>` : ''}
+            ${character.sorts.niv3 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv3} ${t('sheet.spell')}(s) ${t('sheet.level')} 3</div>` : ''}
+            ${character.sorts.niv4 > 0 ? `<div class="competence-item" style="font-size: 8pt;">✓ ${character.sorts.niv4} ${t('sheet.spell')}(s) ${t('sheet.level')} 4</div>` : ''}
           </div>
         ` : ''}
       </div>
     </div>
 
-    ${afficherMagie ? `<h2>Sortilèges</h2>
+    ${afficherMagie ? `<h2>${t('sheet.spells')}</h2>
     <table>
       <tr>
-        <th style="width: 25%;">Niveau 1</th>
-        <th style="width: 25%;">Niveau 2</th>
-        <th style="width: 25%;">Niveau 3</th>
-        <th style="width: 25%;">Niveau 4</th>
+        <th style="width: 25%;">${t('sheet.level')} 1</th>
+        <th style="width: 25%;">${t('sheet.level')} 2</th>
+        <th style="width: 25%;">${t('sheet.level')} 3</th>
+        <th style="width: 25%;">${t('sheet.level')} 4</th>
       </tr>
       ${Array(6).fill(0).map(() => `<tr>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
@@ -306,14 +310,14 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </tr>`).join('')}
     </table>` : ''}
 
-    ${afficherMagie ? `<h2>Rituels Magiques</h2>
+    ${afficherMagie ? `<h2>${t('sheet.rituals')}</h2>
     <table>
       <tr>
-        <th style="width: 16.66%;">École 1 Sort 1</th>
-        <th style="width: 16.66%;">École 1 Sort 2</th>
-        <th style="width: 16.66%;">École 1 Sort 3</th>
-        <th style="width: 16.66%;">École 1 Sort 4</th>
-        <th style="width: 16.66%;">École 1 Sort 5</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 1 ${t('sheet.spell')} 1</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 1 ${t('sheet.spell')} 2</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 1 ${t('sheet.spell')} 3</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 1 ${t('sheet.spell')} 4</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 1 ${t('sheet.spell')} 5</th>
       </tr>
       <tr>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
@@ -323,11 +327,11 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
       </tr>
       <tr>
-        <th style="width: 16.66%;">École 2 Sort 1</th>
-        <th style="width: 16.66%;">École 2 Sort 2</th>
-        <th style="width: 16.66%;">École 2 Sort 3</th>
-        <th style="width: 16.66%;">École 2 Sort 4</th>
-        <th style="width: 16.66%;">École 2 Sort 5</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 2 ${t('sheet.spell')} 1</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 2 ${t('sheet.spell')} 2</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 2 ${t('sheet.spell')} 3</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 2 ${t('sheet.spell')} 4</th>
+        <th style="width: 16.66%;">${t('sheet.school')} 2 ${t('sheet.spell')} 5</th>
       </tr>
       <tr>
         <td style="min-height: 1.5cm; padding: 0.2cm;"></td>
@@ -340,31 +344,31 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
 
     <div class="two-columns">
       <div>
-        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Gratuites de l'Espèce</h3>
+        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">${t('sheet.freeSkills')}</h3>
         <div class="competences-box" style="min-height: 2.5cm;">
           ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
-            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${comp.trim()}</div>`).join('')}</div>` : 
-            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence gratuite pour cette espèce.</div>'}
+            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${translateGameData(comp.trim(), 'competence', language)}</div>`).join('')}</div>` : 
+            `<div style="font-size: 8pt; font-style: italic;">${t('sheet.noFreeSkills')}</div>`}
         </div>
       </div>
       <div>
-        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">Compétences Interdites</h3>
+        <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">${t('sheet.forbiddenSkills')}</h3>
         <div class="competences-box" style="min-height: 2.5cm;">
           ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
-            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${comp.trim()}</div>`).join('')}</div>` : 
-            '<div style="font-size: 8pt; font-style: italic;">Aucune compétence interdite pour cette espèce.</div>'}
+            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${translateGameData(comp.trim(), 'competence', language)}</div>`).join('')}</div>` : 
+            `<div style="font-size: 8pt; font-style: italic;">${t('sheet.noForbiddenSkills')}</div>`}
         </div>
       </div>
     </div>
 
     ${character.factionInterdit && character.factionInterdit !== 'Aucun' ? `
     <div style="border: 2px solid #c00; background: #ffe0e0; padding: 0.3cm; margin: 0.3cm 0; page-break-inside: avoid; page-break-after: auto;">
-      <div style="font-weight: bold; font-size: 9pt; color: #c00; margin-bottom: 0.1cm;">⚠️ INTERDITS DE LA FACTION:</div>
-      <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => `${comp.trim()}`).join(', ')}</div>
+      <div style="font-weight: bold; font-size: 9pt; color: #c00; margin-bottom: 0.1cm;">⚠️ ${t('sheet.factionForbidden')}</div>
+      <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => translateGameData(comp.trim(), 'competence', language)).join(', ')}</div>
     </div>
     ` : ''}
 
-    <h2>Compétences Apprises</h2>
+    <h2>${t('sheet.learnedSkills')}</h2>
     <div class="two-columns">
       <div style="display: grid; grid-template-columns: 1fr; gap: 0.2cm;">
         ${Array(6).fill(0).map((_, i) => `<div class="empty-box" style="min-height: 0.8cm;"><div class="empty-box-label">${i + 1}.</div></div>`).join('')}
@@ -374,7 +378,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
-    <h2>Séquelles</h2>
+    <h2>${t('sheet.sequelae')}</h2>
     <div class="empty-boxes">
       <div class="empty-box">
         <div class="empty-box-label">1.</div>
@@ -393,7 +397,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
-    <h2>Maladies</h2>
+    <h2>${t('sheet.diseases')}</h2>
     <div class="empty-boxes">
       <div class="empty-box" style="min-height: 1.2cm;">
         <div class="empty-box-label">1.</div>
@@ -413,162 +417,167 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     </div>
 
     <div style="font-size: 7pt; color: #666; font-style: italic; margin: 0.3cm 0; padding: 0.2cm; background: #f9f9f9; border-left: 2px solid #666;">
-      ℹ️ Note: Les séquelles, maladies et autres traits non obligatoires sont à remplir uniquement si mentionné par l'Organisation, les PNJ responsables ou une compétence autorisant cela.
+      ℹ️ ${t('sheet.note')}
     </div>
 
-    <h2>Contrat Argousin-e</h2>
+    <h2>${t('sheet.argousineContract')}</h2>
     <div class="long-box"></div>
 
-    <h2>Remarques</h2>
+    <h2>${t('sheet.remarks')}</h2>
     <div class="long-box"></div>
 
     <div class="footer">
-      <strong>Contact:</strong> ${character.email} | 
-      <strong>Date de création:</strong> ${new Date().toLocaleDateString('fr-FR')}
+      <strong>${t('sheet.contact')}</strong> ${character.email} | 
+      <strong>${t('sheet.creationDate')}</strong> ${new Date().toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')}
     </div>
   </div>
 
   <!-- PAGE 2 -->
   <div class="page">
-    <h1>ANNONCES DE JEU</h1>
+    <h1>${t('announcements.title')}</h1>
     
     <table>
       <tr>
-        <th style="width: 20%;">Annonce</th>
-        <th>Effet</th>
+        <th style="width: 20%;">${t('announcements.announcement')}</th>
+        <th>${t('announcements.effect')}</th>
       </tr>
       <tr>
         <td><strong>ABÎME X</strong></td>
-        <td>Perte de X points de santé mentale</td>
+        <td>${t('announcements.abyss')}</td>
       </tr>
       <tr>
         <td><strong>ANIMATE DEAD</strong></td>
-        <td>Le mort ou le mourant ciblé se relève et sert son nouveau maître pendant une heure puis retourne au cimetière.</td>
+        <td>${t('announcements.animateDead')}</td>
       </tr>
       <tr>
         <td><strong>BACK OFF</strong></td>
-        <td>L'annonce autour du jeteur de sorts les gens s'écartent de 3 mètres pendant un sablier. Cette cible est immunisée si elle est en armure lourde.</td>
+        <td>${t('announcements.backOff')}</td>
       </tr>
       <tr>
         <td><strong>BLIND</strong></td>
-        <td>Aveuglé 1 min + 1 PV imparable. Rompt les formations</td>
+        <td>${t('announcements.blind')}</td>
       </tr>
       <tr>
         <td><strong>BONFIRE</strong></td>
-        <td>Brûle bâtiments, rend vulnérables les morts-vivants. Durée : 1 sablier</td>
+        <td>${t('announcements.bonfire')}</td>
       </tr>
       <tr>
         <td><strong>BURN</strong></td>
-        <td>La cible subit 1 point de dommage à toutes les localisations couvertes par du métal.</td>
+        <td>${t('announcements.burn')}</td>
       </tr>
       <tr>
         <td><strong>CRUSH</strong></td>
-        <td>Détruit arme/bouclier/armure touchée. Tue un mort-vivant. Résiste 3 min si incassable</td>
+        <td>${t('announcements.crush')}</td>
       </tr>
       <tr>
         <td><strong>DEAD</strong></td>
-        <td>La frappe enlève un personnage limité. Accessible par compétence en jeu.</td>
+        <td>${t('announcements.dead')}</td>
       </tr>
       <tr>
         <td><strong>DISPEL MAGIC</strong></td>
-        <td>L'annonce ou le bâtiment ou la machine à charbon annule les effets de sorts dans un rayon de 10 mètres autour d'elle.</td>
+        <td>${t('announcements.dispelMagic')}</td>
       </tr>
       <tr>
         <td><strong>ENCHANTED</strong></td>
-        <td>Blesse les créatures sensibles (principalement planaires)</td>
+        <td>${t('announcements.enchanted')}</td>
       </tr>
       <tr>
         <td><strong>GRACE</strong></td>
-        <td>La frappe tue un personnage inconscient ou entravé. Tout le monde peut le faire.</td>
+        <td>${t('announcements.grace')}</td>
       </tr>
       <tr>
         <td><strong>HEAL</strong></td>
-        <td>L'annonce soigne la personne en face du guérisseur de tous ses points de vie.</td>
+        <td>${t('announcements.heal')}</td>
       </tr>
       <tr>
         <td><strong>HEADACHE</strong></td>
-        <td>La cible a mal à la tête pendant un sablier. Cette cible est immunisée si elle est en armure lourde.</td>
+        <td>${t('announcements.headache')}</td>
       </tr>
       <tr>
         <td><strong>HOLY</strong></td>
-        <td>Blesse les créatures sensibles (quasi toutes)</td>
+        <td>${t('announcements.holy')}</td>
       </tr>
       <tr>
         <td><strong>ICE</strong></td>
-        <td>La cible est paralysée pour 1 minute. De plus, elle subit 1 point de dégâts pendant sa paralysie, si elle tombe à 0 point de vie à chacune de ses localisations : coma.</td>
+        <td>${t('announcements.ice')}</td>
       </tr>
       <tr>
         <td><strong>MERCURY</strong></td>
-        <td>Acier nain. Tue tout sauf créatures résistantes</td>
+        <td>${t('announcements.mercury')}</td>
       </tr>
       <tr>
         <td><strong>MUTE</strong></td>
-        <td>La personne ciblée est silencieuse pendant un sablier. Cette cible est immunisée si elle est en armure lourde.</td>
+        <td>${t('announcements.mute')}</td>
       </tr>
       <tr>
         <td><strong>PAF</strong></td>
-        <td>Assommé 5 minutes</td>
+        <td>${t('announcements.paf')}</td>
       </tr>
       <tr>
         <td><strong>RAISE DEAD</strong></td>
-        <td>L'esprit touché par un nécromant le sert sous forme de zombie pendant 1 heure puis retourne au cimetière.</td>
+        <td>${t('announcements.raiseDead')}</td>
       </tr>
       <tr>
         <td><strong>RESIST</strong></td>
-        <td>Annonce votre résistance ou votre immunité éternelle ou temporaire.</td>
+        <td>${t('announcements.resist')}</td>
       </tr>
       <tr>
         <td><strong>REVEAL</strong></td>
-        <td>Le tisseur ou le clerc révèlent les créatures aux tulles noires, vertes et rouges aux gens à 10 mètres autour de vous.</td>
+        <td>${t('announcements.reveal')}</td>
       </tr>
       <tr>
         <td><strong>SILVER</strong></td>
-        <td>Blesse les créatures sensibles à l'argent</td>
+        <td>${t('announcements.silver')}</td>
       </tr>
       <tr>
         <td><strong>SHOCK</strong></td>
-        <td>Le tisseur de sort occasionne un point de vie de dégât sur une cible au choix pendant un sablier. Cette cible est immunisée si elle est en armure lourde.</td>
+        <td>${t('announcements.shock')}</td>
       </tr>
       <tr>
         <td><strong>SLEEP</strong></td>
-        <td>Sommeil 3 min, réveil désorienté</td>
+        <td>${t('announcements.sleep')}</td>
       </tr>
       <tr>
         <td><strong>STEP BACK</strong></td>
-        <td>La cible recule de 5 mètres</td>
+        <td>${t('announcements.stepBack')}</td>
       </tr>
       <tr>
         <td><strong>STRIKE DOWN</strong></td>
-        <td>Propulse au sol (même si paré). Sauf créatures résistantes</td>
+        <td>${t('announcements.strikeDown')}</td>
       </tr>
       <tr>
         <td><strong>THROUGH</strong></td>
-        <td>Ignore les armures</td>
+        <td>${t('announcements.through')}</td>
       </tr>
       <tr>
         <td><strong>TOXIC</strong></td>
-        <td>Contact peau : inconscience après 1 min, mort par étouffement après 3 min</td>
+        <td>${t('announcements.toxic')}</td>
       </tr>
     </table>
 
-    <h2>Système de Bagarre (Rappel)</h2>
+    <h2>${t('brawl.title')}</h2>
     <div style="border: 2px solid #000; padding: 0.3cm; background: #f9f9f9; margin-bottom: 0.4cm;">
-      <p style="margin: 0.1cm 0;"><strong>Conditions de déclenchement :</strong></p>
+      <p style="margin: 0.1cm 0;"><strong>${t('brawl.conditions')}</strong></p>
       <ul style="margin: 0.1cm 0; padding-left: 0.5cm;">
-        <li>Accord tacite entre les participants OU souffler « Bagarre » à l'oreille de l'adversaire</li>
-        <li>Score de bagarre = Points de vie délocalisés au moment de la bagarre</li>
+        <li>${t('brawl.condition1')}</li>
+        <li>${t('brawl.condition2')}</li>
       </ul>
-      <p style="margin: 0.2cm 0;"><strong>Règles :</strong></p>
+      <p style="margin: 0.2cm 0;"><strong>${t('brawl.rules')}</strong></p>
       <ul style="margin: 0.1cm 0; padding-left: 0.5cm;">
-        <li>Le participant avec le score le plus élevé l'emporte</li>
-        <li>En cas d'égalité : épuisement mutuel, pas de vainqueur (sauf si annonce d'assommage utilisée)</li>
-        <li>Annonces autorisées : PAF (assommé 5 min), BLIND (aveuglé 1 min + 1 PV)</li>
+        <li>${t('brawl.rule1')}</li>
+        <li>${t('brawl.rule2')}</li>
+        <li>${t('brawl.rule3')}</li>
       </ul>
-      <p style="margin: 0.2cm 0; color: #c00;"><strong>⚠ INTERDICTIONS ABSOLUES :</strong></p>
+      <p style="margin: 0.2cm 0; color: #c00;"><strong>⚠ ${t('brawl.prohibitions')}</strong></p>
       <ul style="margin: 0.1cm 0; padding-left: 0.5cm; color: #c00;">
-        <li>Les personnes non-combattantes et portant un brassard jaune ne peuvent PAS participer aux bagarres</li>
-        <li>Les mineurs ne peuvent JAMAIS faire de bagarre</li>
+        <li>${t('brawl.prohibition1')}</li>
+        <li>${t('brawl.prohibition2')}</li>
       </ul>
+    </div>
+
+    <div class="footer" style="margin-top: 0.5cm;">
+      <strong>${t('brawl.reference')}</strong> | 
+      ${t('brawl.mustAnnounce')}
     </div>
   </div>
 </body>
