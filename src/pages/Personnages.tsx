@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translateGameData } from "@/i18n/gameData";
 
 interface Personnage {
   id: string;
@@ -44,7 +45,7 @@ interface Personnage {
 }
 
 const Personnages = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
@@ -700,7 +701,7 @@ const Personnages = () => {
                           {especes.slice(0, 32).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
-                                <span className="font-medium">{esp.nom}</span>
+                                <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
                                 <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
                                 <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
                               </div>
@@ -712,7 +713,7 @@ const Personnages = () => {
                           {especes.slice(32).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
-                                <span className="font-medium">{esp.nom}</span>
+                                <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
                                 <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
                                 <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
                               </div>
@@ -815,7 +816,7 @@ const Personnages = () => {
                                 >
                                   <div className="flex flex-col">
                                     <span className={`font-medium ${isInterdit ? 'text-destructive' : ''}`}>
-                                      {comp.nom} ({comp.cout} pts) {isInterdit ? '(Interdit)' : ''}
+                                      {translateGameData(comp.nom, 'competence', language)} ({comp.cout} pts) {isInterdit ? '(Interdit)' : ''}
                                     </span>
                                     <span className="text-xs text-muted-foreground">{comp.effet}</span>
                                     {comp.prerequis && (
@@ -836,7 +837,7 @@ const Personnages = () => {
                       return (
                         <div key={idx} className="flex items-start gap-2 bg-accent/20 p-3 rounded-lg">
                           <div className="flex-1">
-                            <p className="font-medium text-sm">{comp.nom} <span className="text-primary">({comp.cout} pts)</span></p>
+                            <p className="font-medium text-sm">{translateGameData(comp.nom, 'competence', language)} <span className="text-primary">({comp.cout} pts)</span></p>
                             {compData && (
                               <p className="text-xs text-muted-foreground mt-1">{compData.effet}</p>
                             )}
@@ -1039,7 +1040,7 @@ const Personnages = () => {
                     <CardHeader>
                       <CardTitle>{perso.nomTI}</CardTitle>
                       <CardDescription>
-                        {perso.espece} {perso.faction && `- ${perso.faction}`}
+                        {translateGameData(perso.espece, 'espece', language)} {perso.faction && `- ${perso.faction}`}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
