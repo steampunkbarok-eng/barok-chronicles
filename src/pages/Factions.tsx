@@ -12,6 +12,7 @@ import { typesBatiments, batimentsUniques, navires } from "@/data/batiments";
 import { titresCarrieres, Titre } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translateGameData } from "@/i18n/gameData";
 
 interface Faction {
   id: string;
@@ -30,7 +31,7 @@ interface Faction {
 }
 
 const Factions = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [factions, setFactions] = useState<Faction[]>([]);
   const [showForm, setShowForm] = useState(false);
 
@@ -369,7 +370,7 @@ const Factions = () => {
                           disabled={isDisabled}
                         >
                           <div className="flex flex-col">
-                            <span className={`font-medium ${isDisabled ? 'opacity-50' : ''}`}>{titre.nom}</span>
+                            <span className={`font-medium ${isDisabled ? 'opacity-50' : ''}`}>{translateGameData(titre.nom, 'titre', language)}</span>
                             {titre.prerequis && (
                               <span className="text-xs text-muted-foreground">Prérequis: {titre.prerequis}</span>
                             )}
@@ -385,7 +386,7 @@ const Factions = () => {
                 <div className="flex flex-wrap gap-2 mt-2">
                   {formData.titres.map((titre, idx) => (
                     <div key={idx} className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg">
-                      <span className="text-sm font-medium">{titre}</span>
+                      <span className="text-sm font-medium">{translateGameData(titre, 'titre', language)}</span>
                       <button onClick={() => retirerTitre(idx)} className="hover:text-destructive">
                         <X className="h-3 w-3" />
                       </button>
@@ -497,7 +498,7 @@ const Factions = () => {
                           <div className="flex flex-wrap gap-1">
                             {faction.titres.map((titre, idx) => (
                               <span key={idx} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">
-                                {titre}
+                                {translateGameData(titre, 'titre', language)}
                               </span>
                             ))}
                           </div>
