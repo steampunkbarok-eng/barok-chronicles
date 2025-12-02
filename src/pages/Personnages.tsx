@@ -702,8 +702,8 @@ const Personnages = () => {
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
-                                <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
-                                <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
+                                <span className="text-xs text-muted-foreground">{t('selection.free')}: {esp.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
+                                <span className="text-xs text-destructive">{t('selection.forbidden')}: {esp.interdit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -714,8 +714,8 @@ const Personnages = () => {
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
-                                <span className="text-xs text-muted-foreground">Gratuit: {esp.gratuit}</span>
-                                <span className="text-xs text-destructive">Interdit: {esp.interdit}</span>
+                                <span className="text-xs text-muted-foreground">{t('selection.free')}: {esp.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
+                                <span className="text-xs text-destructive">{t('selection.forbidden')}: {esp.interdit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -764,9 +764,9 @@ const Personnages = () => {
                       <div>{t('characters.skillsRemaining')}: <span className="font-bold text-primary">{pointsRestants}</span></div>
                       {formData.nbEvenements > 0 && (
                         <div className="text-xs bg-accent/30 px-2 py-1 rounded">
-                          📚 {t('characters.skillsFree')}: <span className="font-bold text-primary">{competencesGratuitesRestantes}/{competencesGratuitesDisponibles}</span> disponibles
+                          📚 {t('characters.skillsFree')}: <span className="font-bold text-primary">{competencesGratuitesRestantes}/{competencesGratuitesDisponibles}</span> {t('selection.available')}
                           <div className="text-muted-foreground mt-1">
-                            Utilisées: {formData.competencesGratuitesUtilisees} | {formData.nbEvenements} événement(s) × 2 compétences
+                            {t('selection.used')}: {formData.competencesGratuitesUtilisees} | {formData.nbEvenements} {t('selection.events')} × 2 {t('selection.skills')}
                           </div>
                         </div>
                       )}
@@ -783,12 +783,12 @@ const Personnages = () => {
                       className="h-4 w-4"
                     />
                     <Label htmlFor="afficherSortilleges" className="text-sm cursor-pointer">
-                      En cochant cette case, les sortilèges et rituels magiques apparaîtront sur votre fiche de personnage
+                      {t('selection.showSpells')}
                     </Label>
                   </div>
                   {formData.faction && getInterditsFromFaction().length > 0 && (
                     <div className="text-xs text-destructive bg-destructive/10 p-3 rounded-lg">
-                      <strong>Compétences interdites par votre faction:</strong> {getInterditsFromFaction().join(", ")}
+                      <strong>{t('selection.forbiddenByFaction')}:</strong> {getInterditsFromFaction().map(i => translateGameData(i, 'competence', language)).join(", ")}
                     </div>
                   )}
                   <Select onValueChange={ajouterCompetence}>
@@ -816,11 +816,11 @@ const Personnages = () => {
                                 >
                                   <div className="flex flex-col">
                                     <span className={`font-medium ${isInterdit ? 'text-destructive' : ''}`}>
-                                      {translateGameData(comp.nom, 'competence', language)} ({comp.cout} pts) {isInterdit ? '(Interdit)' : ''}
+                                      {translateGameData(comp.nom, 'competence', language)} ({comp.cout} {t('selection.pts')}) {isInterdit ? `(${t('selection.forbidden')})` : ''}
                                     </span>
-                                    <span className="text-xs text-muted-foreground">{comp.effet}</span>
+                                    <span className="text-xs text-muted-foreground">{translateGameData(comp.effet, 'effet', language)}</span>
                                     {comp.prerequis && (
-                                      <span className="text-xs text-primary">Prérequis: {comp.prerequis}</span>
+                                      <span className="text-xs text-primary">{t('selection.prerequisites')}: {comp.prerequis.split(' + ').map(p => translateGameData(p.trim(), 'competence', language)).join(' + ')}</span>
                                     )}
                                   </div>
                                 </SelectItem>
@@ -837,9 +837,9 @@ const Personnages = () => {
                       return (
                         <div key={idx} className="flex items-start gap-2 bg-accent/20 p-3 rounded-lg">
                           <div className="flex-1">
-                            <p className="font-medium text-sm">{translateGameData(comp.nom, 'competence', language)} <span className="text-primary">({comp.cout} pts)</span></p>
+                            <p className="font-medium text-sm">{translateGameData(comp.nom, 'competence', language)} <span className="text-primary">({comp.cout} {t('selection.pts')})</span></p>
                             {compData && (
-                              <p className="text-xs text-muted-foreground mt-1">{compData.effet}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{translateGameData(compData.effet, 'effet', language)}</p>
                             )}
                           </div>
                           <Button onClick={() => retirerCompetence(idx)} variant="ghost" size="icon" className="h-8 w-8">
@@ -853,7 +853,7 @@ const Personnages = () => {
                   {formData.competences.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground">
                       <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                      <p>Aucune compétence sélectionnée</p>
+                      <p>{t('selection.noSkillSelected')}</p>
                     </div>
                   )}
                 </CardContent>

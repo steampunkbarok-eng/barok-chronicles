@@ -372,10 +372,10 @@ const Factions = () => {
                           <div className="flex flex-col">
                             <span className={`font-medium ${isDisabled ? 'opacity-50' : ''}`}>{translateGameData(titre.nom, 'titre', language)}</span>
                             {titre.prerequis && (
-                              <span className="text-xs text-muted-foreground">Prérequis: {titre.prerequis}</span>
+                              <span className="text-xs text-muted-foreground">{t('selection.prerequisites')}: {titre.prerequis}</span>
                             )}
                             {titre.incompatible && (
-                              <span className="text-xs text-destructive">Incompatible: {titre.incompatible}</span>
+                              <span className="text-xs text-destructive">{t('selection.incompatible')}: {titre.incompatible.split(', ').map(t => translateGameData(t.trim(), 'titre', language)).join(', ')}</span>
                             )}
                           </div>
                         </SelectItem>

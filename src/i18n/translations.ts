@@ -106,6 +106,22 @@ export const translations = {
     'characters.none': 'Aucun personnage créé',
     'characters.createFirst': 'Créer votre premier personnage',
     
+    // Selection popup labels
+    'selection.free': 'Gratuit',
+    'selection.forbidden': 'Interdit',
+    'selection.prerequisites': 'Prérequis',
+    'selection.incompatible': 'Incompatible',
+    'selection.effect': 'Effet',
+    'selection.special': 'Spécial',
+    'selection.pts': 'pts',
+    'selection.used': 'Utilisées',
+    'selection.events': 'événement(s)',
+    'selection.skills': 'compétences',
+    'selection.available': 'disponibles',
+    'selection.forbiddenByFaction': 'Compétences interdites par votre faction',
+    'selection.showSpells': 'En cochant cette case, les sortilèges et rituels magiques apparaîtront sur votre fiche de personnage',
+    'selection.noSkillSelected': 'Aucune compétence sélectionnée',
+    
     // Character Sheet (French)
     'sheet.title': 'FICHE DE PERSONNAGE',
     'sheet.nameTO': 'Nom Time-Out (TO)',
@@ -382,6 +398,22 @@ export const translations = {
     'characters.downloadBlank': 'Blank Sheet',
     'characters.none': 'No characters created',
     'characters.createFirst': 'Create your first character',
+    
+    // Selection popup labels
+    'selection.free': 'Free',
+    'selection.forbidden': 'Forbidden',
+    'selection.prerequisites': 'Prerequisites',
+    'selection.incompatible': 'Incompatible',
+    'selection.effect': 'Effect',
+    'selection.special': 'Special',
+    'selection.pts': 'pts',
+    'selection.used': 'Used',
+    'selection.events': 'event(s)',
+    'selection.skills': 'skills',
+    'selection.available': 'available',
+    'selection.forbiddenByFaction': 'Skills forbidden by your faction',
+    'selection.showSpells': 'By checking this box, spells and magical rituals will appear on your character sheet',
+    'selection.noSkillSelected': 'No skill selected',
   }
 };
 
