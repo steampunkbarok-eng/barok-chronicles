@@ -299,10 +299,142 @@ export const especeTranslations: Record<string, string> = {
   "Félis": "Felis"
 };
 
+// Traductions des catégories de compétences
+export const categorieTranslations: Record<string, string> = {
+  "Sociale": "Social",
+  "Artisan": "Craftsman",
+  "Bagarre": "Brawl",
+  "Martial": "Martial",
+  "Louche": "Shady",
+  "Ésotérique": "Esoteric",
+  "Magique": "Magical",
+  "Médicale": "Medical",
+  "Professionnelle": "Professional",
+  "Production": "Production",
+  "Récolte": "Harvest",
+  "Perfectionnement": "Improvement",
+  "Spirituelle": "Spiritual",
+  "Manoeuvre": "Maneuver",
+  "En révision": "Under revision"
+};
+
+// Traductions des bâtiments
+export const batimentTranslations: Record<string, string> = {
+  // Types de bâtiments
+  "Bâtiments uniques": "Unique Buildings",
+  "Navires": "Ships",
+  
+  // Bâtiments uniques
+  "Cœur-fusible": "Fuse-Heart",
+  "Résidence éthérée": "Ethereal Residence",
+  "Jardin de méditation elfique": "Elven Meditation Garden",
+  "Acierie Wellington-Barr": "Wellington-Barr Steelworks",
+  "Eniversité": "Eniversity",
+  "Ziggourat thanatonique": "Thanatonic Ziggurat",
+  "Le navire rubis ravageur": "The Ruby Ravager Ship",
+  "Caserne du CPAS": "CPAS Barracks",
+  "Forge des Maîtres Nains": "Dwarven Masters Forge",
+  "Laboratoire Alchimique": "Alchemical Laboratory",
+  "Mine d'Abîme Maudit": "Cursed Abyss Mine",
+  "Jardins Mystiques": "Mystical Gardens",
+  "Distillerie des Mille Saveurs": "Thousand Flavors Distillery",
+  "Arsenal Mécanique": "Mechanical Arsenal",
+  "Nécropole Sacrée": "Sacred Necropolis",
+  "Atelier du Tisserand Royal": "Royal Weaver's Workshop",
+  "Observatoire Astral": "Astral Observatory",
+  "Fonderie Industrielle Charbon": "Coal Industrial Foundry",
+  "Conserverie de Luxe": "Luxury Cannery",
+  "Chantier Naval": "Shipyard",
+  "Marché aux Curiosités": "Curiosities Market",
+  "Sanatorium Thermal": "Thermal Sanatorium",
+  "Ferme Élevage Exotique": "Exotic Breeding Farm",
+  "Cristallerie Magique": "Magical Glassworks",
+  "Décharge Alchimique": "Alchemical Dump",
+  "Bibliothèque d'étude": "Study Library",
+  "Tonnellerie Légendaire": "Legendary Cooperage",
+  "Bergerie": "Sheepfold",
+  "Manufacture de Rouages": "Gear Manufactory",
+  "Jardin Plantes Carnivores": "Carnivorous Plants Garden",
+  "Fumoir Artisanal": "Artisan Smokehouse",
+  "Atelier Soufflage Verre": "Glassblowing Workshop",
+  "Campement mercenaire": "Mercenary Camp",
+  "Oasis": "Oasis",
+  "Atelier de Joaillerie": "Jewelry Workshop",
+  "Rucher": "Apiary",
+  "Fonderie du Crédit Nain": "Dwarven Credit Foundry",
+  "Laboratoire expérimental": "Experimental Laboratory",
+  "Camps Agence Anachronistes": "Anachronists Agency Camp",
+  
+  // Navires
+  "La Vengeance du Kraken": "The Kraken's Vengeance",
+  "Navire maritime": "Maritime Ship",
+  "Navire-volant": "Flying Ship"
+};
+
+// Traductions des avantages des bâtiments
+export const batimentAvantagesTranslations: Record<string, string> = {
+  "Permet d'avoir deux canons sur le navire": "Allows two cannons on the ship",
+  "Contact avec Entités en cas de rituel": "Contact with Entities during rituals",
+  "Récupère tous les points de vie pendant la méditation": "Recovers all life points during meditation",
+  "Produit 10 Acier de plus/an": "Produces 10 more Steel/year",
+  "Perte d'abîme de 2 points à soigner par an pour la faction": "Abyss loss of 2 points to heal per year for the faction",
+  "200 morts-vivants mineurs / an": "200 minor undead / year",
+  "1 bombe de sape / an": "1 sapping bomb / year",
+  "20 balles en argent / an": "20 silver bullets / year",
+  "3 Acier nains + 2 Or + 2 Charbon | 1 arme mercure/événement": "3 Dwarven Steel + 2 Gold + 2 Coal | 1 mercury weapon/event",
+  "2 Fiole + 2 Alcool pur + 2 Acide + 2 Toxic | Potion expérimentale/événement": "2 Vial + 2 Pure Alcohol + 2 Acid + 2 Toxic | Experimental potion/event",
+  "5 Abîme + 3 Gemme + 2 Pierre": "5 Abyss + 3 Gem + 2 Stone",
+  "6 Fleur + 2 Végétal + 2 Encens": "6 Flower + 2 Plant + 2 Incense",
+  "3 Oliga sabré + 3 Alcool pur + 2 Pts éthylisme": "3 Sabered Oliga + 3 Pure Alcohol + 2 Alcoholism Pts",
+  "4 Munitions + 2 Engrenage + 2 Piston + 2 Ressort | 2 armes bonne facture": "4 Ammunition + 2 Gear + 2 Piston + 2 Spring | 2 quality weapons",
+  "3 Âme + 3 Cadavre + 2 Poupée chamane + 2 Antiquité | 1 arme tape abîme": "3 Soul + 3 Corpse + 2 Shaman Doll + 2 Antique | 1 abyss-striking weapon",
+  "5 Tissu + 3 Voile + 2 Bijoux": "5 Fabric + 3 Sail + 2 Jewelry",
+  "3 Papier + 2 Encens + 2 Rune givre + 3 Gemme": "3 Paper + 2 Incense + 2 Frost Rune + 3 Gem",
+  "10 Charbon + 1 Acier | Augmente la pollution charbon de 5, diminue de moitié les pierres de vie": "10 Coal + 1 Steel | Increases coal pollution by 5, halves life stones",
+  "3 Choucroute Worst + 3 Cigare Gerbie + 2 Épice + 2 Viande": "3 Worst Sauerkraut + 3 Gerbie Cigar + 2 Spice + 2 Meat",
+  "4 Chevron construction + 3 Voile + 4 Bois": "4 Construction Chevron + 3 Sail + 4 Wood",
+  "2 Antiquité + 2 Perles + 2 Statue + 2 Bijoux + 2 Produits mer": "2 Antique + 2 Pearls + 2 Statue + 2 Jewelry + 2 Sea Products",
+  "3 Eau salée + 3 Sel pur + 2 Maladie soignée + 2 Graisse": "3 Salt Water + 3 Pure Salt + 2 Cured Disease + 2 Fat",
+  "5 Animaux + 3 Peau + 3 Viande | Animal exotique en jeu (peluche)": "5 Animals + 3 Skin + 3 Meat | Exotic animal in game (plush)",
+  "4 Verre + 3 Rune givre + 3 Gemme | 2 plaques runiques": "4 Glass + 3 Frost Rune + 3 Gem | 2 runic plates",
+  "6 Détritus + 2 Toxic + 1 Roche blâme": "6 Garbage + 2 Toxic + 1 Blame Stone",
+  "5 Papier + 3 Encens + 2 Âme | 2 livres fous sans souffrir": "5 Paper + 3 Incense + 2 Soul | 2 mad books without suffering",
+  "8 Sable + 4 Tonnelet + 2 Rune givre": "8 Sand + 4 Barrel + 2 Frost Rune",
+  "3 Or + 4 Peau + 3 Tissu": "3 Gold + 4 Skin + 3 Fabric",
+  "5 Rouage + 3 Engrenage + 2 Métal": "5 Cogwheel + 3 Gear + 2 Metal",
+  "4 Végétal + 3 Toxic + 3 Viande": "4 Plant + 3 Toxic + 3 Meat",
+  "4 Viande + 3 Épice + 3 Sel": "4 Meat + 3 Spice + 3 Salt",
+  "6 Verre + 2 Fiole + 3 Sable + 2 Gemme": "6 Glass + 2 Vial + 3 Sand + 2 Gem",
+  "4 Munitions + 3 Acier + 3 Peau | 2 armures bonnes + 1 arme argent": "4 Ammunition + 3 Steel + 3 Skin | 2 good armors + 1 silver weapon",
+  "4 Eau salée + 3 Fleur + 3 Végétal": "4 Salt Water + 3 Flower + 3 Plant",
+  "4 Bijoux + 3 Perles + 3 Argent lingot": "4 Jewelry + 3 Pearls + 3 Silver Ingot",
+  "5 Fleur + 3 Épice + 2 Alcool pur": "5 Flower + 3 Spice + 2 Pure Alcohol",
+  "Brevets et % raciaux gratuits Crédit Nain": "Free patents and racial % Dwarven Credit",
+  "2 Eau salée + 3 Acide + 2 Alcool pur | 2 grenades soporifiques (Matériel TO)": "2 Salt Water + 3 Acid + 2 Pure Alcohol | 2 soporific grenades (TO Equipment)",
+  "2 Papiers + 2 Encens + 4 Charbon | 3 lectures de textes occultes sans perdre santé mentale": "2 Papers + 2 Incense + 4 Coal | 3 occult text readings without losing mental health",
+  "3 Voiles + 2 Tissus + 4 Engrenages | 5 rumeurs": "3 Sails + 2 Fabrics + 4 Gears | 5 rumors",
+  "2 Voiles + 2 Tissus + 4 Graisses pures": "2 Sails + 2 Fabrics + 4 Pure Fats",
+  "2 Voiles + 2 Charbon + 4 Rouages": "2 Sails + 2 Coal + 4 Cogwheels"
+};
+
+// Traductions des conditions des bâtiments
+export const batimentConditionTranslations: Record<string, string> = {
+  "Uniquement disponible pour la faction : Les Traqueurs d'Echo": "Only available for faction: The Echo Hunters",
+  "Uniquement disponible pour la faction : La Compagnie du Troisième Soleil": "Only available for faction: The Third Sun Company",
+  "Uniquement disponible pour la faction : Le Clan Senshin": "Only available for faction: The Senshin Clan",
+  "Uniquement disponible pour la faction : La Grande Société des Explorateurs": "Only available for faction: The Great Explorers Society",
+  "Uniquement disponible pour la faction : L'Institut Eniversitaire Ashcroft": "Only available for faction: The Ashcroft Eniversity Institute",
+  "Uniquement disponible pour la faction : Les Messagers du Linceul": "Only available for faction: The Shroud Messengers",
+  "Uniquement disponible pour la faction : Les Mangeurs de grêles": "Only available for faction: The Hail Eaters",
+  "Uniquement disponible pour la faction : La Caste Porémanienne d'Assistance et de Soutien": "Only available for faction: The Poremanian Caste of Assistance and Support",
+  "Uniquement disponible pour la faction : La Vengeance du Kraken": "Only available for faction: The Kraken's Vengeance",
+  "Uniquement disponible pour la faction : L'Agence des Anachroniste": "Only available for faction: The Anachronists Agency"
+};
+
 // Fonction helper pour obtenir une traduction
 export const translateGameData = (
   text: string, 
-  type: 'competence' | 'titre' | 'espece' | 'effet',
+  type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition',
   language: 'fr' | 'en'
 ): string => {
   if (language === 'fr') return text;
@@ -310,6 +442,10 @@ export const translateGameData = (
   const mapping = type === 'competence' ? competenceTranslations :
                   type === 'titre' ? titreTranslations :
                   type === 'effet' ? competenceEffectTranslations :
+                  type === 'categorie' ? categorieTranslations :
+                  type === 'batiment' ? batimentTranslations :
+                  type === 'batimentAvantage' ? batimentAvantagesTranslations :
+                  type === 'batimentCondition' ? batimentConditionTranslations :
                   especeTranslations;
   
   return mapping[text] || text;

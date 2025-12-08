@@ -310,10 +310,10 @@ const Factions = () => {
                         {batimentsUniques.map((bat) => (
                           <SelectItem key={bat.nom} value={`${bat.nom}||Bâtiment||${bat.avantages}`}>
                             <div className="flex flex-col">
-                              <span className="font-medium">{bat.nom}</span>
-                              <span className="text-xs text-muted-foreground">{bat.avantages}</span>
+                              <span className="font-medium">{translateGameData(bat.nom, 'batiment', language)}</span>
+                              <span className="text-xs text-muted-foreground">{translateGameData(bat.avantages, 'batimentAvantage', language)}</span>
                               {bat.condition && (
-                                <span className="text-xs text-amber-600 dark:text-amber-400 mt-1">⚠️ {bat.condition}</span>
+                                <span className="text-xs text-amber-600 dark:text-amber-400 mt-1">⚠️ {translateGameData(bat.condition, 'batimentCondition', language)}</span>
                               )}
                             </div>
                           </SelectItem>
@@ -324,10 +324,10 @@ const Factions = () => {
                         {navires.map((nav) => (
                           <SelectItem key={nav.nom} value={`${nav.nom}||Navire||${nav.avantages}`}>
                             <div className="flex flex-col">
-                              <span className="font-medium">{nav.nom}</span>
-                              <span className="text-xs text-muted-foreground">{nav.avantages}</span>
+                              <span className="font-medium">{translateGameData(nav.nom, 'batiment', language)}</span>
+                              <span className="text-xs text-muted-foreground">{translateGameData(nav.avantages, 'batimentAvantage', language)}</span>
                               {nav.condition && (
-                                <span className="text-xs text-amber-600 dark:text-amber-400 mt-1">⚠️ {nav.condition}</span>
+                                <span className="text-xs text-amber-600 dark:text-amber-400 mt-1">⚠️ {translateGameData(nav.condition, 'batimentCondition', language)}</span>
                               )}
                             </div>
                           </SelectItem>
@@ -339,11 +339,11 @@ const Factions = () => {
                   <div className="bg-accent/20 p-4 rounded-lg space-y-2">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="font-bold text-primary">{formData.batiment.nom}</p>
-                        <p className="text-xs text-muted-foreground mb-2">{formData.batiment.type}</p>
+                        <p className="font-bold text-primary">{translateGameData(formData.batiment.nom, 'batiment', language)}</p>
+                        <p className="text-xs text-muted-foreground mb-2">{formData.batiment.type === 'Bâtiment' ? (language === 'en' ? 'Building' : 'Bâtiment') : (language === 'en' ? 'Ship' : 'Navire')}</p>
                         <div className="flex items-start gap-2 bg-muted/50 p-2 rounded">
                           <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                          <p className="text-sm">{formData.batiment.avantages}</p>
+                          <p className="text-sm">{translateGameData(formData.batiment.avantages, 'batimentAvantage', language)}</p>
                         </div>
                       </div>
                       <Button onClick={retirerBatiment} variant="ghost" size="icon" className="ml-2">
