@@ -798,7 +798,7 @@ const Personnages = () => {
                     <SelectContent className="max-h-[400px]">
                       {categoriesCompetences.map((categorie) => (
                         <SelectGroup key={categorie}>
-                          <SelectLabel>{categorie}</SelectLabel>
+                          <SelectLabel>{translateGameData(categorie, 'categorie', language)}</SelectLabel>
                           {competencesDisponibles
                             .filter(c => c.categorie === categorie)
                             .map((comp) => {
