@@ -121,6 +121,57 @@ export const translations = {
     'selection.forbiddenByFaction': 'Compétences interdites par votre faction',
     'selection.showSpells': 'En cochant cette case, les sortilèges et rituels magiques apparaîtront sur votre fiche de personnage',
     'selection.noSkillSelected': 'Aucune compétence sélectionnée',
+    'selection.chooseSpecies': 'Choisissez votre espèce pour voir le récapitulatif',
+    
+    // Summary labels (French)
+    'summary.events': 'ÉVÉNEMENTS',
+    'summary.freeSkillsAvailable': 'Compétences gratuites disponibles',
+    'summary.followRules': 'Respecter les règles d\'apprentissage et le Roleplay en jeu',
+    'summary.species': 'ESPÈCE',
+    'summary.free': 'Gratuit',
+    'summary.forbidden': 'Interdit',
+    'summary.special': 'Spécial',
+    'summary.perLocation': '/localisation',
+    'summary.skills': 'COMPÉTENCES',
+    'summary.spells': 'SORTS',
+    'summary.level': 'Niveau',
+    'summary.spellCount': 'sort(s)',
+    'summary.total': 'Total',
+    'summary.cost': 'Coût',
+    'summary.stats': 'STATISTIQUES',
+    'summary.pvPerLocation': 'PV par localisation',
+    'summary.paPerLocation': 'PA par localisation',
+    'summary.brawlScore': 'Score de Bagarre',
+    'summary.abyss': 'Abîme',
+    'summary.abyssNA': 'N/A (Être Mécanique)',
+    'summary.lifeStones': 'Pierres de Vie',
+    'summary.faithCards': 'Cartes Foi',
+    
+    // Spells section (French)
+    'spells.title': 'Sorts (Tisseur/Clerc)',
+    'spells.selectMax': 'Sélectionnez vos sorts (Maximum 3 par niveau)',
+    'spells.cost': 'Coût',
+    'spells.noMorePoints': 'Plus de points disponibles',
+    'spells.freeLevels': 'Niveaux de sorts gratuits (événements)',
+    'spells.available': 'disponibles',
+    'spells.level1': 'Sorts Niveau 1 (1 pt/sort)',
+    'spells.level2': 'Sorts Niveau 2 (2 pts/sort)',
+    'spells.level3': 'Sorts Niveau 3 (3 pts/sort)',
+    'spells.level4': 'Sorts Niveau 4 (4 pts/sort)',
+    'spells.spellCount0': '0 sort',
+    'spells.spellCount1': '1 sort',
+    'spells.spellCount2': '2 sorts',
+    'spells.spellCount3': '3 sorts',
+    'spells.summary': 'Résumé des sorts',
+    
+    // Email section (French)
+    'email.description': 'Recevez votre fiche de personnage par email',
+    
+    // Character Card labels (French)
+    'card.skills': 'Compétences',
+    'card.lifeStones': 'Pierres de Vie',
+    'card.pointsUsed': 'Points utilisés',
+    'card.noFaction': 'Aucune',
     
     // Character Sheet (French)
     'sheet.title': 'FICHE DE PERSONNAGE',
@@ -414,6 +465,57 @@ export const translations = {
     'selection.forbiddenByFaction': 'Skills forbidden by your faction',
     'selection.showSpells': 'By checking this box, spells and magical rituals will appear on your character sheet',
     'selection.noSkillSelected': 'No skill selected',
+    'selection.chooseSpecies': 'Choose your species to see the summary',
+    
+    // Summary labels (English)
+    'summary.events': 'EVENTS',
+    'summary.freeSkillsAvailable': 'Free skills available',
+    'summary.followRules': 'Follow learning rules and in-game roleplay',
+    'summary.species': 'SPECIES',
+    'summary.free': 'Free',
+    'summary.forbidden': 'Forbidden',
+    'summary.special': 'Special',
+    'summary.perLocation': '/location',
+    'summary.skills': 'SKILLS',
+    'summary.spells': 'SPELLS',
+    'summary.level': 'Level',
+    'summary.spellCount': 'spell(s)',
+    'summary.total': 'Total',
+    'summary.cost': 'Cost',
+    'summary.stats': 'STATISTICS',
+    'summary.pvPerLocation': 'HP per location',
+    'summary.paPerLocation': 'AP per location',
+    'summary.brawlScore': 'Brawl Score',
+    'summary.abyss': 'Abyss',
+    'summary.abyssNA': 'N/A (Mechanical Being)',
+    'summary.lifeStones': 'Life Stones',
+    'summary.faithCards': 'Faith Cards',
+    
+    // Spells section (English)
+    'spells.title': 'Spells (Weaver/Cleric)',
+    'spells.selectMax': 'Select your spells (Maximum 3 per level)',
+    'spells.cost': 'Cost',
+    'spells.noMorePoints': 'No more points available',
+    'spells.freeLevels': 'Free spell levels (events)',
+    'spells.available': 'available',
+    'spells.level1': 'Level 1 Spells (1 pt/spell)',
+    'spells.level2': 'Level 2 Spells (2 pts/spell)',
+    'spells.level3': 'Level 3 Spells (3 pts/spell)',
+    'spells.level4': 'Level 4 Spells (4 pts/spell)',
+    'spells.spellCount0': '0 spell',
+    'spells.spellCount1': '1 spell',
+    'spells.spellCount2': '2 spells',
+    'spells.spellCount3': '3 spells',
+    'spells.summary': 'Spells summary',
+    
+    // Email section (English)
+    'email.description': 'Receive your character sheet by email',
+    
+    // Character Card labels (English)
+    'card.skills': 'Skills',
+    'card.lifeStones': 'Life Stones',
+    'card.pointsUsed': 'Points used',
+    'card.noFaction': 'None',
   }
 };
 

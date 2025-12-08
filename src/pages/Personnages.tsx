@@ -218,31 +218,31 @@ const Personnages = () => {
     // Événements et compétences gratuites
     if (formData.nbEvenements > 0) {
       const competencesGratuites = formData.nbEvenements * 2;
-      recap.push(`🎭 ÉVÉNEMENTS: ${formData.nbEvenements}`);
-      recap.push(`   Compétences gratuites disponibles: ${competencesGratuites}`);
-      recap.push(`   ⚠️ Respecter les règles d'apprentissage et le Roleplay en jeu`);
+      recap.push(`🎭 ${t('summary.events')}: ${formData.nbEvenements}`);
+      recap.push(`   ${t('summary.freeSkillsAvailable')}: ${competencesGratuites}`);
+      recap.push(`   ⚠️ ${t('summary.followRules')}`);
       recap.push('');
     }
     
     if (formData.espece) {
       const especeData = especes.find(e => e.nom === formData.espece);
       if (especeData) {
-        recap.push(`🧬 ESPÈCE: ${especeData.nom}`);
-        recap.push(`   Gratuit: ${especeData.gratuit}`);
-        recap.push(`   Interdit: ${especeData.interdit}`);
-        recap.push(`   Spécial: ${especeData.special}`);
-        if (especeData.effetsPV !== 0) recap.push(`   PV: ${especeData.effetsPV > 0 ? '+' : ''}${especeData.effetsPV}/localisation`);
+        recap.push(`🧬 ${t('summary.species')}: ${translateGameData(especeData.nom, 'espece', language)}`);
+        recap.push(`   ${t('summary.free')}: ${translateGameData(especeData.gratuit, 'competence', language)}`);
+        recap.push(`   ${t('summary.forbidden')}: ${translateGameData(especeData.interdit, 'competence', language)}`);
+        recap.push(`   ${t('summary.special')}: ${especeData.special}`);
+        if (especeData.effetsPV !== 0) recap.push(`   PV: ${especeData.effetsPV > 0 ? '+' : ''}${especeData.effetsPV}${t('summary.perLocation')}`);
         if (especeData.effetsPA !== 0) recap.push(`   PA: ${especeData.effetsPA > 0 ? '+' : ''}${especeData.effetsPA}`);
       }
     }
 
     if (formData.competences.length > 0) {
       recap.push('');
-      recap.push('⚔️ COMPÉTENCES:');
+      recap.push(`⚔️ ${t('summary.skills')}:`);
       formData.competences.forEach(comp => {
         const compData = competencesDisponibles.find(c => c.nom === comp.nom);
         if (compData) {
-          recap.push(`   • ${compData.nom} (${compData.cout} pts) - ${compData.effet}`);
+          recap.push(`   • ${translateGameData(compData.nom, 'competence', language)} (${compData.cout} ${t('selection.pts')}) - ${translateGameData(compData.effet, 'effet', language)}`);
         }
       });
     }
@@ -251,24 +251,24 @@ const Personnages = () => {
     if (formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc") && 
         (formData.sorts.niv1 > 0 || formData.sorts.niv2 > 0 || formData.sorts.niv3 > 0 || formData.sorts.niv4 > 0)) {
       recap.push('');
-      recap.push('✨ SORTS:');
-      if (formData.sorts.niv1 > 0) recap.push(`   • Niveau 1: ${formData.sorts.niv1} sort(s)`);
-      if (formData.sorts.niv2 > 0) recap.push(`   • Niveau 2: ${formData.sorts.niv2} sort(s)`);
-      if (formData.sorts.niv3 > 0) recap.push(`   • Niveau 3: ${formData.sorts.niv3} sort(s)`);
-      if (formData.sorts.niv4 > 0) recap.push(`   • Niveau 4: ${formData.sorts.niv4} sort(s)`);
+      recap.push(`✨ ${t('summary.spells')}:`);
+      if (formData.sorts.niv1 > 0) recap.push(`   • ${t('summary.level')} 1: ${formData.sorts.niv1} ${t('summary.spellCount')}`);
+      if (formData.sorts.niv2 > 0) recap.push(`   • ${t('summary.level')} 2: ${formData.sorts.niv2} ${t('summary.spellCount')}`);
+      if (formData.sorts.niv3 > 0) recap.push(`   • ${t('summary.level')} 3: ${formData.sorts.niv3} ${t('summary.spellCount')}`);
+      if (formData.sorts.niv4 > 0) recap.push(`   • ${t('summary.level')} 4: ${formData.sorts.niv4} ${t('summary.spellCount')}`);
       const totalSorts = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
-      recap.push(`   Total: ${totalSorts} sort(s) - Coût: ${coutSorts} pts`);
+      recap.push(`   ${t('summary.total')}: ${totalSorts} ${t('summary.spellCount')} - ${t('summary.cost')}: ${coutSorts} ${t('selection.pts')}`);
     }
 
     recap.push('');
-    recap.push('📊 STATISTIQUES:');
-    recap.push(`   PV par localisation: ${formData.pv}`);
-    recap.push(`   PA par localisation: ${formData.pa}`);
-    recap.push(`   Score de Bagarre: ${formData.scoreBagarre}`);
+    recap.push(`📊 ${t('summary.stats')}:`);
+    recap.push(`   ${t('summary.pvPerLocation')}: ${formData.pv}`);
+    recap.push(`   ${t('summary.paPerLocation')}: ${formData.pa}`);
+    recap.push(`   ${t('summary.brawlScore')}: ${formData.scoreBagarre}`);
     if (formData.espece !== "Êtres Mécaniques") {
-      recap.push(`   Abîme: ${formData.abime}/${formData.abimeMax}`);
+      recap.push(`   ${t('summary.abyss')}: ${formData.abime}/${formData.abimeMax}`);
     } else {
-      recap.push(`   Abîme: N/A (Être Mécanique)`);
+      recap.push(`   ${t('summary.abyss')}: ${t('summary.abyssNA')}`);
     }
     
     // Calcul et affichage des Pierres de Vie avec détail pour Tisseur/Clerc
@@ -280,12 +280,12 @@ const Personnages = () => {
       else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
       else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
       else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
-      recap.push(`   Pierres de Vie: ${formData.pierresDeVie} (10 + ${nbSortsTotal} sorts × niv.${plusHautNiveau})`);
+      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${nbSortsTotal} ${t('summary.spellCount')} × ${t('summary.level').toLowerCase()}.${plusHautNiveau})`);
     } else {
-      recap.push(`   Pierres de Vie: ${formData.pierresDeVie}`);
+      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie}`);
     }
     
-    recap.push(`   Cartes Foi: ${formData.foi}`);
+    recap.push(`   ${t('summary.faithCards')}: ${formData.foi}`);
 
     setRecapitulatif(recap);
   };
@@ -865,19 +865,19 @@ const Personnages = () => {
               ) || formData.afficherSortilleges) && (
                 <Card className="ornament-border">
                   <CardHeader>
-                    <CardTitle>Sorts (Tisseur/Clerc)</CardTitle>
+                    <CardTitle>{t('spells.title')}</CardTitle>
                     <CardDescription>
-                      Sélectionnez vos sorts (Maximum 3 par niveau) - Coût: {coutSorts} pts
-                      {pointsRestants <= 0 && <span className="text-destructive ml-2">(Plus de points disponibles)</span>}
+                      {t('spells.selectMax')} - {t('spells.cost')}: {coutSorts} {t('selection.pts')}
+                      {pointsRestants <= 0 && <span className="text-destructive ml-2">({t('spells.noMorePoints')})</span>}
                       <div className="mt-2">
-                        Niveaux de sorts gratuits (événements): <span className="font-bold">{niveauxSortsGratuitsRestants}/{niveauxSortsGratuitsDisponibles} disponibles</span>
+                        {t('spells.freeLevels')}: <span className="font-bold">{niveauxSortsGratuitsRestants}/{niveauxSortsGratuitsDisponibles} {t('spells.available')}</span>
                       </div>
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="sorts-niv1">Sorts Niveau 1 (1 pt/sort)</Label>
+                      <Label htmlFor="sorts-niv1">{t('spells.level1')}</Label>
                       <Select 
                         value={formData.sorts.niv1.toString()} 
                         onValueChange={(value) => handleSortChange('niv1', parseInt(value))}
@@ -886,16 +886,16 @@ const Personnages = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="0">0 sort</SelectItem>
-                          <SelectItem value="1">1 sort</SelectItem>
-                          <SelectItem value="2">2 sorts</SelectItem>
-                          <SelectItem value="3">3 sorts</SelectItem>
+                          <SelectItem value="0">{t('spells.spellCount0')}</SelectItem>
+                          <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
+                          <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
+                          <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="sorts-niv2">Sorts Niveau 2 (2 pts/sort)</Label>
+                      <Label htmlFor="sorts-niv2">{t('spells.level2')}</Label>
                       <Select 
                         value={formData.sorts.niv2.toString()} 
                         onValueChange={(value) => handleSortChange('niv2', parseInt(value))}
@@ -904,16 +904,16 @@ const Personnages = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="0">0 sort</SelectItem>
-                          <SelectItem value="1">1 sort</SelectItem>
-                          <SelectItem value="2">2 sorts</SelectItem>
-                          <SelectItem value="3">3 sorts</SelectItem>
+                          <SelectItem value="0">{t('spells.spellCount0')}</SelectItem>
+                          <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
+                          <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
+                          <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="sorts-niv3">Sorts Niveau 3 (3 pts/sort)</Label>
+                      <Label htmlFor="sorts-niv3">{t('spells.level3')}</Label>
                       <Select
                         value={formData.sorts.niv3.toString()} 
                         onValueChange={(value) => handleSortChange('niv3', parseInt(value))}
@@ -922,16 +922,16 @@ const Personnages = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="0">0 sort</SelectItem>
-                          <SelectItem value="1">1 sort</SelectItem>
-                          <SelectItem value="2">2 sorts</SelectItem>
-                          <SelectItem value="3">3 sorts</SelectItem>
+                          <SelectItem value="0">{t('spells.spellCount0')}</SelectItem>
+                          <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
+                          <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
+                          <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="sorts-niv4">Sorts Niveau 4 (4 pts/sort)</Label>
+                      <Label htmlFor="sorts-niv4">{t('spells.level4')}</Label>
                       <Select 
                         value={formData.sorts.niv4.toString()} 
                         onValueChange={(value) => handleSortChange('niv4', parseInt(value))}
@@ -940,24 +940,24 @@ const Personnages = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="0">0 sort</SelectItem>
-                          <SelectItem value="1">1 sort</SelectItem>
-                          <SelectItem value="2">2 sorts</SelectItem>
-                          <SelectItem value="3">3 sorts</SelectItem>
+                          <SelectItem value="0">{t('spells.spellCount0')}</SelectItem>
+                          <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
+                          <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
+                          <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   <div className="bg-accent/20 p-4 rounded-lg">
-                    <p className="text-sm font-medium">Résumé des sorts:</p>
+                    <p className="text-sm font-medium">{t('spells.summary')}:</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
-                      <div>Niv.1: <span className="font-bold text-primary">{formData.sorts.niv1}</span></div>
-                      <div>Niv.2: <span className="font-bold text-primary">{formData.sorts.niv2}</span></div>
-                      <div>Niv.3: <span className="font-bold text-primary">{formData.sorts.niv3}</span></div>
-                      <div>Niv.4: <span className="font-bold text-primary">{formData.sorts.niv4}</span></div>
+                      <div>{t('summary.level').substring(0, 3)}.1: <span className="font-bold text-primary">{formData.sorts.niv1}</span></div>
+                      <div>{t('summary.level').substring(0, 3)}.2: <span className="font-bold text-primary">{formData.sorts.niv2}</span></div>
+                      <div>{t('summary.level').substring(0, 3)}.3: <span className="font-bold text-primary">{formData.sorts.niv3}</span></div>
+                      <div>{t('summary.level').substring(0, 3)}.4: <span className="font-bold text-primary">{formData.sorts.niv4}</span></div>
                     </div>
-                    <p className="text-sm mt-2">Total: <span className="font-bold text-primary">{formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4} sorts</span> - Coût: <span className="font-bold text-primary">{coutSorts} pts</span></p>
+                    <p className="text-sm mt-2">{t('summary.total')}: <span className="font-bold text-primary">{formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4} {t('summary.spellCount')}</span> - {t('summary.cost')}: <span className="font-bold text-primary">{coutSorts} {t('selection.pts')}</span></p>
                   </div>
                 </CardContent>
               </Card>
@@ -967,7 +967,7 @@ const Personnages = () => {
                 <CardHeader>
                   <CardTitle>{t('characters.email')}</CardTitle>
                   <CardDescription>
-                    Recevez votre fiche de personnage par email
+                    {t('email.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1013,7 +1013,7 @@ const Personnages = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
-                      <p className="text-sm">Choisissez votre espèce pour voir le récapitulatif</p>
+                      <p className="text-sm">{t('selection.chooseSpecies')}</p>
                     </div>
                   )}
                 </CardContent>
@@ -1046,41 +1046,41 @@ const Personnages = () => {
                     <CardContent className="space-y-3">
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div className="bg-muted/50 p-2 rounded text-center">
-                          <p className="text-xs text-muted-foreground">PV/loc</p>
+                          <p className="text-xs text-muted-foreground">{language === 'en' ? 'HP/loc' : 'PV/loc'}</p>
                           <p className="font-bold text-primary">{perso.pv}</p>
                         </div>
                         <div className="bg-muted/50 p-2 rounded text-center">
-                          <p className="text-xs text-muted-foreground">PA/loc</p>
+                          <p className="text-xs text-muted-foreground">{language === 'en' ? 'AP/loc' : 'PA/loc'}</p>
                           <p className="font-bold text-primary">{perso.pa}</p>
                         </div>
                         <div className="bg-muted/50 p-2 rounded text-center">
-                          <p className="text-xs text-muted-foreground">Bagarre</p>
+                          <p className="text-xs text-muted-foreground">{t('summary.brawlScore')}</p>
                           <p className="font-bold text-primary">{perso.scoreBagarre}</p>
                         </div>
                       </div>
                       {perso.espece !== "Êtres Mécaniques" && (
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Abîme:</span>
+                          <span className="text-muted-foreground">{t('summary.abyss')}:</span>
                           <span className="font-bold">{perso.abime}/{perso.abimeMax}</span>
                         </div>
                       )}
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Compétences:</span>
+                        <span className="text-muted-foreground">{t('card.skills')}:</span>
                         <span className="font-bold">{perso.competences.length}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Pierres de Vie:</span>
+                        <span className="text-muted-foreground">{t('card.lifeStones')}:</span>
                         <span className="font-bold">{perso.pierresDeVie}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Points utilisés:</span>
+                        <span className="text-muted-foreground">{t('card.pointsUsed')}:</span>
                         <span className="font-bold">{perso.pointsDepenses}/{perso.pointsCreation}</span>
                       </div>
                        <CharacterSheet 
                         character={{
                           nom: perso.nomTI,
                           prenom: perso.nomTO,
-                          faction: perso.faction || "Aucune",
+                          faction: perso.faction || t('card.noFaction'),
                           espece: perso.espece,
                           competences: perso.competences.map(c => c.nom),
                           pvTotal: perso.pv,
