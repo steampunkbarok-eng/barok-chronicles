@@ -299,6 +299,69 @@ export const especeTranslations: Record<string, string> = {
   "Félis": "Felis"
 };
 
+// Traductions des descriptions spéciales des espèces
+export const especeSpecialTranslations: Record<string, string> = {
+  "Espèce adaptative - Liberté totale": "Adaptive species - Total freedom",
+  "Culture shintoïste, Cycle": "Shinto culture, Cycle",
+  "Tatouages/piercings obligatoires": "Mandatory tattoos/piercings",
+  "Voient fées, Armes Mercury": "See faeries, Mercury Weapons",
+  "Culture lapone": "Lapland culture",
+  "Marche Inframonde + Esthétique morbide": "Underworld Walk + Morbid aesthetic",
+  "Spécial: +1 PV/localisation permanent": "Special: +1 HP/location permanent",
+  "TDAH, technologie": "ADHD, technology",
+  "Sagesse respectée": "Respected wisdom",
+  "Très petite taille requis": "Very small height required",
+  "Style renaissance italien": "Italian renaissance style",
+  "Style nomade steppes": "Nomadic steppes style",
+  "Immunité maladies + Drain vie": "Disease immunity + Life drain",
+  "Immunité poisons/toxines/assommement, Cheveux colorés": "Poison/toxin/knockout immunity, Colored hair",
+  "Double esprit, Cornes glyphes, Boule frontale de lumière, Immunité frayeur": "Double spirit, Glyph horns, Frontal light orb, Fear immunity",
+  "PV=PA, Loc=armure1, Pas abîme, Charbon obligatoire": "HP=AP, Loc=armor1, No abyss, Coal mandatory",
+  "Amphibies (eau 1×/jour), Sensibilité feu (×2 dégâts)": "Amphibious (water 1×/day), Fire sensitivity (×2 damage)",
+  "Végans, Tradition artisanale": "Vegans, Artisan tradition",
+  "Entrepreneurs nés, Omnivores": "Born entrepreneurs, Omnivores",
+  "Viandards, Honneur combat": "Meat-eaters, Combat honor",
+  "Pas de queue, Gardiens langage": "No tail, Language guardians",
+  "Queue présente, Arbre sanctuaire": "Tail present, Sanctuary tree",
+  "Ailes chauve-souris apparentes et protections contre le soleil (Matériel: parasol, châle, chapeau, etc)": "Visible bat wings and sun protection (Equipment: parasol, shawl, hat, etc.)",
+  "Aspect végétal : Elles s'évanouissent si on les empêche de boire sur 1 journée 1 litre d'eau ou si elle monte en haute altitude sur un navire volant, elles sont plongés dans le coma.": "Plant aspect: They faint if prevented from drinking 1 liter of water for 1 day or if they go high altitude on a flying ship, they fall into a coma.",
+  "Ils ignorent les cartes de biture. Ceux-ci ne les affectent pas car ils boivent très peu et l'alcool n'a aucun effet sur eux.": "They ignore drunkenness cards. These don't affect them because they drink very little and alcohol has no effect on them.",
+  "Les Génies ont un objet niche sur eux ou caché à proximité, qui les exécute immédiatement s'il est détruit. Cet objet niche possède les mêmes propriétés qu'un cimetière sans être sous le contrôle d'un Argousin.e. + Les Génies ne prennent en combat que les attaques pairs comme dégâts, ils sont semi-éthérés.": "Genies have a niche object on them or hidden nearby, which kills them immediately if destroyed. This niche object has the same properties as a cemetery without being under an Argousin's control. + Genies only take even attacks as damage in combat, they are semi-ethereal.",
+  "Les points de biture ressentis augmente votre capacité à faire des blagues mêmes pourries. + Leurs cheveux ressemblent à des dreads en formes de nattes.": "Felt drunkenness points increase your ability to make jokes, even bad ones. + Their hair looks like braided dreads.",
+  "Ils ont un visage canin et des pattes velues. + Les peluches des Eleveurs (troupeaux) génèrent un nouveau membre par deux peluches lorsqu'ils sont 2h ensemble. Ce nouveau membre peut être sacrifier par le boucher pour récolter des ressources.": "They have a canine face and hairy paws. + Breeders' plushies (herds) generate a new member for every two plushies when together for 2h. This new member can be sacrificed by the butcher to harvest resources.",
+  "Nécessité d'un beau costume rappelant des Tréants ou des Sylvains. Le costume sera jugé d'entrée de jeu par les Argousin.es. Faîtes attention qu'ils ne soient pas encombrants et que vous savez rentrer et sortir d'un bâtiment.": "Requirement for a beautiful costume reminiscent of Treants or Sylvans. The costume will be judged from the start by Argousins. Be careful that they are not bulky and that you can enter and exit a building.",
+  "Un Mort-vivant blessé par une annonce crush ou sacred est détruit instantanément. Il se rend donc au lieu de culte corrompu. S'il n'y en a aucun, le Mort-vivant est exécuté. + Un Mort-vivant touché par « bonfire » devient vulnérable aux attaques normales pendant 3 touches.": "An Undead injured by a crush or sacred announcement is instantly destroyed. They go to the corrupted place of worship. If there is none, the Undead is executed. + An Undead hit by 'bonfire' becomes vulnerable to normal attacks for 3 hits.",
+  "Iels possèdent des ailes et un visage de volatile.": "They have wings and a bird face.",
+  "Un planaire blessé par une annonce enchanted subit deux points de dégâts au lieu d'un seul. + Un serviteur divin ne peut pas donner sa foi et n'a pas de carte de domiciliation. + Ce ne sont pas une autre espèce connue dans la liste qui ont changé de dimensions ou de plans + Tout planaire se rendant dans un lieu de culte corrompu devient un planaire du Néant, ils chercheront à tout détruire et dévorer en errant, leur attaque vide de toutes essences et provoquent une exécution lorsqu'ils mettent à mort. Seuls moyens de les éviter, faire un rituel dépervétissant le lieu de culte ou en utilisant « bonfire » sur le Néant ce qui le détruit définitivement.": "A planar injured by an enchanted announcement takes two points of damage instead of one. + A divine servant cannot give their faith and has no domicile card. + They are not another known species in the list that changed dimensions or planes + Any planar going to a corrupted place of worship becomes a Void planar, they will seek to destroy and devour everything while wandering, their attack empty of all essences and cause an execution when they kill. Only ways to avoid them: perform a ritual to uncorrupt the place of worship or use 'bonfire' on the Void which destroys it permanently.",
+  "Costume réaliste et avec fourrure. + Ils sont originaires du Désert d'Épertoudis. + Les Hagolls sont malicieux et mauvais, ils sont brutaux et sans pitié comme le désert. La cérémonie d'exécution d'un.e adversaire est nécessaire pour entrer dans une horde.": "Realistic costume with fur. + They originate from the Epertoudis Desert. + Hagnolls are malicious and evil, brutal and merciless like the desert. The execution ceremony of an opponent is required to join a horde.",
+  "Costume réaliste et avec fourrure. + L'entraide est primordiale chez les Tygnolls, elle est la base de la survie dans les Terres rouges. + La cérémonie du thé est nécessaire pour entrer dans une tribu.": "Realistic costume with fur. + Mutual aid is essential among Tygnolls, it is the basis of survival in the Red Lands. + The tea ceremony is required to join a tribe.",
+  "De petites tailles portant une toge et un pagne (cape chaude autorisée si nécessaire).": "Small sized wearing a toga and loincloth (warm cape allowed if necessary)."
+};
+
+// Traductions des prérequis des titres
+export const titrePrerequisTranslations: Record<string, string> = {
+  "Culte en jeu": "Cult in game",
+  "Background + Entrave + Évasion": "Background + Handcuff + Escape",
+  "Alphabétisation commune": "Common literacy",
+  "Talent artistique RP": "RP artistic talent",
+  "Navire TO + Notaire": "TO Ship + Notary",
+  "Navire-volant TO + Notaire": "TO Flying Ship + Notary",
+  "Filouterie": "Skulduggery",
+  "Compétence Contrebandier": "Smuggler skill",
+  "Background éthique": "Ethical background",
+  "Background + Capitaine Navire/Navire-Volant": "Background + Ship/Airship Captain",
+  "Menuisier": "Carpenter",
+  "Alphab. avancée + Solde": "Advanced literacy + Salary",
+  "Orcs/Gobelins/Trolls + Background": "Orcs/Goblins/Trolls + Background",
+  "Background liens noblesse": "Nobility ties background",
+  "Haine magie + Compétence technologie/mécanique/forgeron": "Magic hatred + Technology/mechanics/blacksmith skill",
+  "Background + Code Piraterie": "Background + Piracy Code",
+  "Background extraplanaire": "Extraplanar background",
+  "Nains/Gnomes/Sautaises + Forgeron": "Dwarves/Gnomes/Sautais + Blacksmith",
+  "Mystique": "Mystic",
+  "Filouterie + deux compétences Martiales": "Skulduggery + two Martial skills"
+};
+
 // Traductions des origines
 export const origineTranslations: Record<string, string> = {
   "Parlos": "Parlos",
@@ -442,7 +505,7 @@ export const batimentConditionTranslations: Record<string, string> = {
 // Fonction helper pour obtenir une traduction
 export const translateGameData = (
   text: string, 
-  type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition' | 'origine',
+  type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition' | 'origine' | 'especeSpecial' | 'titrePrerequisit',
   language: 'fr' | 'en'
 ): string => {
   if (language === 'fr') return text;
@@ -455,6 +518,8 @@ export const translateGameData = (
                   type === 'batimentAvantage' ? batimentAvantagesTranslations :
                   type === 'batimentCondition' ? batimentConditionTranslations :
                   type === 'origine' ? origineTranslations :
+                  type === 'especeSpecial' ? especeSpecialTranslations :
+                  type === 'titrePrerequisit' ? titrePrerequisTranslations :
                   especeTranslations;
   
   return mapping[text] || text;
