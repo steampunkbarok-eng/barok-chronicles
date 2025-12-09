@@ -146,6 +146,7 @@ export const translations = {
     'summary.abyssNA': 'N/A (Être Mécanique)',
     'summary.lifeStones': 'Pierres de Vie',
     'summary.faithCards': 'Cartes Foi',
+    'summary.origin': 'ORIGINE',
     
     // Spells section (French)
     'spells.title': 'Sorts (Tisseur/Clerc)',
@@ -490,6 +491,7 @@ export const translations = {
     'summary.abyssNA': 'N/A (Mechanical Being)',
     'summary.lifeStones': 'Life Stones',
     'summary.faithCards': 'Faith Cards',
+    'summary.origin': 'ORIGIN',
     
     // Spells section (English)
     'spells.title': 'Spells (Weaver/Cleric)',
