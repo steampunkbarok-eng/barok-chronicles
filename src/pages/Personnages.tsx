@@ -260,6 +260,11 @@ const Personnages = () => {
       recap.push(`   ${t('summary.total')}: ${totalSorts} ${t('summary.spellCount')} - ${t('summary.cost')}: ${coutSorts} ${t('selection.pts')}`);
     }
 
+    if (formData.origine) {
+      recap.push('');
+      recap.push(`🌍 ${t('summary.origin')}: ${translateGameData(formData.origine, 'origine', language)} (${formData.goOrigine} GO)`);
+    }
+
     recap.push('');
     recap.push(`📊 ${t('summary.stats')}:`);
     recap.push(`   ${t('summary.pvPerLocation')}: ${formData.pv}`);
@@ -746,10 +751,10 @@ const Personnages = () => {
                         <SelectValue placeholder={t('characters.originPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Parlos">Parlos (12 GO)</SelectItem>
-                        <SelectItem value="Îles éparses">Îles éparses (6 GO)</SelectItem>
-                        <SelectItem value="Nations du Dominion">Nations du Dominion (6 GO)</SelectItem>
-                        <SelectItem value="Nations extérieures">Nations extérieures (6 GO)</SelectItem>
+                        <SelectItem value="Parlos">{translateGameData("Parlos", 'origine', language)} (12 GO)</SelectItem>
+                        <SelectItem value="Îles éparses">{translateGameData("Îles éparses", 'origine', language)} (6 GO)</SelectItem>
+                        <SelectItem value="Nations du Dominion">{translateGameData("Nations du Dominion", 'origine', language)} (6 GO)</SelectItem>
+                        <SelectItem value="Nations extérieures">{translateGameData("Nations extérieures", 'origine', language)} (6 GO)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

@@ -299,6 +299,14 @@ export const especeTranslations: Record<string, string> = {
   "Félis": "Felis"
 };
 
+// Traductions des origines
+export const origineTranslations: Record<string, string> = {
+  "Parlos": "Parlos",
+  "Îles éparses": "Scattered Islands",
+  "Nations du Dominion": "Dominion Nations",
+  "Nations extérieures": "Outer Nations"
+};
+
 // Traductions des catégories de compétences
 export const categorieTranslations: Record<string, string> = {
   "Sociale": "Social",
@@ -434,7 +442,7 @@ export const batimentConditionTranslations: Record<string, string> = {
 // Fonction helper pour obtenir une traduction
 export const translateGameData = (
   text: string, 
-  type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition',
+  type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition' | 'origine',
   language: 'fr' | 'en'
 ): string => {
   if (language === 'fr') return text;
@@ -446,6 +454,7 @@ export const translateGameData = (
                   type === 'batiment' ? batimentTranslations :
                   type === 'batimentAvantage' ? batimentAvantagesTranslations :
                   type === 'batimentCondition' ? batimentConditionTranslations :
+                  type === 'origine' ? origineTranslations :
                   especeTranslations;
   
   return mapping[text] || text;
