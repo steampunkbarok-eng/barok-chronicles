@@ -230,6 +230,7 @@ export const titreTranslations: Record<string, string> = {
   "Ancien Esclave": "Former slave",
   "Archiviste des Secrets": "Archivist",
   "Artiste d'une Compagnie": "Artist",
+  "Autres fonctionnaires" : "Other public servants",
   "Bourgeois": "Bourgeois",
   "Capitaine de Navire": "Ship captain",
   "Capitaine Navire-Volant": "Airship captain",
@@ -249,6 +250,7 @@ export const titreTranslations: Record<string, string> = {
   "Prévôt du Crépuscule": "Provost of the Twilight",
   "Sectaire ésotérico-magique": "Esoteric-magical sect",
   "Sergent de l'ombre": "Shadow Sergeant",
+  "Tous fonctionnaires": "All civil servants",
   "Démuni": "Outcast",
   "Enquêteur public": "Public investigator",
   "Milicien": "Militiaman",
@@ -346,7 +348,7 @@ export const titrePrerequisTranslations: Record<string, string> = {
   "Talent artistique RP": "RP artistic talent",
   "Navire TO + Notaire": "TO Ship + Notary",
   "Navire-volant TO + Notaire": "TO Flying Ship + Notary",
-  "Filouterie": "Skulduggery",
+  "Filouterie": "Shady skill",
   "Compétence Contrebandier": "Smuggler skill",
   "Background éthique": "Ethical background",
   "Background + Capitaine Navire/Navire-Volant": "Background + Ship/Airship Captain",
@@ -359,7 +361,7 @@ export const titrePrerequisTranslations: Record<string, string> = {
   "Background extraplanaire": "Extraplanar background",
   "Nains/Gnomes/Sautaises + Forgeron": "Dwarves/Gnomes/Sautais + Blacksmith",
   "Mystique": "Mystic",
-  "Filouterie + deux compétences Martiales": "Skulduggery + two Martial skills"
+  "Filouterie + deux compétences Martiales": "Shady + two Martial skills"
 };
 
 // Traductions des origines
