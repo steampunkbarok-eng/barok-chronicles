@@ -707,8 +707,8 @@ const Personnages = () => {
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
-                                <span className="text-xs text-muted-foreground">{t('selection.free')}: {esp.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
-                                <span className="text-xs text-destructive">{t('selection.forbidden')}: {esp.interdit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
+                                <span className="text-xs text-muted-foreground">{t('selection.free')}: {esp.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}</span>
+                                <span className="text-xs text-destructive">{t('selection.forbidden')}: {esp.interdit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -719,8 +719,8 @@ const Personnages = () => {
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
-                                <span className="text-xs text-muted-foreground">{t('selection.free')}: {esp.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
-                                <span className="text-xs text-destructive">{t('selection.forbidden')}: {esp.interdit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}</span>
+                                <span className="text-xs text-muted-foreground">{t('selection.free')}: {esp.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}</span>
+                                <span className="text-xs text-destructive">{t('selection.forbidden')}: {esp.interdit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}</span>
                               </div>
                             </SelectItem>
                           ))}
