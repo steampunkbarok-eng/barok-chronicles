@@ -347,7 +347,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">${t('sheet.freeSkills')}</h3>
         <div class="competences-box" style="min-height: 2.5cm;">
           ${character.especeGratuit && character.especeGratuit !== 'Aucun' ? 
-            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${translateGameData(comp.trim(), 'competence', language)}</div>`).join('')}</div>` : 
+            `<div style="font-size: 8pt;">${character.especeGratuit.split('+').map(comp => `<div class="competence-item">✓ ${translateGameData(comp.trim(), 'especeSpecial', language)}</div>`).join('')}</div>` : 
             `<div style="font-size: 8pt; font-style: italic;">${t('sheet.noFreeSkills')}</div>`}
         </div>
       </div>
@@ -355,7 +355,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
         <h3 style="font-size: 10pt; font-weight: bold; margin: 0.2cm 0; padding: 0.1cm; background: #e0e0e0; border: 1px solid #000;">${t('sheet.forbiddenSkills')}</h3>
         <div class="competences-box" style="min-height: 2.5cm;">
           ${character.especeInterdit && character.especeInterdit !== 'Aucun' ? 
-            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${translateGameData(comp.trim(), 'competence', language)}</div>`).join('')}</div>` : 
+            `<div style="font-size: 8pt;">${character.especeInterdit.split('+').map(comp => `<div class="competence-item">✗ ${translateGameData(comp.trim(), 'especeSpecial', language)}</div>`).join('')}</div>` : 
             `<div style="font-size: 8pt; font-style: italic;">${t('sheet.noForbiddenSkills')}</div>`}
         </div>
       </div>
@@ -364,7 +364,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
     ${character.factionInterdit && character.factionInterdit !== 'Aucun' ? `
     <div style="border: 2px solid #c00; background: #ffe0e0; padding: 0.3cm; margin: 0.3cm 0; page-break-inside: avoid; page-break-after: auto;">
       <div style="font-weight: bold; font-size: 9pt; color: #c00; margin-bottom: 0.1cm;">⚠️ ${t('sheet.factionForbidden')}</div>
-      <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => translateGameData(comp.trim(), 'competence', language)).join(', ')}</div>
+      <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => translateGameData(comp.trim(), 'titre', language)).join(', ')}</div>
     </div>
     ` : ''}
 
