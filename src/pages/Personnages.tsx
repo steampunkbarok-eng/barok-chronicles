@@ -228,8 +228,8 @@ const Personnages = () => {
       const especeData = especes.find(e => e.nom === formData.espece);
       if (especeData) {
         recap.push(`🧬 ${t('summary.species')}: ${translateGameData(especeData.nom, 'espece', language)}`);
-        recap.push(`   ${t('summary.free')}: ${especeData.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}`);
-        recap.push(`   ${t('summary.forbidden')}: ${especeData.interdit.split(' + ').map(s => translateGameData(s.trim(), 'competence', language)).join(' + ')}`);
+        recap.push(`   ${t('summary.free')}: ${especeData.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}`);
+        recap.push(`   ${t('summary.forbidden')}: ${especeData.interdit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}`);
         recap.push(`   ${t('summary.special')}: ${translateGameData(especeData.special, 'especeSpecial', language)}`);
         if (especeData.effetsPV !== 0) recap.push(`   PV: ${especeData.effetsPV > 0 ? '+' : ''}${especeData.effetsPV}${t('summary.perLocation')}`);
         if (especeData.effetsPA !== 0) recap.push(`   PA: ${especeData.effetsPA > 0 ? '+' : ''}${especeData.effetsPA}`);
