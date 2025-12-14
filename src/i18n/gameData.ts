@@ -91,11 +91,11 @@ export const competenceEffectTranslations: Record<string, string> = {
   "Magie divine ; 1 école + Arcanique ; 4 foi/événement. +10 pierres vie": "Divine magic; 1 school + Arcane; 4 faith/event. +10 life stones",
   "Rituels école Arcanes uniquement. +10 pierres vie": "Arcane school rituals only. +10 life stones",
   "Évite noyade combat naval": "Avoids drowning in naval combat",
-  "Réparation voies eau/air + construction navires": "Water/air route repair + ship construction",
-  "Glisse filin/grappin vers autre navire": "Glide rope/grapple to another ship",
-  "Fluviale (eaux douces)": "River (fresh water)",
-  "Cabotage (max 2 cases côtes)": "Coastal (max 2 coast squares)",
-  "Haute mer": "Open sea"
+  "Réparation voies d'eau/air en combat naval/aérien. Construction d'embarcations possibles (voir règles combat naval/aérien)": "Repair water/air leaks in naval/aerial combat. Craft construction possible (see naval/aerial combat rules)",
+  "Glisse via filin/grappin vers autre navire (fluvial/maritime/aérien) ou utilise planeur constructible. Action directe mais vulnérable aux tirs d'archerie/armes de tir": "Glide via rope/grapple to another vessel (river/sea/air) or use buildable glider. Direct action but vulnerable to archery/ranged weapon fire",
+  "Pilotage et combat navires marins et fluviaux. Propriété multiple possible, capitanat unique": "Piloting and combat for sea and river vessels. Multiple ownership possible, single captaincy",
+  "Pilotage et combat zeppelins et navires volants": "Piloting and combat for zeppelins and airships",
+  "Commande simultanée de plusieurs navires/zeppelins (flottille 2-3 vaisseaux max) et navigation conditions extrêmes": "Simultaneous command of multiple vessels/zeppelins (flotilla of 2-3 max) and navigation in extreme conditions"
 };
 
 export const competenceTranslations: Record<string, string> = {

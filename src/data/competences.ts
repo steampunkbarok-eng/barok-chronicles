@@ -125,9 +125,9 @@ export const competencesDisponibles: Competence[] = [
   { nom: "Natation", cout: 2, categorie: "Manoeuvre", prerequis: "", effet: "Évite noyade combat naval" },
   
   // EN RÉVISION
-  { nom: "Charpentier de marine", cout: 2, categorie: "En révision", prerequis: "", effet: "Réparation voies eau/air + construction navires" },
-  { nom: "Glisseur", cout: 2, categorie: "En révision", prerequis: "", effet: "Glisse filin/grappin vers autre navire" },
-  { nom: "Navigation niv.1", cout: 1, categorie: "En révision", prerequis: "", effet: "Fluviale (eaux douces)" },
-  { nom: "Navigation niv.2", cout: 2, categorie: "En révision", prerequis: "Navigation niv.1", effet: "Cabotage (max 2 cases côtes)" },
-  { nom: "Navigation niv.3", cout: 3, categorie: "En révision", prerequis: "Navigation niv.2", effet: "Haute mer" }
+  { nom: "Charpentier de marine", cout: 2, categorie: "En révision", prerequis: "", effet: "Réparation voies d'eau/air en combat naval/aérien. Construction d'embarcations possibles (voir règles combat naval/aérien)" },
+  { nom: "Glisseur", cout: 2, categorie: "En révision", prerequis: "", effet: "Glisse via filin/grappin vers autre navire (fluvial/maritime/aérien) ou utilise planeur constructible. Action directe mais vulnérable aux tirs d'archerie/armes de tir" },
+  { nom: "Navigation niv.1", cout: 1, categorie: "En révision", prerequis: "", effet: "Pilotage et combat navires marins et fluviaux. Propriété multiple possible, capitanat unique" },
+  { nom: "Navigation niv.2", cout: 2, categorie: "En révision", prerequis: "Navigation niv.1", effet: "Pilotage et combat zeppelins et navires volants" },
+  { nom: "Navigation niv.3", cout: 3, categorie: "En révision", prerequis: "Navigation niv.2", effet: "Commande simultanée de plusieurs navires/zeppelins (flottille 2-3 vaisseaux max) et navigation conditions extrêmes" }
 ];
