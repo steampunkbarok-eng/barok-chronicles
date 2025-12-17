@@ -13,6 +13,7 @@ import { titresCarrieres, Titre } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translateGameData } from "@/i18n/gameData";
+import { openFactionSheet } from "@/components/FactionSheet";
 
 interface Faction {
   id: string;
@@ -230,10 +231,17 @@ const Factions = () => {
         statut: "active"
       });
       
-      toast.success("Faction créée avec succès ! Les emails ont été envoyés.");
+      toast.success(language === 'en' 
+        ? "Faction created successfully! Emails have been sent." 
+        : "Faction créée avec succès ! Les emails ont été envoyés.");
+      
+      // Ouvrir le PDF de la faction
+      openFactionSheet(nouvelleFaction, language);
     } catch (error) {
       console.error("Erreur lors de la sauvegarde:", error);
-      toast.error("Une erreur est survenue lors de la création de la faction");
+      toast.error(language === 'en' 
+        ? "An error occurred while creating the faction" 
+        : "Une erreur est survenue lors de la création de la faction");
     }
   };
 
