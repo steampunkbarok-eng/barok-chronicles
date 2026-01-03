@@ -66,9 +66,9 @@ export const competencesDisponibles: Competence[] = [
   
   // MAGIQUES
   { nom: "Détection naturelle magie", cout: 1, categorie: "Magique", prerequis: "", effet: "Détection auto manifestations magiques" },
-  { nom: "Enchanteur", cout: 3, categorie: "Magique", prerequis: "Transcandence niv.1", effet: "Canalisation énergie objets/armes/armures" },
+  { nom: "Enchanteur", cout: 3, categorie: "Magique", prerequis: "Transcendance niv.1", effet: "Canalisation énergie objets/armes/armures" },
   { nom: "Initié", cout: 4, categorie: "Magique", prerequis: "Alchimiste", effet: "20 pierres vie + sorts/rituels alchimie" },
-  { nom: "Tatoueur", cout: 2, categorie: "Magique", prerequis: "Tisseur + Chamanisme", effet: "Tatouages rituels TI (pouvoirs temp/perm)" },
+  { nom: "Tatoueur", cout: 2, categorie: "Magique", prerequis: "Tisseur", effet: "Tatouages rituels TI (pouvoirs temp/perm) (Chamanisme à définir)" },
   { nom: "Tisseur", cout: 3, categorie: "Magique", prerequis: "Alphabétisation avancée", effet: "2 écoles + Arcanes/Guérison. Vision tulles. +10 pierres vie" },
   { nom: "Transcendance niv.1", cout: 1, categorie: "Magique", prerequis: "Tisseur", effet: "+2 pierres vie" },
   { nom: "Transcendance niv.2", cout: 2, categorie: "Magique", prerequis: "Transcendance niv.1", effet: "+4 pierres vie" },
