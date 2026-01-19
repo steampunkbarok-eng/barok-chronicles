@@ -42,6 +42,7 @@ interface Personnage {
   afficherSortilleges: boolean;
   competencesGratuitesUtilisees: number;
   niveauxSortsGratuitsUtilises: number;
+  chamanismeTatoueur: string;
 }
 
 const Personnages = () => {
@@ -74,7 +75,8 @@ const Personnages = () => {
     nbEvenements: 0,
     afficherSortilleges: false,
     competencesGratuitesUtilisees: 0,
-    niveauxSortsGratuitsUtilises: 0
+    niveauxSortsGratuitsUtilises: 0,
+    chamanismeTatoueur: ""
   });
 
   // Calculer le coût des sorts
@@ -242,7 +244,12 @@ const Personnages = () => {
       formData.competences.forEach(comp => {
         const compData = competencesDisponibles.find(c => c.nom === comp.nom);
         if (compData) {
-          recap.push(`   • ${translateGameData(compData.nom, 'competence', language)} (${compData.cout} ${t('selection.pts')}) - ${translateGameData(compData.effet, 'effet', language)}`);
+          let skillLine = `   • ${translateGameData(compData.nom, 'competence', language)} (${compData.cout} ${t('selection.pts')}) - ${translateGameData(compData.effet, 'effet', language)}`;
+          // Ajouter le choix de chamanisme pour Tatoueur
+          if (comp.nom === "Tatoueur" && formData.chamanismeTatoueur) {
+            skillLine += ` [Chamanisme: ${formData.chamanismeTatoueur}]`;
+          }
+          recap.push(skillLine);
         }
       });
     }
@@ -306,7 +313,9 @@ const Personnages = () => {
     }
 
     // Vérifier les points (points de création OU compétences gratuites)
-    const peutUtiliserPointsCreation = formData.pointsDepenses + competence.cout <= formData.pointsCreation;
+    // Le coût total utilisé inclut les points dépensés + le coût des sorts
+    const coutTotalUtilise = formData.pointsDepenses + coutSorts;
+    const peutUtiliserPointsCreation = coutTotalUtilise + competence.cout <= formData.pointsCreation;
     const peutUtiliserCompetenceGratuite = competencesGratuitesRestantes > 0;
     
     if (!peutUtiliserPointsCreation && !peutUtiliserCompetenceGratuite) {
@@ -577,7 +586,8 @@ const Personnages = () => {
       nbEvenements: 0,
       afficherSortilleges: false,
       competencesGratuitesUtilisees: 0,
-      niveauxSortsGratuitsUtilises: 0
+      niveauxSortsGratuitsUtilises: 0,
+      chamanismeTatoueur: ""
     });
     setRecapitulatif([]);
     
@@ -840,16 +850,41 @@ const Personnages = () => {
                     {formData.competences.map((comp, idx) => {
                       const compData = competencesDisponibles.find(c => c.nom === comp.nom);
                       return (
-                        <div key={idx} className="flex items-start gap-2 bg-accent/20 p-3 rounded-lg">
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">{translateGameData(comp.nom, 'competence', language)} <span className="text-primary">({comp.cout} {t('selection.pts')})</span></p>
-                            {compData && (
-                              <p className="text-xs text-muted-foreground mt-1">{translateGameData(compData.effet, 'effet', language)}</p>
-                            )}
+                        <div key={idx} className="flex flex-col gap-2 bg-accent/20 p-3 rounded-lg">
+                          <div className="flex items-start gap-2">
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{translateGameData(comp.nom, 'competence', language)} <span className="text-primary">({comp.cout} {t('selection.pts')})</span></p>
+                              {compData && (
+                                <p className="text-xs text-muted-foreground mt-1">{translateGameData(compData.effet, 'effet', language)}</p>
+                              )}
+                            </div>
+                            <Button onClick={() => retirerCompetence(idx)} variant="ghost" size="icon" className="h-8 w-8">
+                              <X className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <Button onClick={() => retirerCompetence(idx)} variant="ghost" size="icon" className="h-8 w-8">
-                            <X className="h-4 w-4" />
-                          </Button>
+                          {/* Champ Chamanisme pour Tatoueur */}
+                          {comp.nom === "Tatoueur" && (
+                            <div className="space-y-1 mt-2 pl-2 border-l-2 border-primary/50">
+                              <Label htmlFor="chamanismeTatoueur" className="text-xs">
+                                {language === 'fr' ? 'Chamanisme choisi' : 'Chosen Shamanism'}:
+                              </Label>
+                              <Input
+                                id="chamanismeTatoueur"
+                                value={formData.chamanismeTatoueur}
+                                onChange={(e) => {
+                                  setFormData({ ...formData, chamanismeTatoueur: e.target.value });
+                                  genererRecapitulatif();
+                                }}
+                                placeholder={language === 'fr' ? 'Précisez votre chamanisme...' : 'Specify your shamanism...'}
+                                className="h-8 text-sm"
+                              />
+                              <p className="text-xs text-muted-foreground italic">
+                                {language === 'fr' 
+                                  ? 'Ce choix sera inscrit sur votre fiche de personnage.' 
+                                  : 'This choice will be noted on your character sheet.'}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
