@@ -284,15 +284,15 @@ const Personnages = () => {
     }
     
     // Calcul et affichage des Pierres de Vie avec détail pour Tisseur/Clerc
+    // Nouvelle règle: +2 pierres par niveau de sort utilisé
     const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
     if (hasTisseurOrClerc) {
-      const nbSortsTotal = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
-      let plusHautNiveau = 0;
-      if (formData.sorts.niv4 > 0) plusHautNiveau = 4;
-      else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
-      else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
-      else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
-      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${nbSortsTotal} ${t('summary.spellCount')} × ${t('summary.level').toLowerCase()}.${plusHautNiveau})`);
+      let niveauxUtilises = 0;
+      if (formData.sorts.niv1 > 0) niveauxUtilises++;
+      if (formData.sorts.niv2 > 0) niveauxUtilises++;
+      if (formData.sorts.niv3 > 0) niveauxUtilises++;
+      if (formData.sorts.niv4 > 0) niveauxUtilises++;
+      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${language === 'fr' ? 'niveaux' : 'levels'} × 2)`);
     } else {
       recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie}`);
     }
@@ -360,16 +360,13 @@ const Personnages = () => {
     
     // Calcul des pierres de vie pour les compétences magiques/spirituelles
     if (competence.nom === "Tisseur" || competence.nom === "Clerc") {
-      // Pour Tisseur et Clerc: Calcul basé sur les sorts sélectionnés
-      // Pierres = 10 + (nb sorts × plus haut niveau de sort)
-      const nbSortsTotal = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
-      
-      // Trouver le plus haut niveau de sort sélectionné
-      let plusHautNiveau = 0;
-      if (formData.sorts.niv4 > 0) plusHautNiveau = 4;
-      else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
-      else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
-      else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
+      // Pour Tisseur et Clerc: Calcul basé sur les niveaux de sorts utilisés
+      // Pierres = 10 + (2 par niveau de sort utilisé)
+      let niveauxUtilises = 0;
+      if (formData.sorts.niv1 > 0) niveauxUtilises++;
+      if (formData.sorts.niv2 > 0) niveauxUtilises++;
+      if (formData.sorts.niv3 > 0) niveauxUtilises++;
+      if (formData.sorts.niv4 > 0) niveauxUtilises++;
       
       // Enlever l'ancien calcul si Tisseur/Clerc était déjà présent
       const tisseurOuClercDejaPresent = formData.competences.some(c => 
@@ -377,10 +374,9 @@ const Personnages = () => {
       );
       
       if (tisseurOuClercDejaPresent) {
-        // Recalculer depuis zéro
-        nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+        nouveauxPierres = 10 + (niveauxUtilises * 2);
       } else {
-        nouveauxPierres += 10 + (nbSortsTotal * plusHautNiveau);
+        nouveauxPierres += 10 + (niveauxUtilises * 2);
       }
     } else if (competence.nom === "Cérémonialiste" || competence.nom === "Ritualiste") {
       nouveauxPierres += 10;
@@ -420,17 +416,15 @@ const Personnages = () => {
     let nouveauxPierres = formData.pierresDeVie;
     if (competence) {
       if (competence.nom === "Tisseur" || competence.nom === "Clerc") {
-        // Recalculer les pierres pour Tisseur/Clerc en fonction des sorts sélectionnés
-        const nbSortsTotal = formData.sorts.niv1 + formData.sorts.niv2 + formData.sorts.niv3 + formData.sorts.niv4;
+        // Recalculer les pierres pour Tisseur/Clerc en fonction des niveaux de sorts utilisés
+        // +2 par niveau de sort utilisé
+        let niveauxUtilises = 0;
+        if (formData.sorts.niv1 > 0) niveauxUtilises++;
+        if (formData.sorts.niv2 > 0) niveauxUtilises++;
+        if (formData.sorts.niv3 > 0) niveauxUtilises++;
+        if (formData.sorts.niv4 > 0) niveauxUtilises++;
         
-        // Trouver le plus haut niveau de sort sélectionné
-        let plusHautNiveau = 0;
-        if (formData.sorts.niv4 > 0) plusHautNiveau = 4;
-        else if (formData.sorts.niv3 > 0) plusHautNiveau = 3;
-        else if (formData.sorts.niv2 > 0) plusHautNiveau = 2;
-        else if (formData.sorts.niv1 > 0) plusHautNiveau = 1;
-        
-        nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+        nouveauxPierres = 10 + (niveauxUtilises * 2);
         
       } else if (competence.nom === "Cérémonialiste" || competence.nom === "Ritualiste") {
         nouveauxPierres -= 10;
@@ -493,16 +487,16 @@ const Personnages = () => {
     }
     
     // Recalculer les pierres de vie si Tisseur ou Clerc
+    // +2 pierres par niveau de sort utilisé
     let nouveauxPierres = formData.pierresDeVie;
     const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
     if (hasTisseurOrClerc) {
-      const nbSortsTotal = newSorts.niv1 + newSorts.niv2 + newSorts.niv3 + newSorts.niv4;
-      let plusHautNiveau = 0;
-      if (newSorts.niv4 > 0) plusHautNiveau = 4;
-      else if (newSorts.niv3 > 0) plusHautNiveau = 3;
-      else if (newSorts.niv2 > 0) plusHautNiveau = 2;
-      else if (newSorts.niv1 > 0) plusHautNiveau = 1;
-      nouveauxPierres = 10 + (nbSortsTotal * plusHautNiveau);
+      let niveauxUtilises = 0;
+      if (newSorts.niv1 > 0) niveauxUtilises++;
+      if (newSorts.niv2 > 0) niveauxUtilises++;
+      if (newSorts.niv3 > 0) niveauxUtilises++;
+      if (newSorts.niv4 > 0) niveauxUtilises++;
+      nouveauxPierres = 10 + (niveauxUtilises * 2);
     }
     
     setFormData({ 
