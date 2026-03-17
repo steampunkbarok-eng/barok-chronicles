@@ -192,28 +192,47 @@ const Factions = () => {
         .select()
         .single();
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error("Erreur DB:", dbError);
+        throw new Error(`Erreur base de données: ${dbError.message}`);
+      }
 
-      // Envoyer les emails
-      const { data: emailData, error: emailError } = await supabase.functions.invoke('send-faction-email', {
-        body: {
-          factionName: nouvelleFaction.nom,
-          contactEmail: nouvelleFaction.contactEmail,
-          marques: {
-            total: nouvelleFaction.marquesTotal,
-            disponibles: nouvelleFaction.marquesDisponibles
+      // Faction sauvegardée avec succès, maintenant envoyer les emails (non-bloquant)
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        
+        const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-faction-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': supabaseKey,
           },
-          propriete: nouvelleFaction.propriete || null,
-          batiment: nouvelleFaction.batiment,
-          titres: nouvelleFaction.titres,
-          descriptionCourte: nouvelleFaction.descriptionCourte,
-          background: nouvelleFaction.background
-        }
-      });
+          body: JSON.stringify({
+            factionName: nouvelleFaction.nom,
+            contactEmail: nouvelleFaction.contactEmail,
+            marques: {
+              total: nouvelleFaction.marquesTotal,
+              disponibles: nouvelleFaction.marquesDisponibles
+            },
+            propriete: nouvelleFaction.propriete || null,
+            batiment: nouvelleFaction.batiment,
+            titres: nouvelleFaction.titres,
+            descriptionCourte: nouvelleFaction.descriptionCourte,
+            background: nouvelleFaction.background
+          })
+        });
 
-      if (emailError) {
-        console.error("Erreur d'envoi d'email:", emailError);
-        toast.error("La faction a été créée mais l'envoi d'email a échoué");
+        if (!emailResponse.ok) {
+          const errorText = await emailResponse.text();
+          console.error("Erreur d'envoi d'email:", errorText);
+          toast.error(language === 'en'
+            ? "Faction created but email sending failed"
+            : "Faction créée mais l'envoi d'email a échoué");
+        }
+      } catch (emailErr) {
+        console.error("Erreur d'envoi d'email:", emailErr);
+        // Ne pas bloquer - la faction est déjà sauvegardée
       }
 
       setFactions([...factions, nouvelleFaction]);
@@ -237,7 +256,7 @@ const Factions = () => {
       
       // Ouvrir le PDF de la faction
       openFactionSheet(nouvelleFaction, language);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de la sauvegarde:", error);
       toast.error(language === 'en' 
         ? "An error occurred while creating the faction" 
