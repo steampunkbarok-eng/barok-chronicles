@@ -528,7 +528,7 @@ const Personnages = () => {
     setShowForm(false);
   };
 
-  const sauvegarderPersonnage = () => {
+  const sauvegarderPersonnage = async () => {
     if (!formData.nomTO.trim() || !formData.nomTI.trim()) {
       toast.error("Les noms TO et TI sont requis");
       return;
@@ -585,7 +585,43 @@ const Personnages = () => {
     });
     setRecapitulatif([]);
     
-    toast.success("Personnage créé avec succès !");
+    toast.success(
+      language === "en"
+        ? "Character created successfully! Emails have been sent."
+        : "Personnage créé avec succès ! Les emails ont été envoyés."
+    );
+
+    // Envoi d'email non-bloquant
+    try {
+      const { error: emailError } = await supabase.functions.invoke("send-character-email", {
+        body: {
+          nomTO: nouveauPersonnage.nomTO,
+          nomTI: nouveauPersonnage.nomTI,
+          contactEmail: nouveauPersonnage.email,
+          faction: nouveauPersonnage.faction,
+          espece: nouveauPersonnage.espece,
+          origine: nouveauPersonnage.origine,
+          pv: nouveauPersonnage.pv,
+          pa: nouveauPersonnage.pa,
+          scoreBagarre: nouveauPersonnage.scoreBagarre,
+          abime: nouveauPersonnage.abime,
+          abimeMax: nouveauPersonnage.abimeMax,
+          pierresDeVie: nouveauPersonnage.pierresDeVie,
+          foi: nouveauPersonnage.foi,
+          competences: nouveauPersonnage.competences,
+          sorts: nouveauPersonnage.sorts,
+          pointsCreation: nouveauPersonnage.pointsCreation,
+          pointsDepenses: nouveauPersonnage.pointsDepenses,
+        },
+      });
+
+      if (emailError) {
+        console.error("Erreur d'envoi d'email personnage:", emailError);
+      }
+    } catch (emailErr) {
+      console.error("Erreur d'envoi d'email personnage:", emailErr);
+      // Ne pas bloquer - le personnage est déjà sauvegardé
+    }
   };
 
   // Grouper les compétences par catégorie
@@ -1143,6 +1179,14 @@ const Personnages = () => {
                           afficherSortilleges: perso.afficherSortilleges || false
                         }}
                       />
+                      <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                        <p className="text-xs text-amber-700 dark:text-amber-300">
+                          {language === 'en' 
+                            ? "Remember to print and save your character sheet yourself. You can use the button above to download it as PDF."
+                            : "N'oubliez pas d'imprimer et de sauvegarder vous-même votre fiche de personnage. Vous pouvez utiliser le bouton ci-dessus pour la télécharger en PDF."}
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
