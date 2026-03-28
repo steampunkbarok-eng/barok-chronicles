@@ -378,6 +378,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       </div>
     </div>
 
+    <div style="page-break-inside: avoid;">
     <h2>${t('sheet.sequelae')}</h2>
     <div class="empty-boxes">
       <div class="empty-box">
@@ -395,6 +396,7 @@ export const CharacterSheet = ({ character }: CharacterSheetProps) => {
       <div class="empty-box">
         <div class="empty-box-label">5.</div>
       </div>
+    </div>
     </div>
 
     <h2>${t('sheet.diseases')}</h2>
