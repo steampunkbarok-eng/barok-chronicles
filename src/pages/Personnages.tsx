@@ -1179,6 +1179,14 @@ const Personnages = () => {
                           afficherSortilleges: perso.afficherSortilleges || false
                         }}
                       />
+                      <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                        <p className="text-xs text-amber-700 dark:text-amber-300">
+                          {language === 'en' 
+                            ? "Remember to print and save your character sheet yourself. You can use the button above to download it as PDF."
+                            : "N'oubliez pas d'imprimer et de sauvegarder vous-même votre fiche de personnage. Vous pouvez utiliser le bouton ci-dessus pour la télécharger en PDF."}
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
