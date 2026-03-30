@@ -323,9 +323,14 @@ const Personnages = () => {
       return;
     }
 
-    // Vérifier les prérequis
+    // Vérifier les prérequis (en tenant compte des compétences gratuites d'espèce)
     if (competence.prerequis) {
-      const prerequisExiste = formData.competences.some(c => c.nom === competence.prerequis);
+      const especeData = formData.espece ? especes.find(e => e.nom === formData.espece) : null;
+      const competencesGratuitesEspece = especeData 
+        ? especeData.gratuit.split('+').map(s => s.trim()).filter(s => s !== "Aucun")
+        : [];
+      const prerequisExiste = formData.competences.some(c => c.nom === competence.prerequis) ||
+        competencesGratuitesEspece.some(g => competence.prerequis!.toLowerCase().includes(g.toLowerCase()) || g.toLowerCase().includes(competence.prerequis!.toLowerCase()));
       if (!prerequisExiste) {
         toast.error(`Prérequis manquant: ${competence.prerequis}`);
         return;
