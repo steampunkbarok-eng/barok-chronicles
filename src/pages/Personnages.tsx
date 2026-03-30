@@ -329,9 +329,28 @@ const Personnages = () => {
       const competencesGratuitesEspece = especeData 
         ? especeData.gratuit.split('+').map(s => s.trim()).filter(s => s !== "Aucun")
         : [];
-      const prerequisExiste = formData.competences.some(c => c.nom === competence.prerequis) ||
-        competencesGratuitesEspece.some(g => competence.prerequis!.toLowerCase().includes(g.toLowerCase()) || g.toLowerCase().includes(competence.prerequis!.toLowerCase()));
-      if (!prerequisExiste) {
+      
+      // Table de correspondance abréviations espèce → noms complets compétences
+      const abreviationsMap: Record<string, string> = {
+        "Alphab. avancée": "Alphabétisation avancée",
+        "Détection Magie": "Détection naturelle magie",
+        "Résistance Flatterie": "Résistance à la flatterie",
+        "Chasseur": "Chasseur niv.1",
+        "Sauvage": "Sauvage niv.1",
+        "Crochetage": "Crochetage niv.1",
+      };
+      
+      // Résoudre les noms complets des compétences gratuites d'espèce
+      const competencesGratuitesResolues = competencesGratuitesEspece.map(g => abreviationsMap[g] || g);
+      
+      // Vérifier chaque prérequis (supporte les prérequis multiples séparés par " + ")
+      const prerequisList = competence.prerequis.split('+').map(p => p.trim());
+      const tousPrerequisOk = prerequisList.every(prereq => 
+        formData.competences.some(c => c.nom === prereq) ||
+        competencesGratuitesResolues.some(g => g === prereq)
+      );
+      
+      if (!tousPrerequisOk) {
         toast.error(`Prérequis manquant: ${competence.prerequis}`);
         return;
       }
