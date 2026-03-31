@@ -616,6 +616,46 @@ const Personnages = () => {
         : "Personnage créé avec succès ! Les emails ont été envoyés."
     );
 
+    // Générer la fiche de personnage HTML complète pour l'email
+    const especeData = especes.find(e => e.nom === nouveauPersonnage.espece);
+    const factionData = factions.find(f => f.nom === nouveauPersonnage.faction);
+    const factionInterdit = (() => {
+      if (!factionData || !factionData.titres) return 'Aucun';
+      const interdits: string[] = [];
+      factionData.titres.forEach(titreNom => {
+        const titre = titresCarrieres.find(tc => tc.nom === titreNom);
+        if (titre && titre.incompatible) {
+          const incompatibles = titre.incompatible.split(',').map(s => s.trim());
+          interdits.push(...incompatibles);
+        }
+      });
+      return interdits.length > 0 ? interdits.join(' + ') : 'Aucun';
+    })();
+
+    const sheetHTML = generateCharacterSheetHTML({
+      nom: nouveauPersonnage.nomTI,
+      prenom: nouveauPersonnage.nomTO,
+      faction: nouveauPersonnage.faction || (language === 'en' ? 'None' : 'Aucune'),
+      espece: nouveauPersonnage.espece,
+      competences: nouveauPersonnage.competences.map(c => c.nom),
+      pvTotal: nouveauPersonnage.pv,
+      paTotal: nouveauPersonnage.pa,
+      scoreBagarre: nouveauPersonnage.scoreBagarre,
+      email: nouveauPersonnage.email,
+      pierresDeVie: nouveauPersonnage.pierresDeVie,
+      abime: nouveauPersonnage.abime,
+      goOrigine: nouveauPersonnage.goOrigine,
+      especeGratuit: especeData?.gratuit,
+      especeInterdit: especeData?.interdit,
+      factionInterdit: factionInterdit,
+      sorts: nouveauPersonnage.sorts,
+      afficherSortilleges: nouveauPersonnage.afficherSortilleges,
+    }, language, t);
+
+    // Extraire uniquement le contenu du body pour l'email (pas le DOCTYPE/head)
+    const bodyMatch = sheetHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    const sheetBodyHTML = bodyMatch ? bodyMatch[1] : sheetHTML;
+
     // Envoi d'email non-bloquant
     try {
       const { error: emailError } = await supabase.functions.invoke("send-character-email", {
@@ -637,6 +677,7 @@ const Personnages = () => {
           sorts: nouveauPersonnage.sorts,
           pointsCreation: nouveauPersonnage.pointsCreation,
           pointsDepenses: nouveauPersonnage.pointsDepenses,
+          characterSheetHTML: sheetBodyHTML,
         },
       });
 
