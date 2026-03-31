@@ -169,13 +169,26 @@ const Personnages = () => {
           baseAbimeMax = 0;
         }
 
-        // Calculer les bonus d'armure
+        // Calculer les bonus d'armure et d'endurance
         let bonusPA = 0;
+        let bonusPV = 0;
         formData.competences.forEach(comp => {
           if (comp.nom === "Armure niv.1" || comp.nom === "Armure niv.2" || comp.nom === "Armure niv.3") {
             bonusPA += 1;
           }
+          if (comp.nom === "Endurance accrue") {
+            bonusPV += 1;
+          }
         });
+
+        // Vérifier aussi si Endurance accrue est gratuite pour l'espèce
+        const gratuits = especeData.gratuit.split('+').map(s => s.trim());
+        const enduranceGratuite = gratuits.some(g => g === "Endurance accrue");
+        if (enduranceGratuite && !formData.competences.some(c => c.nom === "Endurance accrue")) {
+          bonusPV += 1;
+        }
+
+        basePV += bonusPV;
 
         // Calculer le score de bagarre
         let scoreBagarre = basePV;
