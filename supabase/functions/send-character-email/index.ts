@@ -29,6 +29,7 @@ interface CharacterEmailRequest {
   sorts: { niv1: number; niv2: number; niv3: number; niv4: number };
   pointsCreation: number;
   pointsDepenses: number;
+  characterSheetHTML: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -58,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
         </div>`
       : '';
 
-    // Email admin avec détails complets
+    // Email admin avec détails complets (résumé pour l'admin)
     const adminHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
         <div style="background-color: #6B1836; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
@@ -92,8 +93,31 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-    // Email de confirmation pour le joueur
-    const userHtml = `
+    // Email joueur : la fiche de personnage complète en HTML
+    const userHtml = data.characterSheetHTML
+      ? `
+      <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+        <div style="background-color: #6B1836; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+          <h1 style="margin: 0;">Votre Fiche de Personnage - Barok GN</h1>
+        </div>
+        <div style="background-color: white; padding: 20px; border-radius: 0 0 8px 8px;">
+          <p>Bonjour,</p>
+          <p>Votre personnage <strong>${data.nomTI}</strong> (${data.nomTO}) a été créé avec succès. Vous trouverez ci-dessous votre fiche de personnage complète.</p>
+          <div style="margin: 20px 0; padding: 15px; background: #FFF3CD; border: 1px solid #FFD700; border-radius: 8px;">
+            <p style="margin: 0; font-weight: bold;">📋 Important :</p>
+            <p style="margin: 5px 0 0;">Nous vous recommandons d'imprimer cette fiche depuis votre email (Fichier → Imprimer ou Ctrl+P) pour obtenir votre fiche au format PDF.</p>
+          </div>
+        </div>
+        <div style="margin-top: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+          ${data.characterSheetHTML}
+        </div>
+        <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+          <p>Barok GN - Système de gestion de fiches pour JDRGN</p>
+          <p>À bientôt dans l'univers de Barok !</p>
+        </div>
+      </div>
+      `
+      : `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
         <div style="background-color: #6B1836; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
           <h1 style="margin: 0;">Votre Personnage a été créé !</h1>
@@ -101,19 +125,12 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="background-color: white; padding: 30px; border-radius: 0 0 8px 8px;">
           <p>Bonjour,</p>
           <p>Votre personnage <strong>${data.nomTI}</strong> (${data.nomTO}) a été créé avec succès dans le système Barok GN.</p>
-          <div style="margin: 20px 0; padding: 15px; background: #FFF3CD; border: 1px solid #FFD700; border-radius: 8px;">
-            <p style="margin: 0; font-weight: bold;">📋 Important :</p>
-            <p style="margin: 5px 0 0;">N'oubliez pas d'imprimer et de sauvegarder votre fiche de personnage. Vous pouvez la télécharger depuis l'outil de création de personnage.</p>
-          </div>
           <p>Les organisateurs ont reçu les détails de votre personnage et vous contacteront si nécessaire.</p>
           <p style="margin-top: 30px;">À bientôt dans l'univers de Barok !</p>
           <p><em>L'équipe Barok GN</em></p>
         </div>
-        <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
-          <p>Barok GN - Système de gestion de fiches pour JDRGN</p>
-        </div>
       </div>
-    `;
+      `;
 
     const results = { adminEmail: null as any, userEmail: null as any, userEmailFallback: null as any };
 
@@ -135,7 +152,7 @@ const handler = async (req: Request): Promise<Response> => {
       results.userEmail = await resend.emails.send({
         from: "Barok GN <onboarding@resend.dev>",
         to: [data.contactEmail],
-        subject: `Confirmation de création - Personnage ${data.nomTI}`,
+        subject: `Votre Fiche de Personnage - ${data.nomTI} (Barok GN)`,
         html: userHtml,
       });
       console.log("User email sent:", JSON.stringify(results.userEmail));
@@ -150,12 +167,12 @@ const handler = async (req: Request): Promise<Response> => {
         results.userEmailFallback = await resend.emails.send({
           from: "Barok GN <onboarding@resend.dev>",
           to: [ADMIN_EMAIL],
-          subject: `⚠️ À TRANSFÉRER à ${data.contactEmail} - Confirmation Personnage ${data.nomTI}`,
+          subject: `⚠️ À TRANSFÉRER à ${data.contactEmail} - Fiche Personnage ${data.nomTI}`,
           html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px;">
               <div style="background: #FFF3CD; border: 1px solid #FFD700; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                 <p style="margin: 0; font-weight: bold;">⚠️ L'envoi direct à ${data.contactEmail} a échoué.</p>
-                <p style="margin: 5px 0 0;">Merci de transférer cet email de confirmation au joueur.</p>
+                <p style="margin: 5px 0 0;">Merci de transférer cet email avec la fiche de personnage au joueur.</p>
               </div>
               ${userHtml}
             </div>
