@@ -16,6 +16,7 @@ import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translateGameData } from "@/i18n/gameData";
+import { generateCharacterSheetHTML } from "@/utils/characterSheetHTML";
 
 interface Personnage {
   id: string;
