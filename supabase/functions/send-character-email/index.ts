@@ -137,7 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
     // 1. Email admin
     try {
       results.adminEmail = await resend.emails.send({
-        from: "Barok GN <onboarding@resend.dev>",
+        from: "Barok GN <noreply@steampunk-barok.fr>",
         to: [ADMIN_EMAIL],
         subject: `Nouveau Personnage: ${data.nomTI} (${data.nomTO})`,
         html: adminHtml,
