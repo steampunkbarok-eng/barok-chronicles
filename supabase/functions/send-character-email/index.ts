@@ -150,7 +150,7 @@ const handler = async (req: Request): Promise<Response> => {
     // 2. Tenter l'envoi direct au joueur
     try {
       results.userEmail = await resend.emails.send({
-        from: "Barok GN <onboarding@resend.dev>",
+        from: "Barok GN <noreply@steampunk-barok.fr>",
         to: [data.contactEmail],
         subject: `Votre Fiche de Personnage - ${data.nomTI} (Barok GN)`,
         html: userHtml,
