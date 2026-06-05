@@ -316,6 +316,84 @@ const Personnages = () => {
     setRecapitulatif(recap);
   };
 
+  // Table de correspondance abréviations espèce -> noms complets de compétences
+  const abreviationsCompetencesMap: Record<string, string> = {
+    "Alphab. avancée": "Alphabétisation avancée",
+    "Détection Magie": "Détection naturelle magie",
+    "Résistance Flatterie": "Résistance à la flatterie",
+    "Chasseur": "Chasseur niv.1",
+    "Sauvage": "Sauvage niv.1",
+    "Crochetage": "Crochetage niv.1",
+    "Navigation": "Navigation niv.1",
+    "Rumeurs": "Rumeurs niv.1",
+    "Transcendance": "Transcendance niv.1",
+    "Alchimie": "Alchimiste",
+  };
+
+  // Calcule les compétences gratuites d'une espèce (avec leurs prérequis résolus récursivement)
+  const calculerCompetencesGratuitesEspece = (especeNom: string): { nom: string; cout: number }[] => {
+    const especeData = especes.find(e => e.nom === especeNom);
+    if (!especeData || !especeData.gratuit || especeData.gratuit === "Aucun") return [];
+
+    const resolved = new Set<string>();
+
+    const ajouterAvecPrerequis = (rawName: string) => {
+      // Enlever toute partie entre parenthèses, normaliser
+      const base = rawName.replace(/\s*\(.*?\)\s*/g, "").trim();
+      if (!base || base === "Aucun") return;
+      const mapped = abreviationsCompetencesMap[base] || base;
+      const comp = competencesDisponibles.find(c => c.nom === mapped);
+      if (!comp) return; // ignore tokens qui ne sont pas des compétences (titres, items, écoles, etc.)
+      if (resolved.has(comp.nom)) return;
+      resolved.add(comp.nom);
+      if (comp.prerequis) {
+        comp.prerequis.split('+').map(p => p.trim()).forEach(p => ajouterAvecPrerequis(p));
+      }
+    };
+
+    especeData.gratuit.split(' + ').forEach(token => ajouterAvecPrerequis(token));
+
+    return Array.from(resolved).map(nom => ({ nom, cout: 0 }));
+  };
+
+  // Calcule les pierres de vie générées par une liste de compétences (depuis 0)
+  const calculerPierresDeVie = (comps: { nom: string }[]): number => {
+    let pierres = 0;
+    const hasTisseur = comps.some(c => c.nom === "Tisseur");
+    const hasClerc = comps.some(c => c.nom === "Clerc");
+    if (hasTisseur) pierres += 10;
+    if (hasClerc) pierres += 10;
+    if (comps.some(c => c.nom === "Cérémonialiste")) pierres += 10;
+    if (comps.some(c => c.nom === "Ritualiste")) pierres += 10;
+    if (comps.some(c => c.nom === "Initié")) pierres += 20;
+    if (comps.some(c => c.nom === "Transcendance niv.1")) pierres += 2;
+    if (comps.some(c => c.nom === "Transcendance niv.2")) pierres += 4;
+    if (comps.some(c => c.nom === "Transcendance niv.3")) pierres += 8;
+    return pierres;
+  };
+
+  const changerEspece = (nouvelleEspece: string) => {
+    if (nouvelleEspece === formData.espece) return;
+    const compsGratuites = calculerCompetencesGratuitesEspece(nouvelleEspece);
+    const pierres = calculerPierresDeVie(compsGratuites);
+    const nbGratuitesDispo = formData.nbEvenements * 2;
+    // Les compétences gratuites d'espèce ne consomment ni points ni compétences gratuites d'événement
+    setFormData({
+      ...formData,
+      espece: nouvelleEspece,
+      competences: compsGratuites,
+      pointsDepenses: 0,
+      competencesGratuitesUtilisees: 0,
+      niveauxSortsGratuitsUtilises: 0,
+      sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
+      pierresDeVie: pierres,
+      chamanismeTatoueur: "",
+    });
+    if (compsGratuites.length > 0) {
+      toast.success(`${compsGratuites.length} compétence(s) gratuite(s) ajoutée(s) pour ${nouvelleEspece}`);
+    }
+  };
+
   const ajouterCompetence = (nomComp: string) => {
     const competence = competencesDisponibles.find(c => c.nom === nomComp);
     if (!competence) return;
@@ -815,7 +893,7 @@ const Personnages = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="espece">{t('characters.species')}</Label>
-                    <Select value={formData.espece} onValueChange={(value) => setFormData({ ...formData, espece: value })}>
+                    <Select value={formData.espece} onValueChange={changerEspece}>
                       <SelectTrigger>
                         <SelectValue placeholder={t('characters.speciesPlaceholder')} />
                       </SelectTrigger>
