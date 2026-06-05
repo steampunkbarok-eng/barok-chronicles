@@ -893,7 +893,7 @@ const Personnages = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="espece">{t('characters.species')}</Label>
-                    <Select value={formData.espece} onValueChange={(value) => setFormData({ ...formData, espece: value })}>
+                    <Select value={formData.espece} onValueChange={changerEspece}>
                       <SelectTrigger>
                         <SelectValue placeholder={t('characters.speciesPlaceholder')} />
                       </SelectTrigger>
