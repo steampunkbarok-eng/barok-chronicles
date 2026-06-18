@@ -900,7 +900,7 @@ const Personnages = () => {
                       <SelectContent className="max-h-[400px]">
                         <SelectGroup>
                           <SelectLabel>{t('characters.speciesStandard')}</SelectLabel>
-                          {especes.slice(0, 32).map((esp) => (
+                          {especes.slice(0, 22).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
@@ -912,7 +912,7 @@ const Personnages = () => {
                         </SelectGroup>
                         <SelectGroup>
                           <SelectLabel className="text-primary font-bold">{t('characters.speciesSpecial')}</SelectLabel>
-                          {especes.slice(32).map((esp) => (
+                          {especes.slice(22).map((esp) => (
                             <SelectItem key={esp.nom} value={esp.nom}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{translateGameData(esp.nom, 'espece', language)}</span>
