@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ArrowLeft, Scroll, Plus, X, Save, AlertCircle, Info } from "lucide-react";
 import { toast } from "sonner";
 import { especes } from "@/data/especes";
+import { glandesDraconiques } from "@/data/glandesDraconiques";
 import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,6 +45,7 @@ interface Personnage {
   competencesGratuitesUtilisees: number;
   niveauxSortsGratuitsUtilises: number;
   chamanismeTatoueur: string;
+  glandeDraconique?: string;
 }
 
 const Personnages = () => {
@@ -77,7 +79,8 @@ const Personnages = () => {
     afficherSortilleges: false,
     competencesGratuitesUtilisees: 0,
     niveauxSortsGratuitsUtilises: 0,
-    chamanismeTatoueur: ""
+    chamanismeTatoueur: "",
+    glandeDraconique: ""
   });
 
   // Calculer le coût des sorts
@@ -388,6 +391,7 @@ const Personnages = () => {
       sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
       pierresDeVie: pierres,
       chamanismeTatoueur: "",
+      glandeDraconique: nouvelleEspece === "Draconide" ? formData.glandeDraconique : "",
     });
     if (compsGratuites.length > 0) {
       toast.success(`${compsGratuites.length} compétence(s) gratuite(s) ajoutée(s) pour ${nouvelleEspece}`);
