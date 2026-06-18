@@ -29,5 +29,6 @@ export const titresCarrieres: Titre[] = [
   { nom: "Porteur de Rune", cout: 2, incompatible: "Capitaine Navire, Capitaine Navire-Volant, Ordre Chevaliers Suie (LAM), Planaire, Pirate, Mercenaire Peau-olive, Agent d'une ONG", prerequis: "Nains/Gnomes/Sautaises + Forgeron" },
   { nom: "Prévôt du Crépuscule", cout: 2, incompatible: "Corsaire elfique, Enquêteur, Garde du Corps, Greffier, Magistrat, Mercenaire Peau-olive", prerequis: "Filouterie" },
   { nom: "Sectaire ésotérico-magique", cout: 2, incompatible: "Adepte, Garde du Corps, Ordre Chevaliers Suie (LAM)", prerequis: "Mystique"},
-  { nom: "Sergent de l'ombre", cout: 2, incompatible: "Corsaire elfique, Garde du Corps, Greffier, Mercenaire Peau-olive, Milicien, Magistrat, Enquêteur Public", prerequis: "Filouterie + deux compétences Martiales"}
+  { nom: "Sergent de l'ombre", cout: 2, incompatible: "Corsaire elfique, Garde du Corps, Greffier, Mercenaire Peau-olive, Milicien, Magistrat, Enquêteur Public", prerequis: "Filouterie + deux compétences Martiales"},
+  { nom: "Semence de Dragon", cout: 2, incompatible: "Ordre Chevaliers Suie (LAM), École du Mécanarcanum", prerequis: "Espèce Draconide + Background validé par l'Orga (envoi 2 mois avant le GN avec type de glandes)" }
 ];

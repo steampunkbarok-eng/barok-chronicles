@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ArrowLeft, Scroll, Plus, X, Save, AlertCircle, Info } from "lucide-react";
 import { toast } from "sonner";
 import { especes } from "@/data/especes";
+import { glandesDraconiques } from "@/data/glandesDraconiques";
 import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,6 +45,7 @@ interface Personnage {
   competencesGratuitesUtilisees: number;
   niveauxSortsGratuitsUtilises: number;
   chamanismeTatoueur: string;
+  glandeDraconique?: string;
 }
 
 const Personnages = () => {
@@ -77,7 +79,8 @@ const Personnages = () => {
     afficherSortilleges: false,
     competencesGratuitesUtilisees: 0,
     niveauxSortsGratuitsUtilises: 0,
-    chamanismeTatoueur: ""
+    chamanismeTatoueur: "",
+    glandeDraconique: ""
   });
 
   // Calculer le coût des sorts
@@ -388,6 +391,7 @@ const Personnages = () => {
       sorts: { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
       pierresDeVie: pierres,
       chamanismeTatoueur: "",
+      glandeDraconique: nouvelleEspece === "Draconide" ? formData.glandeDraconique : "",
     });
     if (compsGratuites.length > 0) {
       toast.success(`${compsGratuites.length} compétence(s) gratuite(s) ajoutée(s) pour ${nouvelleEspece}`);
@@ -925,6 +929,46 @@ const Personnages = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {formData.espece === "Draconide" && (
+                    <div className="space-y-2 p-3 border-2 border-primary/40 rounded-md bg-primary/5">
+                      <Label htmlFor="glande" className="font-bold text-primary">
+                        Type de glandes draconiques (obligatoire)
+                      </Label>
+                      <Select
+                        value={formData.glandeDraconique || ""}
+                        onValueChange={(value) => setFormData({ ...formData, glandeDraconique: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choisir la couleur de vos glandes…" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[400px]">
+                          {glandesDraconiques.map((g) => (
+                            <SelectItem key={g.couleur} value={g.couleur}>
+                              <div className="flex flex-col">
+                                <span className="font-medium">{g.couleur} — {g.crachat} ({g.annonce})</span>
+                                <span className="text-xs text-muted-foreground">Résistance : {g.resistance}</span>
+                                <span className="text-xs text-destructive">Sensibilité ×2 : {g.sensibilite}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {formData.glandeDraconique && (() => {
+                        const g = glandesDraconiques.find(x => x.couleur === formData.glandeDraconique);
+                        return g?.note ? (
+                          <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
+                            <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
+                            {g.note}
+                          </p>
+                        ) : null;
+                      })()}
+                      <p className="text-xs text-muted-foreground italic">
+                        Choix définitif à la création. Background à envoyer 2 mois avant le GN à steampunk.barok@gmail.com.
+                      </p>
+                    </div>
+                  )}
+
 
                   <div className="space-y-2">
                     <Label htmlFor="origine">{t('characters.origin')}</Label>
