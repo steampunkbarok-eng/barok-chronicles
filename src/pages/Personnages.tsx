@@ -979,7 +979,8 @@ const Personnages = () => {
                           "Parlos": 12,
                           "Îles éparses": 6,
                           "Nations du Dominion": 6,
-                          "Nations extérieures": 6
+                          "Nations extérieures": 6,
+                          "Extraplanaire": 2
                         };
                         setFormData({ 
                           ...formData, 
@@ -996,6 +997,7 @@ const Personnages = () => {
                         <SelectItem value="Îles éparses">{translateGameData("Îles éparses", 'origine', language)} (6 GO)</SelectItem>
                         <SelectItem value="Nations du Dominion">{translateGameData("Nations du Dominion", 'origine', language)} (6 GO)</SelectItem>
                         <SelectItem value="Nations extérieures">{translateGameData("Nations extérieures", 'origine', language)} (6 GO)</SelectItem>
+                        <SelectItem value="Extraplanaire">{translateGameData("Extraplanaire", 'origine', language)} (2 GO)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

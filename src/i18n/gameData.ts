@@ -517,7 +517,8 @@ export const origineTranslations: Record<string, string> = {
   "Parlos": "Parlos",
   "Îles éparses": "Scattered Islands",
   "Nations du Dominion": "Dominion Nations",
-  "Nations extérieures": "Outer Nations"
+  "Nations extérieures": "Outer Nations",
+  "Extraplanaire": "Extraplanar"
 };
 
 // Traductions des catégories de compétences
