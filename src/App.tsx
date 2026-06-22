@@ -7,6 +7,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Home from "./pages/Home";
 import Factions from "./pages/Factions";
 import Personnages from "./pages/Personnages";
+import Auth from "./pages/Auth";
+import Orga from "./pages/Orga";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/factions" element={<Factions />} />
             <Route path="/personnages" element={<Personnages />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/orga" element={<Orga />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
