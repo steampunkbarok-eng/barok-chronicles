@@ -68,6 +68,89 @@ export type Database = {
         }
         Relationships: []
       }
+      personnage_evolutions: {
+        Row: {
+          auteur: string | null
+          created_at: string
+          description: string
+          id: string
+          personnage_id: string
+          type_evolution: string
+          valeur: number | null
+        }
+        Insert: {
+          auteur?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          personnage_id: string
+          type_evolution: string
+          valeur?: number | null
+        }
+        Update: {
+          auteur?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          personnage_id?: string
+          type_evolution?: string
+          valeur?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personnage_evolutions_personnage_id_fkey"
+            columns: ["personnage_id"]
+            isOneToOne: false
+            referencedRelation: "personnages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      personnages: {
+        Row: {
+          created_at: string
+          data: Json
+          email: string
+          espece: string
+          faction: string | null
+          id: string
+          nom: string
+          notes_orga: string | null
+          prenom: string
+          statut: Database["public"]["Enums"]["personnage_statut"]
+          updated_at: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          email: string
+          espece: string
+          faction?: string | null
+          id?: string
+          nom: string
+          notes_orga?: string | null
+          prenom: string
+          statut?: Database["public"]["Enums"]["personnage_statut"]
+          updated_at?: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          email?: string
+          espece?: string
+          faction?: string | null
+          id?: string
+          nom?: string
+          notes_orga?: string | null
+          prenom?: string
+          statut?: Database["public"]["Enums"]["personnage_statut"]
+          updated_at?: string
+          xp?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -76,7 +159,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      personnage_statut: "brouillon" | "soumis" | "valide" | "archive"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -203,6 +286,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      personnage_statut: ["brouillon", "soumis", "valide", "archive"],
+    },
   },
 } as const
