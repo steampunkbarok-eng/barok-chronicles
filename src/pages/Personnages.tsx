@@ -751,6 +751,25 @@ const Personnages = () => {
     const bodyMatch = sheetHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i);
     const sheetBodyHTML = bodyMatch ? bodyMatch[1] : sheetHTML;
 
+    // Sauvegarde en base de données (non bloquant)
+    try {
+      const { error: dbError } = await supabase.from("personnages").insert({
+        nom: nouveauPersonnage.nomTI,
+        prenom: nouveauPersonnage.nomTO,
+        faction: nouveauPersonnage.faction || null,
+        espece: nouveauPersonnage.espece,
+        email: nouveauPersonnage.email,
+        statut: "soumis",
+        xp: 0,
+        data: nouveauPersonnage as any,
+      });
+      if (dbError) {
+        console.error("Erreur de sauvegarde personnage:", dbError);
+      }
+    } catch (dbErr) {
+      console.error("Erreur de sauvegarde personnage:", dbErr);
+    }
+
     // Envoi d'email non-bloquant
     try {
       const { error: emailError } = await supabase.functions.invoke("send-character-email", {

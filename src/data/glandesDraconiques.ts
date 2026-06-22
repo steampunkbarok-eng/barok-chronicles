@@ -46,7 +46,7 @@ export const glandesDraconiques: GlandeDraconique[] = [
   {
     couleur: "Mauve",
     crachat: "Nécromancie",
-    annonce: "Vampire Kiss (-1 PV loc. touchée, soigné sur le lanceur)",
+    annonce: "Vampire Kiss (-2 PV loc. touchée par un sort de soin ou soignée)",
     resistance: "Nécromancie — régénération uniquement par blessures reçues ou soins nécrotiques",
     sensibilite: "Soins inversés : tout soin ou sort de soin inflige d'office -2 PV par localisation soignée. Sensibilité ×2 à Shock + Blessed et Sleep infligent 2 points de dégâts.",
     note: "Les soins standards blessent (-2 PV/loc) au lieu de soigner. Shock ×2. Blessed et Sleep = 2 dégâts.",
