@@ -26,6 +26,7 @@ const App = () => (
             <Route path="/factions" element={<Factions />} />
             <Route path="/personnages" element={<Personnages />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/mes-personnages" element={<MesPersonnages />} />
             <Route path="/orga" element={<Orga />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
