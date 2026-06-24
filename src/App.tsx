@@ -9,6 +9,7 @@ import Factions from "./pages/Factions";
 import Personnages from "./pages/Personnages";
 import Auth from "./pages/Auth";
 import Orga from "./pages/Orga";
+import MesPersonnages from "./pages/MesPersonnages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
