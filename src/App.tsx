@@ -9,6 +9,7 @@ import Factions from "./pages/Factions";
 import Personnages from "./pages/Personnages";
 import Auth from "./pages/Auth";
 import Orga from "./pages/Orga";
+import MesPersonnages from "./pages/MesPersonnages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/factions" element={<Factions />} />
             <Route path="/personnages" element={<Personnages />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/mes-personnages" element={<MesPersonnages />} />
             <Route path="/orga" element={<Orga />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
