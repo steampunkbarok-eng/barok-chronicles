@@ -90,7 +90,10 @@ const Personnages = () => {
     formData.sorts.niv3 * 3 + 
     formData.sorts.niv4 * 4;
 
-  const pointsRestants = formData.pointsCreation - formData.pointsDepenses - coutSorts;
+  // Le coût des sorts peut être partiellement financé par les niveaux gratuits (événements)
+  const coutSortsPayeEnPoints = Math.max(0, coutSorts - formData.niveauxSortsGratuitsUtilises);
+  const pointsRestants = formData.pointsCreation - formData.pointsDepenses - coutSortsPayeEnPoints;
+  const pointsTotauxDepenses = formData.pointsDepenses + coutSortsPayeEnPoints;
   const niveauxSortsGratuitsDisponibles = formData.nbEvenements * 2;
   const niveauxSortsGratuitsRestants = niveauxSortsGratuitsDisponibles - formData.niveauxSortsGratuitsUtilises;
   const competencesGratuitesDisponibles = formData.nbEvenements * 2;
@@ -290,6 +293,9 @@ const Personnages = () => {
     }
 
     recap.push('');
+    recap.push(`🎯 ${t('summary.pointsUsed')}: ${pointsTotauxDepenses}/${formData.pointsCreation} (${t('summary.skills')}: ${formData.pointsDepenses} | ${t('summary.spells')}: ${coutSortsPayeEnPoints})`);
+
+    recap.push('');
     recap.push(`📊 ${t('summary.stats')}:`);
     recap.push(`   ${t('summary.pvPerLocation')}: ${formData.pv}`);
     recap.push(`   ${t('summary.paPerLocation')}: ${formData.pa}`);
@@ -410,7 +416,7 @@ const Personnages = () => {
 
     // Vérifier les points (points de création OU compétences gratuites)
     // Le coût total utilisé inclut les points dépensés + le coût des sorts
-    const coutTotalUtilise = formData.pointsDepenses + coutSorts;
+    const coutTotalUtilise = formData.pointsDepenses + coutSortsPayeEnPoints;
     const peutUtiliserPointsCreation = coutTotalUtilise + competence.cout <= formData.pointsCreation;
     const peutUtiliserCompetenceGratuite = competencesGratuitesRestantes > 0;
     
@@ -570,44 +576,21 @@ const Personnages = () => {
 
   const handleSortChange = (niveau: 'niv1' | 'niv2' | 'niv3' | 'niv4', newValue: number) => {
     const newSorts = { ...formData.sorts, [niveau]: newValue };
-    const oldCoutSorts = formData.sorts.niv1 * 1 + formData.sorts.niv2 * 2 + formData.sorts.niv3 * 3 + formData.sorts.niv4 * 4;
     const newCoutSorts = newSorts.niv1 * 1 + newSorts.niv2 * 2 + newSorts.niv3 * 3 + newSorts.niv4 * 4;
-    const coutDifference = newCoutSorts - oldCoutSorts;
-    
-    // Calculer combien on peut encore payer avec les points de création
-    const pointsDisponibles = formData.pointsCreation - formData.pointsDepenses;
-    const niveauxGratuitsDisponibles = niveauxSortsGratuitsRestants;
-    
-    // Déterminer comment allouer le coût (niveaux gratuits d'abord si points insuffisants)
-    let nouveauxNiveauxGratuitsUtilises = formData.niveauxSortsGratuitsUtilises;
-    let nouveauxPointsDepenses = formData.pointsDepenses;
-    
-    if (coutDifference > 0) {
-      // Augmentation du coût
-      if (coutDifference > pointsDisponibles) {
-        // Pas assez de points, utiliser les niveaux gratuits
-        const niveauxGratuitsNecessaires = coutDifference - pointsDisponibles;
-        if (niveauxGratuitsNecessaires > niveauxGratuitsDisponibles) {
-          toast.error("Points de création et niveaux gratuits insuffisants !");
-          return;
-        }
-        nouveauxNiveauxGratuitsUtilises += niveauxGratuitsNecessaires;
-        nouveauxPointsDepenses += pointsDisponibles;
-      } else {
-        // Assez de points disponibles
-        nouveauxPointsDepenses += coutDifference;
+
+    // Budget de points restant hors sorts (les compétences ont déjà consommé pointsDepenses)
+    const budgetPoints = formData.pointsCreation - formData.pointsDepenses;
+
+    let nouveauxNiveauxGratuitsUtilises = 0;
+    if (newCoutSorts > budgetPoints) {
+      nouveauxNiveauxGratuitsUtilises = newCoutSorts - budgetPoints;
+      if (nouveauxNiveauxGratuitsUtilises > niveauxSortsGratuitsDisponibles) {
+        toast.error("Points de création et niveaux gratuits insuffisants !");
+        return;
       }
-    } else if (coutDifference < 0) {
-      // Diminution du coût - libérer les niveaux gratuits d'abord (LIFO)
-      const niveauxALiberer = Math.abs(coutDifference);
-      const niveauxGratuitsALiberer = Math.min(niveauxALiberer, formData.niveauxSortsGratuitsUtilises);
-      nouveauxNiveauxGratuitsUtilises -= niveauxGratuitsALiberer;
-      const pointsALiberer = niveauxALiberer - niveauxGratuitsALiberer;
-      nouveauxPointsDepenses -= pointsALiberer;
     }
-    
-    // Recalculer les pierres de vie si Tisseur ou Clerc
-    // +2 pierres par niveau de sort utilisé
+
+    // Recalculer les pierres de vie si Tisseur ou Clerc (+2 par niveau de sort utilisé)
     let nouveauxPierres = formData.pierresDeVie;
     const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
     if (hasTisseurOrClerc) {
@@ -618,17 +601,16 @@ const Personnages = () => {
       if (newSorts.niv4 > 0) niveauxUtilises++;
       nouveauxPierres = 10 + (niveauxUtilises * 2);
     }
-    
-    setFormData({ 
-      ...formData, 
-      sorts: newSorts, 
+
+    setFormData({
+      ...formData,
+      sorts: newSorts,
       pierresDeVie: nouveauxPierres,
-      niveauxSortsGratuitsUtilises: nouveauxNiveauxGratuitsUtilises,
-      pointsDepenses: nouveauxPointsDepenses
+      niveauxSortsGratuitsUtilises: nouveauxNiveauxGratuitsUtilises
     });
-    
-    if (coutDifference > 0 && nouveauxNiveauxGratuitsUtilises > formData.niveauxSortsGratuitsUtilises) {
-      toast.success(`Sort ajouté (niveaux gratuits utilisés) !`);
+
+    if (nouveauxNiveauxGratuitsUtilises > formData.niveauxSortsGratuitsUtilises) {
+      toast.success("Sort ajouté (niveaux gratuits utilisés) !");
     }
   };
 
@@ -1182,6 +1164,7 @@ const Personnages = () => {
                           <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
                           <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
                           <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
+                          <SelectItem value="4">{t('spells.spellCount4')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1200,6 +1183,7 @@ const Personnages = () => {
                           <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
                           <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
                           <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
+                          <SelectItem value="4">{t('spells.spellCount4')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1218,6 +1202,7 @@ const Personnages = () => {
                           <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
                           <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
                           <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
+                          <SelectItem value="4">{t('spells.spellCount4')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1236,6 +1221,7 @@ const Personnages = () => {
                           <SelectItem value="1">{t('spells.spellCount1')}</SelectItem>
                           <SelectItem value="2">{t('spells.spellCount2')}</SelectItem>
                           <SelectItem value="3">{t('spells.spellCount3')}</SelectItem>
+                          <SelectItem value="4">{t('spells.spellCount4')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
