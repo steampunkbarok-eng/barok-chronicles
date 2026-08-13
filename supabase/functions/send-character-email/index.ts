@@ -30,6 +30,7 @@ interface CharacterEmailRequest {
   pointsCreation: number;
   pointsDepenses: number;
   characterSheetHTML: string;
+  pdfBase64?: string | null;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -132,6 +133,11 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
       `;
 
+    const safeName = `${data.nomTI || "personnage"}`.replace(/[^a-zA-Z0-9-_]/g, "_");
+    const attachments = data.pdfBase64
+      ? [{ filename: `Fiche_${safeName}.pdf`, content: data.pdfBase64 }]
+      : undefined;
+
     const results = { adminEmail: null as any, userEmail: null as any, userEmailFallback: null as any };
 
     // 1. Email admin
@@ -141,6 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
         to: [ADMIN_EMAIL],
         subject: `Nouveau Personnage: ${data.nomTI} (${data.nomTO})`,
         html: adminHtml,
+        attachments,
       });
       console.log("Admin email sent:", JSON.stringify(results.adminEmail));
     } catch (e) {
@@ -154,6 +161,7 @@ const handler = async (req: Request): Promise<Response> => {
         to: [data.contactEmail],
         subject: `Votre Fiche de Personnage - ${data.nomTI} (Barok GN)`,
         html: userHtml,
+        attachments,
       });
       console.log("User email sent:", JSON.stringify(results.userEmail));
     } catch (e) {
@@ -168,6 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
           from: "Barok GN <noreply@barok-steampunk.be>",
           to: [ADMIN_EMAIL],
           subject: `⚠️ À TRANSFÉRER à ${data.contactEmail} - Fiche Personnage ${data.nomTI}`,
+          attachments,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px;">
               <div style="background: #FFF3CD; border: 1px solid #FFD700; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
