@@ -138,6 +138,7 @@ export const translations = {
     'summary.spellCount': 'sort(s)',
     'summary.total': 'Total',
     'summary.cost': 'Coût',
+    'summary.pointsUsed': 'Points de création utilisés',
     'summary.stats': 'STATISTIQUES',
     'summary.pvPerLocation': 'PV par localisation',
     'summary.paPerLocation': 'PA par localisation',
@@ -163,6 +164,7 @@ export const translations = {
     'spells.spellCount1': '1 sort',
     'spells.spellCount2': '2 sorts',
     'spells.spellCount3': '3 sorts',
+    'spells.spellCount4': '4 sorts',
     'spells.summary': 'Résumé des sorts',
     
     // Email section (French)
@@ -483,6 +485,7 @@ export const translations = {
     'summary.spellCount': 'spell(s)',
     'summary.total': 'Total',
     'summary.cost': 'Cost',
+    'summary.pointsUsed': 'Creation points used',
     'summary.stats': 'STATISTICS',
     'summary.pvPerLocation': 'HP per location',
     'summary.paPerLocation': 'AP per location',
@@ -508,6 +511,7 @@ export const translations = {
     'spells.spellCount1': '1 spell',
     'spells.spellCount2': '2 spells',
     'spells.spellCount3': '3 spells',
+    'spells.spellCount4': '4 spells',
     'spells.summary': 'Spells summary',
     
     // Email section (English)

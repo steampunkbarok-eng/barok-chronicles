@@ -17,6 +17,7 @@ import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translateGameData } from "@/i18n/gameData";
+import { generateCharacterSheetPdfBase64 } from "@/utils/characterSheetPdf";
 import { generateCharacterSheetHTML } from "@/utils/characterSheetHTML";
 
 interface Personnage {
@@ -733,6 +734,14 @@ const Personnages = () => {
     const bodyMatch = sheetHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i);
     const sheetBodyHTML = bodyMatch ? bodyMatch[1] : sheetHTML;
 
+    // Génération du PDF de la fiche (pièce jointe email, non bloquant)
+    let pdfBase64: string | null = null;
+    try {
+      pdfBase64 = await generateCharacterSheetPdfBase64(sheetHTML);
+    } catch (pdfErr) {
+      console.error("Erreur de génération du PDF:", pdfErr);
+    }
+
     // Sauvegarde en base de données (non bloquant)
     try {
       const { error: dbError } = await supabase.from("personnages").insert({
@@ -772,8 +781,14 @@ const Personnages = () => {
           competences: nouveauPersonnage.competences,
           sorts: nouveauPersonnage.sorts,
           pointsCreation: nouveauPersonnage.pointsCreation,
-          pointsDepenses: nouveauPersonnage.pointsDepenses,
+          pointsDepenses: Math.max(
+            0,
+            nouveauPersonnage.pointsDepenses +
+              (nouveauPersonnage.sorts.niv1 + nouveauPersonnage.sorts.niv2 * 2 + nouveauPersonnage.sorts.niv3 * 3 + nouveauPersonnage.sorts.niv4 * 4) -
+              (nouveauPersonnage.niveauxSortsGratuitsUtilises || 0)
+          ),
           characterSheetHTML: sheetBodyHTML,
+          pdfBase64,
         },
       });
 
