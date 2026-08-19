@@ -106,13 +106,34 @@ const Orga = () => {
     setEvolutions((data as Evolution[]) || []);
   };
 
+  const notify = async (payload: Record<string, unknown>) => {
+    try {
+      await supabase.functions.invoke("notify-personnage", { body: payload });
+    } catch (e) {
+      console.error("Notification échouée:", e);
+    }
+  };
+
   const setStatut = async (id: string, statut: Statut) => {
     const { error } = await supabase.from("personnages").update({ statut }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Statut mis à jour");
+    const p = persos.find((x) => x.id === id) || selected;
+    if (p?.email) {
+      notify({
+        type: "statut",
+        contactEmail: p.email,
+        nomTI: `${p.prenom} ${p.nom}`.trim(),
+        nomTO: p.email,
+        faction: p.faction,
+        statut,
+      });
+      toast.info("Notification envoyée au joueur");
+    }
     loadPersos();
     if (selected?.id === id) setSelected({ ...selected, statut });
   };
+
 
   const deletePerso = async (id: string) => {
     if (!confirm("Supprimer définitivement ce personnage ?")) return;
@@ -160,14 +181,23 @@ const Orga = () => {
     });
     if (error) return toast.error(error.message);
     // Si XP, incrémente le total
+    let xpTotal = selected.xp || 0;
     if (newEvo.type_evolution === "xp" && newEvo.valeur) {
-      await supabase
-        .from("personnages")
-        .update({ xp: (selected.xp || 0) + newEvo.valeur })
-        .eq("id", selected.id);
+      xpTotal = (selected.xp || 0) + newEvo.valeur;
+      await supabase.from("personnages").update({ xp: xpTotal }).eq("id", selected.id);
+    }
+    if (selected.email) {
+      notify({
+        type: "evolution",
+        contactEmail: selected.email,
+        nomTI: `${selected.prenom} ${selected.nom}`.trim(),
+        evolution: { ...newEvo },
+        xpTotal,
+      });
     }
     toast.success("Évolution ajoutée");
     setNewEvo({ type_evolution: "xp", description: "", valeur: 0 });
+
     openPerso(selected);
     loadPersos();
   };
