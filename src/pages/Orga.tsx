@@ -106,13 +106,34 @@ const Orga = () => {
     setEvolutions((data as Evolution[]) || []);
   };
 
+  const notify = async (payload: Record<string, unknown>) => {
+    try {
+      await supabase.functions.invoke("notify-personnage", { body: payload });
+    } catch (e) {
+      console.error("Notification échouée:", e);
+    }
+  };
+
   const setStatut = async (id: string, statut: Statut) => {
     const { error } = await supabase.from("personnages").update({ statut }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Statut mis à jour");
+    const p = persos.find((x) => x.id === id) || selected;
+    if (p?.email) {
+      notify({
+        type: "statut",
+        contactEmail: p.email,
+        nomTI: `${p.prenom} ${p.nom}`.trim(),
+        nomTO: p.email,
+        faction: p.faction,
+        statut,
+      });
+      toast.info("Notification envoyée au joueur");
+    }
     loadPersos();
     if (selected?.id === id) setSelected({ ...selected, statut });
   };
+
 
   const deletePerso = async (id: string) => {
     if (!confirm("Supprimer définitivement ce personnage ?")) return;
