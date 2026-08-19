@@ -181,14 +181,23 @@ const Orga = () => {
     });
     if (error) return toast.error(error.message);
     // Si XP, incrémente le total
+    let xpTotal = selected.xp || 0;
     if (newEvo.type_evolution === "xp" && newEvo.valeur) {
-      await supabase
-        .from("personnages")
-        .update({ xp: (selected.xp || 0) + newEvo.valeur })
-        .eq("id", selected.id);
+      xpTotal = (selected.xp || 0) + newEvo.valeur;
+      await supabase.from("personnages").update({ xp: xpTotal }).eq("id", selected.id);
+    }
+    if (selected.email) {
+      notify({
+        type: "evolution",
+        contactEmail: selected.email,
+        nomTI: `${selected.prenom} ${selected.nom}`.trim(),
+        evolution: { ...newEvo },
+        xpTotal,
+      });
     }
     toast.success("Évolution ajoutée");
     setNewEvo({ type_evolution: "xp", description: "", valeur: 0 });
+
     openPerso(selected);
     loadPersos();
   };
