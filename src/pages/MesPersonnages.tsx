@@ -273,10 +273,15 @@ const MesPersonnages = () => {
                   </Card>
                   <Card className="bg-muted/30">
                     <CardContent className="pt-4">
-                      <p className="text-xs text-muted-foreground">XP</p>
+                      <p className="text-xs text-muted-foreground">XP totale</p>
                       <p className="text-xl font-semibold">{selected.xp}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {depensee} dépensée{depensee > 1 ? "s" : ""} · {reservee} en attente
+                      </p>
+                      <p className="text-sm font-semibold text-primary">{disponible} disponible(s)</p>
                     </CardContent>
                   </Card>
+
                   <Card className="bg-muted/30">
                     <CardContent className="pt-4">
                       <p className="text-xs text-muted-foreground">Soumis le</p>
