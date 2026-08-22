@@ -241,6 +241,51 @@ const Orga = () => {
     if (selected) openPerso(selected);
   };
 
+  const traiterDemande = async (d: DemandeXp, statut: "approuvee" | "refusee") => {
+    const reponse = reponses[d.id]?.trim() || null;
+    const { error } = await supabase
+      .from("demandes_xp")
+      .update({ statut, reponse_orga: reponse, traite_par: userEmail })
+      .eq("id", d.id);
+    if (error) return toast.error(error.message);
+
+    const perso = persos.find((p) => p.id === d.personnage_id) || selected;
+
+    if (statut === "approuvee") {
+      await supabase.from("personnage_evolutions").insert({
+        personnage_id: d.personnage_id,
+        type_evolution: d.type_demande,
+        description: `${d.libelle} acquis (−${d.cout_xp} XP)`,
+        valeur: -d.cout_xp,
+        auteur: userEmail,
+      });
+    }
+
+    if (perso?.email) {
+      notify({
+        type: "demande",
+        contactEmail: perso.email,
+        nomTI: `${perso.prenom} ${perso.nom}`.trim(),
+        evolution: {
+          type_evolution: d.type_demande,
+          description: `Demande ${statut === "approuvee" ? "approuvée" : "refusée"} : ${d.libelle} (${d.cout_xp} XP)${reponse ? ` — ${reponse}` : ""}`,
+          valeur: statut === "approuvee" ? -d.cout_xp : 0,
+        },
+        xpTotal: perso.xp,
+        statut,
+      });
+    }
+
+    toast.success(statut === "approuvee" ? "Demande approuvée" : "Demande refusée");
+    setReponses({ ...reponses, [d.id]: "" });
+    loadDemandesEnAttente();
+    if (selected) {
+      loadDemandes(selected.id);
+      openPerso(selected);
+    }
+  };
+
+
   const logout = async () => {
     await supabase.auth.signOut();
     navigate("/auth");
