@@ -82,6 +82,15 @@ const Orga = () => {
     else setPersos((data as PersoRow[]) || []);
   }, []);
 
+  const loadDemandesEnAttente = useCallback(async () => {
+    const { data } = await supabase
+      .from("demandes_xp")
+      .select("*")
+      .eq("statut", "en_attente")
+      .order("created_at", { ascending: true });
+    setDemandesEnAttente((data as DemandeXp[]) || []);
+  }, []);
+
   useEffect(() => {
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -102,9 +111,19 @@ const Orga = () => {
       }
       setAuthorized(true);
       await loadPersos();
+      await loadDemandesEnAttente();
       setChecking(false);
     })();
-  }, [navigate, loadPersos]);
+  }, [navigate, loadPersos, loadDemandesEnAttente]);
+
+  const loadDemandes = useCallback(async (personnageId: string) => {
+    const { data } = await supabase
+      .from("demandes_xp")
+      .select("*")
+      .eq("personnage_id", personnageId)
+      .order("created_at", { ascending: false });
+    setDemandes((data as DemandeXp[]) || []);
+  }, []);
 
   const openPerso = async (p: PersoRow) => {
     setSelected(p);
@@ -116,7 +135,9 @@ const Orga = () => {
       .eq("personnage_id", p.id)
       .order("created_at", { ascending: false });
     setEvolutions((data as Evolution[]) || []);
+    await loadDemandes(p.id);
   };
+
 
   const notify = async (payload: Record<string, unknown>) => {
     try {
