@@ -69,6 +69,9 @@ const Orga = () => {
   const [editForm, setEditForm] = useState<Partial<PersoRow>>({});
   const [editDataJson, setEditDataJson] = useState("");
   const [newEvo, setNewEvo] = useState({ type_evolution: "xp", description: "", valeur: 0 });
+  const [demandes, setDemandes] = useState<DemandeXp[]>([]);
+  const [reponses, setReponses] = useState<Record<string, string>>({});
+  const [demandesEnAttente, setDemandesEnAttente] = useState<DemandeXp[]>([]);
 
   const loadPersos = useCallback(async () => {
     const { data, error } = await supabase
