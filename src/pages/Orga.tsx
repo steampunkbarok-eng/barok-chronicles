@@ -12,7 +12,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, LogOut, Check, X, Plus, Trash2, ScrollText } from "lucide-react";
+import { ArrowLeft, LogOut, Check, X, Plus, Trash2, ScrollText, Coins } from "lucide-react";
+import {
+  DemandeXp,
+  TypeDemande,
+  labelsTypeDemande,
+  statutDemandeColors,
+  statutDemandeLabels,
+  xpDepensee,
+  xpEnAttente,
+} from "@/data/xpAchats";
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
