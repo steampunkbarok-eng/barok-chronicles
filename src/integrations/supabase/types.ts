@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      demandes_xp: {
+        Row: {
+          cout_xp: number
+          created_at: string
+          id: string
+          justification: string | null
+          libelle: string
+          personnage_id: string
+          reponse_orga: string | null
+          statut: Database["public"]["Enums"]["demande_statut"]
+          traite_par: string | null
+          type_demande: string
+          updated_at: string
+        }
+        Insert: {
+          cout_xp?: number
+          created_at?: string
+          id?: string
+          justification?: string | null
+          libelle: string
+          personnage_id: string
+          reponse_orga?: string | null
+          statut?: Database["public"]["Enums"]["demande_statut"]
+          traite_par?: string | null
+          type_demande: string
+          updated_at?: string
+        }
+        Update: {
+          cout_xp?: number
+          created_at?: string
+          id?: string
+          justification?: string | null
+          libelle?: string
+          personnage_id?: string
+          reponse_orga?: string | null
+          statut?: Database["public"]["Enums"]["demande_statut"]
+          traite_par?: string | null
+          type_demande?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demandes_xp_personnage_id_fkey"
+            columns: ["personnage_id"]
+            isOneToOne: false
+            referencedRelation: "personnages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       factions: {
         Row: {
           background: string | null
@@ -188,6 +238,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "orga" | "user"
+      demande_statut: "en_attente" | "approuvee" | "refusee"
       personnage_statut: "brouillon" | "soumis" | "valide" | "archive"
     }
     CompositeTypes: {
@@ -317,6 +368,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "orga", "user"],
+      demande_statut: ["en_attente", "approuvee", "refusee"],
       personnage_statut: ["brouillon", "soumis", "valide", "archive"],
     },
   },
