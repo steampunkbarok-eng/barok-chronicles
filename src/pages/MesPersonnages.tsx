@@ -71,6 +71,14 @@ const MesPersonnages = () => {
   const [persos, setPersos] = useState<PersoRow[]>([]);
   const [selected, setSelected] = useState<PersoRow | null>(null);
   const [evolutions, setEvolutions] = useState<Evolution[]>([]);
+  const [demandes, setDemandes] = useState<DemandeXp[]>([]);
+  const [nouvelleDemande, setNouvelleDemande] = useState<{
+    type: TypeDemande;
+    libelle: string;
+    cout: number;
+    justification: string;
+  }>({ type: "competence", libelle: "", cout: 0, justification: "" });
+  const [envoi, setEnvoi] = useState(false);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase
@@ -94,15 +102,61 @@ const MesPersonnages = () => {
     })();
   }, [navigate, load]);
 
+  const loadDemandes = useCallback(async (personnageId: string) => {
+    const { data } = await supabase
+      .from("demandes_xp")
+      .select("*")
+      .eq("personnage_id", personnageId)
+      .order("created_at", { ascending: false });
+    setDemandes((data as DemandeXp[]) || []);
+  }, []);
+
   const openPerso = async (p: PersoRow) => {
     setSelected(p);
+    setNouvelleDemande({ type: "competence", libelle: "", cout: 0, justification: "" });
     const { data } = await supabase
       .from("personnage_evolutions")
       .select("*")
       .eq("personnage_id", p.id)
       .order("created_at", { ascending: false });
     setEvolutions((data as Evolution[]) || []);
+    await loadDemandes(p.id);
   };
+
+  const depensee = xpDepensee(demandes);
+  const reservee = xpEnAttente(demandes);
+  const disponible = (selected?.xp || 0) - depensee - reservee;
+
+  const envoyerDemande = async () => {
+    if (!selected) return;
+    const libelle = nouvelleDemande.libelle.trim();
+    if (!libelle) return toast.error("Choisis ou décris ce que tu veux acquérir.");
+    if (nouvelleDemande.cout <= 0) return toast.error("Indique un coût en XP supérieur à 0.");
+    if (nouvelleDemande.cout > disponible) {
+      return toast.error(`XP insuffisante : il te reste ${disponible} XP disponible(s).`);
+    }
+    setEnvoi(true);
+    const { error } = await supabase.from("demandes_xp").insert({
+      personnage_id: selected.id,
+      type_demande: nouvelleDemande.type,
+      libelle,
+      cout_xp: nouvelleDemande.cout,
+      justification: nouvelleDemande.justification || null,
+    });
+    setEnvoi(false);
+    if (error) return toast.error(error.message);
+    toast.success("Demande envoyée à l'organisation");
+    setNouvelleDemande({ type: nouvelleDemande.type, libelle: "", cout: 0, justification: "" });
+    loadDemandes(selected.id);
+  };
+
+  const annulerDemande = async (id: string) => {
+    const { error } = await supabase.from("demandes_xp").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Demande annulée");
+    if (selected) loadDemandes(selected.id);
+  };
+
 
   const logout = async () => {
     await supabase.auth.signOut();
