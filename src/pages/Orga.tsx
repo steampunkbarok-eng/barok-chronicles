@@ -336,7 +336,40 @@ const Orga = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-4">
+        {demandesEnAttente.length > 0 && (
+          <Card className="border-primary/40">
+            <CardHeader className="pb-2">
+              <CardTitle className="font-serif flex items-center gap-2">
+                <Coins className="w-5 h-5 text-primary" /> Demandes d'XP en attente ({demandesEnAttente.length})
+              </CardTitle>
+              <CardDescription>Clique sur un personnage pour traiter ses demandes en détail.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {demandesEnAttente.map((d) => {
+                const p = persos.find((x) => x.id === d.personnage_id);
+                return (
+                  <div
+                    key={d.id}
+                    className="flex flex-wrap items-center gap-2 border border-border rounded p-2 text-sm cursor-pointer"
+                    onClick={() => p && openPerso(p)}
+                  >
+                    <span className="font-medium">{p ? `${p.prenom} ${p.nom}` : "Personnage"}</span>
+                    <Badge variant="outline">
+                      {labelsTypeDemande[d.type_demande as TypeDemande]?.fr || d.type_demande}
+                    </Badge>
+                    <span>{d.libelle}</span>
+                    <span className="text-muted-foreground">— {d.cout_xp} XP</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {new Date(d.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
         <Card>
+
           <CardHeader>
             <div className="flex items-center justify-between flex-wrap gap-2">
               <CardTitle className="font-serif">Personnages ({filtered.length})</CardTitle>
