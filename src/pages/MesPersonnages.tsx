@@ -2,12 +2,27 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, LogOut, ScrollText, Plus, History } from "lucide-react";
+import { ArrowLeft, LogOut, ScrollText, Plus, History, Coins, Trash2 } from "lucide-react";
+import {
+  DemandeXp,
+  TypeDemande,
+  labelsTypeDemande,
+  optionsParType,
+  statutDemandeColors,
+  statutDemandeLabels,
+  xpDepensee,
+  xpEnAttente,
+} from "@/data/xpAchats";
+
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
