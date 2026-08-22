@@ -456,12 +456,16 @@ const Orga = () => {
               </DialogHeader>
 
               <Tabs defaultValue="actions">
-                <TabsList className="grid grid-cols-4">
+                <TabsList className="grid grid-cols-5">
                   <TabsTrigger value="actions">Actions</TabsTrigger>
                   <TabsTrigger value="edit">Éditer fiche</TabsTrigger>
                   <TabsTrigger value="evolutions">Évolutions ({evolutions.length})</TabsTrigger>
+                  <TabsTrigger value="demandes">
+                    Demandes ({demandes.filter((d) => d.statut === "en_attente").length})
+                  </TabsTrigger>
                   <TabsTrigger value="notes">Notes orga</TabsTrigger>
                 </TabsList>
+
 
                 <TabsContent value="actions" className="space-y-3 pt-4">
                   <div className="flex flex-wrap gap-2">
