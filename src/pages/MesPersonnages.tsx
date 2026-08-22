@@ -296,6 +296,137 @@ const MesPersonnages = () => {
                   </Card>
                 </div>
 
+                <Card className="border-primary/30">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="font-serif text-lg flex items-center gap-2">
+                      <Coins className="w-4 h-4 text-primary" /> Dépenser mon XP
+                    </CardTitle>
+                    <CardDescription>
+                      {selected.statut === "valide"
+                        ? "Choisis une acquisition : la demande sera soumise à l'organisation, qui l'approuve ou la refuse."
+                        : "Ta fiche doit être validée par l'organisation avant de pouvoir dépenser de l'XP."}
+                    </CardDescription>
+                  </CardHeader>
+                  {selected.statut === "valide" && (
+                    <CardContent className="space-y-3">
+                      <div className="grid sm:grid-cols-3 gap-3">
+                        <div>
+                          <Label>Type</Label>
+                          <Select
+                            value={nouvelleDemande.type}
+                            onValueChange={(v) =>
+                              setNouvelleDemande({ ...nouvelleDemande, type: v as TypeDemande, libelle: "", cout: 0 })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {(Object.keys(labelsTypeDemande) as TypeDemande[]).map((t) => (
+                                <SelectItem key={t} value={t}>
+                                  {labelsTypeDemande[t].fr}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <Label>Acquisition souhaitée</Label>
+                          {optionsParType[nouvelleDemande.type].length > 0 ? (
+                            <Select
+                              value={nouvelleDemande.libelle}
+                              onValueChange={(v) => {
+                                const opt = optionsParType[nouvelleDemande.type].find((o) => o.libelle === v);
+                                setNouvelleDemande({ ...nouvelleDemande, libelle: v, cout: opt?.cout || 0 });
+                              }}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Sélectionne…" />
+                              </SelectTrigger>
+                              <SelectContent className="max-h-72">
+                                {optionsParType[nouvelleDemande.type].map((o) => (
+                                  <SelectItem key={o.libelle} value={o.libelle}>
+                                    {o.libelle} — {o.cout} XP
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              placeholder="Décris précisément l'acquisition"
+                              value={nouvelleDemande.libelle}
+                              onChange={(e) => setNouvelleDemande({ ...nouvelleDemande, libelle: e.target.value })}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <div className="grid sm:grid-cols-3 gap-3">
+                        <div>
+                          <Label>Coût en XP</Label>
+                          <Input
+                            type="number"
+                            min={1}
+                            value={nouvelleDemande.cout || ""}
+                            onChange={(e) =>
+                              setNouvelleDemande({ ...nouvelleDemande, cout: parseInt(e.target.value) || 0 })
+                            }
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <Label>Justification RP (optionnelle)</Label>
+                          <Textarea
+                            className="h-20"
+                            placeholder="Comment ton personnage a-t-il acquis cela ?"
+                            value={nouvelleDemande.justification}
+                            onChange={(e) =>
+                              setNouvelleDemande({ ...nouvelleDemande, justification: e.target.value })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <Button onClick={envoyerDemande} disabled={envoi || disponible <= 0}>
+                        <Plus className="w-4 h-4 mr-1" />
+                        {disponible <= 0 ? "Aucune XP disponible" : "Envoyer la demande"}
+                      </Button>
+                    </CardContent>
+                  )}
+                </Card>
+
+                <div>
+                  <h3 className="font-serif text-lg mb-2">Mes demandes ({demandes.length})</h3>
+                  <div className="space-y-2">
+                    {demandes.map((d) => (
+                      <div key={d.id} className="border border-border rounded p-2 text-sm">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline">{labelsTypeDemande[d.type_demande as TypeDemande]?.fr || d.type_demande}</Badge>
+                          <span className="font-medium">{d.libelle}</span>
+                          <span className="text-muted-foreground">— {d.cout_xp} XP</span>
+                          <Badge className={statutDemandeColors[d.statut]}>{statutDemandeLabels[d.statut]}</Badge>
+                          <span className="text-xs text-muted-foreground ml-auto">
+                            {new Date(d.created_at).toLocaleDateString()}
+                          </span>
+                          {d.statut === "en_attente" && (
+                            <Button size="sm" variant="ghost" onClick={() => annulerDemande(d.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                        {d.justification && <p className="mt-1 text-muted-foreground">{d.justification}</p>}
+                        {d.reponse_orga && (
+                          <p className="mt-1">
+                            <span className="font-semibold">Réponse orga :</span> {d.reponse_orga}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                    {demandes.length === 0 && (
+                      <p className="text-sm text-muted-foreground text-center py-4">Aucune demande envoyée.</p>
+                    )}
+                  </div>
+                </div>
+
+
+
                 <div>
                   <h3 className="font-serif text-lg flex items-center gap-2 mb-2">
                     <History className="w-4 h-4" /> Historique d'évolutions ({evolutions.length})
