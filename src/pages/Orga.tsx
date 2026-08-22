@@ -12,7 +12,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, LogOut, Check, X, Plus, Trash2, ScrollText } from "lucide-react";
+import { ArrowLeft, LogOut, Check, X, Plus, Trash2, ScrollText, Coins } from "lucide-react";
+import {
+  DemandeXp,
+  TypeDemande,
+  labelsTypeDemande,
+  statutDemandeColors,
+  statutDemandeLabels,
+  xpDepensee,
+  xpEnAttente,
+} from "@/data/xpAchats";
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
@@ -60,6 +69,9 @@ const Orga = () => {
   const [editForm, setEditForm] = useState<Partial<PersoRow>>({});
   const [editDataJson, setEditDataJson] = useState("");
   const [newEvo, setNewEvo] = useState({ type_evolution: "xp", description: "", valeur: 0 });
+  const [demandes, setDemandes] = useState<DemandeXp[]>([]);
+  const [reponses, setReponses] = useState<Record<string, string>>({});
+  const [demandesEnAttente, setDemandesEnAttente] = useState<DemandeXp[]>([]);
 
   const loadPersos = useCallback(async () => {
     const { data, error } = await supabase
@@ -68,6 +80,15 @@ const Orga = () => {
       .order("updated_at", { ascending: false });
     if (error) toast.error(error.message);
     else setPersos((data as PersoRow[]) || []);
+  }, []);
+
+  const loadDemandesEnAttente = useCallback(async () => {
+    const { data } = await supabase
+      .from("demandes_xp")
+      .select("*")
+      .eq("statut", "en_attente")
+      .order("created_at", { ascending: true });
+    setDemandesEnAttente((data as DemandeXp[]) || []);
   }, []);
 
   useEffect(() => {
@@ -90,9 +111,19 @@ const Orga = () => {
       }
       setAuthorized(true);
       await loadPersos();
+      await loadDemandesEnAttente();
       setChecking(false);
     })();
-  }, [navigate, loadPersos]);
+  }, [navigate, loadPersos, loadDemandesEnAttente]);
+
+  const loadDemandes = useCallback(async (personnageId: string) => {
+    const { data } = await supabase
+      .from("demandes_xp")
+      .select("*")
+      .eq("personnage_id", personnageId)
+      .order("created_at", { ascending: false });
+    setDemandes((data as DemandeXp[]) || []);
+  }, []);
 
   const openPerso = async (p: PersoRow) => {
     setSelected(p);
@@ -104,7 +135,9 @@ const Orga = () => {
       .eq("personnage_id", p.id)
       .order("created_at", { ascending: false });
     setEvolutions((data as Evolution[]) || []);
+    await loadDemandes(p.id);
   };
+
 
   const notify = async (payload: Record<string, unknown>) => {
     try {
@@ -208,6 +241,51 @@ const Orga = () => {
     if (selected) openPerso(selected);
   };
 
+  const traiterDemande = async (d: DemandeXp, statut: "approuvee" | "refusee") => {
+    const reponse = reponses[d.id]?.trim() || null;
+    const { error } = await supabase
+      .from("demandes_xp")
+      .update({ statut, reponse_orga: reponse, traite_par: userEmail })
+      .eq("id", d.id);
+    if (error) return toast.error(error.message);
+
+    const perso = persos.find((p) => p.id === d.personnage_id) || selected;
+
+    if (statut === "approuvee") {
+      await supabase.from("personnage_evolutions").insert({
+        personnage_id: d.personnage_id,
+        type_evolution: d.type_demande,
+        description: `${d.libelle} acquis (−${d.cout_xp} XP)`,
+        valeur: -d.cout_xp,
+        auteur: userEmail,
+      });
+    }
+
+    if (perso?.email) {
+      notify({
+        type: "demande",
+        contactEmail: perso.email,
+        nomTI: `${perso.prenom} ${perso.nom}`.trim(),
+        evolution: {
+          type_evolution: d.type_demande,
+          description: `Demande ${statut === "approuvee" ? "approuvée" : "refusée"} : ${d.libelle} (${d.cout_xp} XP)${reponse ? ` — ${reponse}` : ""}`,
+          valeur: statut === "approuvee" ? -d.cout_xp : 0,
+        },
+        xpTotal: perso.xp,
+        statut,
+      });
+    }
+
+    toast.success(statut === "approuvee" ? "Demande approuvée" : "Demande refusée");
+    setReponses({ ...reponses, [d.id]: "" });
+    loadDemandesEnAttente();
+    if (selected) {
+      loadDemandes(selected.id);
+      openPerso(selected);
+    }
+  };
+
+
   const logout = async () => {
     await supabase.auth.signOut();
     navigate("/auth");
@@ -258,7 +336,40 @@ const Orga = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-4">
+        {demandesEnAttente.length > 0 && (
+          <Card className="border-primary/40">
+            <CardHeader className="pb-2">
+              <CardTitle className="font-serif flex items-center gap-2">
+                <Coins className="w-5 h-5 text-primary" /> Demandes d'XP en attente ({demandesEnAttente.length})
+              </CardTitle>
+              <CardDescription>Clique sur un personnage pour traiter ses demandes en détail.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {demandesEnAttente.map((d) => {
+                const p = persos.find((x) => x.id === d.personnage_id);
+                return (
+                  <div
+                    key={d.id}
+                    className="flex flex-wrap items-center gap-2 border border-border rounded p-2 text-sm cursor-pointer"
+                    onClick={() => p && openPerso(p)}
+                  >
+                    <span className="font-medium">{p ? `${p.prenom} ${p.nom}` : "Personnage"}</span>
+                    <Badge variant="outline">
+                      {labelsTypeDemande[d.type_demande as TypeDemande]?.fr || d.type_demande}
+                    </Badge>
+                    <span>{d.libelle}</span>
+                    <span className="text-muted-foreground">— {d.cout_xp} XP</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {new Date(d.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
         <Card>
+
           <CardHeader>
             <div className="flex items-center justify-between flex-wrap gap-2">
               <CardTitle className="font-serif">Personnages ({filtered.length})</CardTitle>
@@ -345,12 +456,16 @@ const Orga = () => {
               </DialogHeader>
 
               <Tabs defaultValue="actions">
-                <TabsList className="grid grid-cols-4">
+                <TabsList className="grid grid-cols-5">
                   <TabsTrigger value="actions">Actions</TabsTrigger>
                   <TabsTrigger value="edit">Éditer fiche</TabsTrigger>
                   <TabsTrigger value="evolutions">Évolutions ({evolutions.length})</TabsTrigger>
+                  <TabsTrigger value="demandes">
+                    Demandes ({demandes.filter((d) => d.statut === "en_attente").length})
+                  </TabsTrigger>
                   <TabsTrigger value="notes">Notes orga</TabsTrigger>
                 </TabsList>
+
 
                 <TabsContent value="actions" className="space-y-3 pt-4">
                   <div className="flex flex-wrap gap-2">
