@@ -12,12 +12,12 @@ const corsHeaders = {
 };
 
 interface NotifyRequest {
-  type: "statut" | "evolution";
+  type: "statut" | "evolution" | "demande";
   contactEmail: string;
   nomTI: string;
   nomTO?: string;
   faction?: string | null;
-  statut?: "brouillon" | "soumis" | "valide" | "archive";
+  statut?: "brouillon" | "soumis" | "valide" | "archive" | "approuvee" | "refusee";
   evolution?: { type_evolution: string; description: string; valeur?: number | null };
   xpTotal?: number;
 }
@@ -83,7 +83,24 @@ const handler = async (req: Request): Promise<Response> => {
          <p style="margin-top:30px;">À bientôt dans l'univers de Barok !</p>
          <p><em>L'équipe Barok GN</em></p>`
       );
+    } else if (data.type === "demande") {
+      const evo = data.evolution!;
+      const approuvee = data.statut === "approuvee";
+      const titre = approuvee ? "Demande d'XP approuvée" : "Demande d'XP refusée";
+      subject = `${titre} — ${data.nomTI} (Barok GN)`;
+      html = wrap(
+        titre,
+        `<p>Bonjour,</p>
+         <p>L'organisation a traité ta demande de dépense d'XP pour <strong>${data.nomTI}</strong>.</p>
+         <div style="margin: 20px 0; padding: 15px; background: #f0f0f0; border-left: 4px solid ${approuvee ? "#3E8E4E" : "#B03030"}; border-radius: 4px;">
+           <p style="margin:0;"><strong>Détail :</strong> ${evo.description}</p>
+           ${typeof data.xpTotal === "number" ? `<p style="margin:5px 0 0;"><strong>XP totale :</strong> ${data.xpTotal}</p>` : ""}
+         </div>
+         <p>Retrouve le détail dans « Mes personnages ».</p>
+         <p style="margin-top:30px;"><em>L'équipe Barok GN</em></p>`
+      );
     } else {
+
       const evo = data.evolution!;
       subject = `Évolution de personnage — ${data.nomTI} (Barok GN)`;
       html = wrap(

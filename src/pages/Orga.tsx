@@ -608,7 +608,60 @@ const Orga = () => {
                   </div>
                 </TabsContent>
 
+                <TabsContent value="demandes" className="space-y-3 pt-4">
+                  <div className="text-sm text-muted-foreground">
+                    XP totale : <span className="font-semibold text-foreground">{selected.xp}</span> · dépensée :{" "}
+                    {xpDepensee(demandes)} · en attente : {xpEnAttente(demandes)} · disponible :{" "}
+                    <span className="font-semibold text-foreground">
+                      {selected.xp - xpDepensee(demandes) - xpEnAttente(demandes)}
+                    </span>
+                  </div>
+                  {demandes.map((d) => (
+                    <div key={d.id} className="border border-border rounded p-3 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <Badge variant="outline">
+                          {labelsTypeDemande[d.type_demande as TypeDemande]?.fr || d.type_demande}
+                        </Badge>
+                        <span className="font-medium">{d.libelle}</span>
+                        <span className="text-muted-foreground">— {d.cout_xp} XP</span>
+                        <Badge className={statutDemandeColors[d.statut]}>{statutDemandeLabels[d.statut]}</Badge>
+                        <span className="text-xs text-muted-foreground ml-auto">
+                          {new Date(d.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                      {d.justification && <p className="text-sm text-muted-foreground">{d.justification}</p>}
+                      {d.statut === "en_attente" ? (
+                        <div className="space-y-2">
+                          <Textarea
+                            className="h-16"
+                            placeholder="Réponse au joueur (optionnelle)…"
+                            value={reponses[d.id] || ""}
+                            onChange={(e) => setReponses({ ...reponses, [d.id]: e.target.value })}
+                          />
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => traiterDemande(d, "approuvee")}>
+                              <Check className="w-4 h-4 mr-1" /> Approuver
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => traiterDemande(d, "refusee")}>
+                              <X className="w-4 h-4 mr-1" /> Refuser
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          {d.reponse_orga ? `Réponse : ${d.reponse_orga} — ` : ""}
+                          traité par {d.traite_par || "orga"}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                  {demandes.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">Aucune demande pour ce personnage.</p>
+                  )}
+                </TabsContent>
+
                 <TabsContent value="notes" className="space-y-3 pt-4">
+
                   <Label>Notes internes (visibles uniquement par les orgas)</Label>
                   <Textarea
                     value={editForm.notes_orga || ""}
