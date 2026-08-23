@@ -12,12 +12,12 @@ const corsHeaders = {
 };
 
 interface NotifyRequest {
-  type: "statut" | "evolution";
+  type: "statut" | "evolution" | "demande";
   contactEmail: string;
   nomTI: string;
   nomTO?: string;
   faction?: string | null;
-  statut?: "brouillon" | "soumis" | "valide" | "archive";
+  statut?: "brouillon" | "soumis" | "valide" | "archive" | "approuvee" | "refusee";
   evolution?: { type_evolution: string; description: string; valeur?: number | null };
   xpTotal?: number;
 }
