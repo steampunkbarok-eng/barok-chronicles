@@ -26,12 +26,27 @@ const Home = () => {
                 <span className="text-sm font-medium">{language === 'fr' ? 'EN' : 'FR'}</span>
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground hidden md:block">
-              {t('header.subtitle')}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-muted-foreground hidden lg:block mr-2">
+                {t('header.subtitle')}
+              </p>
+              <Link to="/mes-personnages">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Scroll className="h-4 w-4" />
+                  <span className="hidden sm:inline">{language === 'fr' ? 'Mes personnages' : 'My characters'}</span>
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <LogIn className="h-4 w-4" />
+                  {language === 'fr' ? 'Connexion' : 'Sign in'}
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
+
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
