@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, FileText, Scroll, Languages } from "lucide-react";
+import { Shield, Users, FileText, Scroll, Languages, LogIn } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Home = () => {
