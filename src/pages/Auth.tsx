@@ -51,13 +51,17 @@ const Auth = () => {
   const handleGoogle = async () => {
     setLoading(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/orga`,
+      redirect_uri: window.location.origin,
     });
     if (result.error) {
       toast.error("Erreur Google : " + (result.error as Error).message);
       setLoading(false);
+      return;
     }
+    if (result.redirected) return;
+    navigate("/orga");
   };
+
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
