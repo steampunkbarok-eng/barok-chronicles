@@ -64,6 +64,96 @@ export type Database = {
           },
         ]
       }
+      evenement_participations: {
+        Row: {
+          created_at: string
+          evenement_id: string
+          id: string
+          personnage_id: string
+          present: boolean
+          updated_at: string
+          xp_attribuee: boolean
+        }
+        Insert: {
+          created_at?: string
+          evenement_id: string
+          id?: string
+          personnage_id: string
+          present?: boolean
+          updated_at?: string
+          xp_attribuee?: boolean
+        }
+        Update: {
+          created_at?: string
+          evenement_id?: string
+          id?: string
+          personnage_id?: string
+          present?: boolean
+          updated_at?: string
+          xp_attribuee?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evenement_participations_evenement_id_fkey"
+            columns: ["evenement_id"]
+            isOneToOne: false
+            referencedRelation: "evenements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evenement_participations_personnage_id_fkey"
+            columns: ["personnage_id"]
+            isOneToOne: false
+            referencedRelation: "personnages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evenements: {
+        Row: {
+          compte_rendu: string | null
+          created_at: string
+          date_debut: string
+          date_fin: string | null
+          description: string | null
+          id: string
+          lieu: string | null
+          nom: string
+          notes_orga: string | null
+          statut: Database["public"]["Enums"]["evenement_statut"]
+          updated_at: string
+          xp_attribuee: number
+        }
+        Insert: {
+          compte_rendu?: string | null
+          created_at?: string
+          date_debut: string
+          date_fin?: string | null
+          description?: string | null
+          id?: string
+          lieu?: string | null
+          nom: string
+          notes_orga?: string | null
+          statut?: Database["public"]["Enums"]["evenement_statut"]
+          updated_at?: string
+          xp_attribuee?: number
+        }
+        Update: {
+          compte_rendu?: string | null
+          created_at?: string
+          date_debut?: string
+          date_fin?: string | null
+          description?: string | null
+          id?: string
+          lieu?: string | null
+          nom?: string
+          notes_orga?: string | null
+          statut?: Database["public"]["Enums"]["evenement_statut"]
+          updated_at?: string
+          xp_attribuee?: number
+        }
+        Relationships: []
+      }
       factions: {
         Row: {
           background: string | null
@@ -239,6 +329,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "orga" | "user"
       demande_statut: "en_attente" | "approuvee" | "refusee"
+      evenement_statut: "a_venir" | "en_cours" | "termine" | "annule"
       personnage_statut: "brouillon" | "soumis" | "valide" | "archive"
     }
     CompositeTypes: {
@@ -369,6 +460,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "orga", "user"],
       demande_statut: ["en_attente", "approuvee", "refusee"],
+      evenement_statut: ["a_venir", "en_cours", "termine", "annule"],
       personnage_statut: ["brouillon", "soumis", "valide", "archive"],
     },
   },
