@@ -30,6 +30,12 @@ const Home = () => {
               <p className="text-sm text-muted-foreground hidden lg:block mr-2">
                 {t('header.subtitle')}
               </p>
+              <Link to="/evenements">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  <span className="hidden sm:inline">{language === 'fr' ? 'Événements' : 'Events'}</span>
+                </Button>
+              </Link>
               <Link to="/mes-personnages">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Scroll className="h-4 w-4" />
