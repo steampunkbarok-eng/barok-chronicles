@@ -22,6 +22,8 @@ import {
   xpDepensee,
   xpEnAttente,
 } from "@/data/xpAchats";
+import EvenementsManager from "@/components/orga/EvenementsManager";
+import FactionsManager from "@/components/orga/FactionsManager";
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
