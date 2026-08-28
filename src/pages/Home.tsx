@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, FileText, Scroll, Languages, LogIn } from "lucide-react";
+import { Shield, Users, FileText, Scroll, Languages, LogIn, CalendarDays } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Home = () => {
@@ -30,6 +30,12 @@ const Home = () => {
               <p className="text-sm text-muted-foreground hidden lg:block mr-2">
                 {t('header.subtitle')}
               </p>
+              <Link to="/evenements">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  <span className="hidden sm:inline">{language === 'fr' ? 'Événements' : 'Events'}</span>
+                </Button>
+              </Link>
               <Link to="/mes-personnages">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Scroll className="h-4 w-4" />

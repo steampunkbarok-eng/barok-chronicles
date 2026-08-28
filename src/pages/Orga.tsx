@@ -22,6 +22,8 @@ import {
   xpDepensee,
   xpEnAttente,
 } from "@/data/xpAchats";
+import EvenementsManager from "@/components/orga/EvenementsManager";
+import FactionsManager from "@/components/orga/FactionsManager";
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
@@ -440,6 +442,10 @@ const Orga = () => {
             </Table>
           </CardContent>
         </Card>
+
+        <EvenementsManager persos={persos} userEmail={userEmail} onXpChanged={loadPersos} />
+
+        <FactionsManager />
       </main>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
