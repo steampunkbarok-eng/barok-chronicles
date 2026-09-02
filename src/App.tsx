@@ -29,6 +29,7 @@ const App = () => (
             <Route path="/personnages" element={<Personnages />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/mes-personnages" element={<MesPersonnages />} />
+            <Route path="/mes-factions" element={<MesFactions />} />
             <Route path="/evenements" element={<Evenements />} />
             <Route path="/orga" element={<Orga />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
