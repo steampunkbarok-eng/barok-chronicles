@@ -10,6 +10,7 @@ import Personnages from "./pages/Personnages";
 import Auth from "./pages/Auth";
 import Orga from "./pages/Orga";
 import MesPersonnages from "./pages/MesPersonnages";
+import MesFactions from "./pages/MesFactions";
 import Evenements from "./pages/Evenements";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/personnages" element={<Personnages />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/mes-personnages" element={<MesPersonnages />} />
+            <Route path="/mes-factions" element={<MesFactions />} />
             <Route path="/evenements" element={<Evenements />} />
             <Route path="/orga" element={<Orga />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
