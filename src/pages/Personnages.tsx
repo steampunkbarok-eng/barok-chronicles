@@ -316,7 +316,7 @@ const Personnages = () => {
       if (formData.sorts.niv2 > 0) niveauxUtilises++;
       if (formData.sorts.niv3 > 0) niveauxUtilises++;
       if (formData.sorts.niv4 > 0) niveauxUtilises++;
-      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${language === 'fr' ? 'niveaux' : 'levels'} × 2)`);
+      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${t('common.levels')} × 2)`);
     } else {
       recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie}`);
     }
@@ -1115,7 +1115,7 @@ const Personnages = () => {
                           {comp.nom === "Tatoueur" && (
                             <div className="space-y-1 mt-2 pl-2 border-l-2 border-primary/50">
                               <Label htmlFor="chamanismeTatoueur" className="text-xs">
-                                {language === 'fr' ? 'Chamanisme choisi' : 'Chosen Shamanism'}:
+                                {t('characters.shamanismChosen')}:
                               </Label>
                               <Input
                                 id="chamanismeTatoueur"
@@ -1124,13 +1124,11 @@ const Personnages = () => {
                                   setFormData({ ...formData, chamanismeTatoueur: e.target.value });
                                   genererRecapitulatif();
                                 }}
-                                placeholder={language === 'fr' ? 'Précisez votre chamanisme...' : 'Specify your shamanism...'}
+                                placeholder={t('characters.shamanismPlaceholder')}
                                 className="h-8 text-sm"
                               />
                               <p className="text-xs text-muted-foreground italic">
-                                {language === 'fr' 
-                                  ? 'Ce choix sera inscrit sur votre fiche de personnage.' 
-                                  : 'This choice will be noted on your character sheet.'}
+                                {t('characters.shamanismNote')}
                               </p>
                             </div>
                           )}

@@ -1,5 +1,6 @@
 export const translations = {
   fr: {
+    'characters.shamanismNote': 'Ce choix sera inscrit sur votre fiche de personnage.',
     'nav.events': 'Événements',
     'nav.myCharacters': 'Mes personnages',
     'nav.myFactions': 'Mes factions',
@@ -269,6 +270,7 @@ export const translations = {
     'brawl.mustAnnounce': 'Ces annonces doivent être clairement énoncées lors de leur utilisation',
   },
   en: {
+    'characters.shamanismNote': 'This choice will be noted on your character sheet.',
     'nav.events': 'Events',
     'nav.myCharacters': 'My characters',
     'nav.myFactions': 'My factions',
@@ -538,6 +540,7 @@ export const translations = {
     'card.noFaction': 'None',
   },
   nl: {
+    'characters.shamanismNote': 'Deze keuze wordt op je personageblad vermeld.',
     'nav.events': 'Evenementen',
     'nav.myCharacters': 'Mijn personages',
     'nav.myFactions': 'Mijn facties',
