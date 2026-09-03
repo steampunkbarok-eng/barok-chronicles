@@ -1,5 +1,12 @@
 export const translations = {
   fr: {
+    'nav.events': 'Événements',
+    'nav.myCharacters': 'Mes personnages',
+    'nav.myFactions': 'Mes factions',
+    'nav.signIn': 'Connexion',
+    'common.levels': 'niveaux',
+    'characters.shamanismChosen': 'Chamanisme choisi',
+    'characters.shamanismPlaceholder': 'Précisez votre chamanisme...',
     // Header
     'header.subtitle': 'Système de gestion de fiches pour JDRGN',
     
@@ -262,6 +269,13 @@ export const translations = {
     'brawl.mustAnnounce': 'Ces annonces doivent être clairement énoncées lors de leur utilisation',
   },
   en: {
+    'nav.events': 'Events',
+    'nav.myCharacters': 'My characters',
+    'nav.myFactions': 'My factions',
+    'nav.signIn': 'Sign in',
+    'common.levels': 'levels',
+    'characters.shamanismChosen': 'Chosen Shamanism',
+    'characters.shamanismPlaceholder': 'Specify your shamanism...',
     // Header
     'header.subtitle': 'Character sheet management system for LARP',
     
@@ -524,6 +538,13 @@ export const translations = {
     'card.noFaction': 'None',
   },
   nl: {
+    'nav.events': 'Evenementen',
+    'nav.myCharacters': 'Mijn personages',
+    'nav.myFactions': 'Mijn facties',
+    'nav.signIn': 'Inloggen',
+    'common.levels': 'niveaus',
+    'characters.shamanismChosen': 'Gekozen sjamanisme',
+    'characters.shamanismPlaceholder': 'Specificeer je sjamanisme...',
     // Header
     'header.subtitle': 'Beheersysteem voor personagebladen voor LARP',
 
