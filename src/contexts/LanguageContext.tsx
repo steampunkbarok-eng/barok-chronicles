@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from '@/i18n/translations';
 
-type Language = 'fr' | 'en';
+type Language = 'fr' | 'en' | 'nl';
 
 interface LanguageContextType {
   language: Language;
@@ -14,7 +14,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('language');
-    return (saved === 'en' || saved === 'fr') ? saved : 'fr';
+    return (saved === 'en' || saved === 'fr' || saved === 'nl') ? saved : 'fr';
   });
 
   useEffect(() => {
@@ -26,7 +26,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: string): string => {
-    return translations[language][key] || key;
+    const dict = translations[language] as Record<string, string>;
+    const fallback = translations.en as Record<string, string>;
+    return dict[key] || fallback[key] || key;
   };
 
   return (
