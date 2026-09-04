@@ -1,3 +1,17 @@
+import {
+  competenceTranslationsNl,
+  competenceEffectTranslationsNl,
+  titreTranslationsNl,
+  especeTranslationsNl,
+  especeSpecialTranslationsNl,
+  titrePrerequisTranslationsNl,
+  origineTranslationsNl,
+  categorieTranslationsNl,
+  batimentTranslationsNl,
+  batimentAvantagesTranslationsNl,
+  batimentConditionTranslationsNl,
+} from './gameDataNl';
+
 // Mappings de traduction pour les données de jeu (compétences, titres, espèces)
 
 // Traductions des effets de compétences
@@ -657,9 +671,24 @@ export const batimentConditionTranslations: Record<string, string> = {
 export const translateGameData = (
   text: string, 
   type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition' | 'origine' | 'especeSpecial' | 'titrePrerequisit',
-  language: 'fr' | 'en'
+  language: 'fr' | 'en' | 'nl'
 ): string => {
   if (language === 'fr') return text;
+
+  if (language === 'nl') {
+    const nlMapping = type === 'competence' ? competenceTranslationsNl :
+                      type === 'titre' ? titreTranslationsNl :
+                      type === 'effet' ? competenceEffectTranslationsNl :
+                      type === 'categorie' ? categorieTranslationsNl :
+                      type === 'batiment' ? batimentTranslationsNl :
+                      type === 'batimentAvantage' ? batimentAvantagesTranslationsNl :
+                      type === 'batimentCondition' ? batimentConditionTranslationsNl :
+                      type === 'origine' ? origineTranslationsNl :
+                      type === 'especeSpecial' ? especeSpecialTranslationsNl :
+                      type === 'titrePrerequisit' ? titrePrerequisTranslationsNl :
+                      especeTranslationsNl;
+    if (nlMapping[text]) return nlMapping[text];
+  }
   
   const mapping = type === 'competence' ? competenceTranslations :
                   type === 'titre' ? titreTranslations :
