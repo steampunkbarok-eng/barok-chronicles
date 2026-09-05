@@ -21,6 +21,7 @@ import { ArrowLeft, Castle, FileDown, Save, X } from "lucide-react";
 import { batimentsUniques, navires } from "@/data/batiments";
 import { titresCarrieres } from "@/data/titres";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTri } from "@/i18n/tri";
 import { translateGameData } from "@/i18n/gameData";
 import { openFactionSheet } from "@/components/FactionSheet";
 
@@ -58,7 +59,7 @@ const parseBatiment = (raw: string | null): Batiment | null => {
 
 const MesFactions = () => {
   const { language } = useLanguage();
-  const fr = language !== "en";
+  const { L } = useTri();
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -102,7 +103,7 @@ const MesFactions = () => {
   const ajouterTitre = (nom: string) => {
     if (titres.includes(nom)) return;
     if (titres.length >= 2) {
-      toast.error(fr ? "Maximum 2 titres par faction" : "Maximum 2 titles per faction");
+      toast.error(L("Maximum 2 titres par faction", "Maximum 2 titles per faction", "Maximaal 2 titels per factie"));
       return;
     }
     const data = titresCarrieres.find((t) => t.nom === nom);
@@ -113,7 +114,11 @@ const MesFactions = () => {
     );
     if (conflit) {
       toast.error(
-        fr ? `${nom} est incompatible avec ${conflit}` : `${nom} is incompatible with ${conflit}`,
+        L(
+          `${nom} est incompatible avec ${conflit}`,
+          `${nom} is incompatible with ${conflit}`,
+          `${nom} is onverenigbaar met ${conflit}`,
+        ),
       );
       return;
     }
@@ -134,7 +139,7 @@ const MesFactions = () => {
       })
       .eq("id", openId);
     if (error) return toast.error(error.message);
-    toast.success(fr ? "Faction mise à jour" : "Faction updated");
+    toast.success(L("Faction mise à jour", "Faction updated", "Factie bijgewerkt"));
     if (email) load(email);
   };
 
@@ -151,7 +156,7 @@ const MesFactions = () => {
         descriptionCourte: f.description_courte || "",
         background: f.background || "",
         contactEmail: f.contact_email,
-        dateCreation: new Date().toLocaleDateString("fr-FR"),
+        dateCreation: new Date().toLocaleDateString(language === "en" ? "en-GB" : language === "nl" ? "nl-NL" : "fr-FR"),
         statut: (f.statut as "active" | "inactive") || "active",
         id: f.id,
       } as never,
@@ -170,26 +175,28 @@ const MesFactions = () => {
           </Link>
           <Castle className="h-7 w-7 text-primary" />
           <h1 className="text-2xl font-bold text-primary font-serif">
-            {fr ? "Mes factions" : "My factions"}
+            {L("Mes factions", "My factions", "Mijn facties")}
           </h1>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl space-y-4">
-        {loading && <p className="text-muted-foreground">{fr ? "Chargement…" : "Loading…"}</p>}
+        {loading && <p className="text-muted-foreground">{L("Chargement…", "Loading…", "Laden…")}</p>}
 
         {!loading && !email && (
           <Card>
             <CardHeader>
-              <CardTitle className="font-serif">{fr ? "Connexion requise" : "Sign in required"}</CardTitle>
+              <CardTitle className="font-serif">{L("Connexion requise", "Sign in required", "Aanmelden vereist")}</CardTitle>
               <CardDescription>
-                {fr
-                  ? "Connectez-vous avec l'adresse email de contact de votre faction pour la modifier."
-                  : "Sign in with your faction's contact email address to edit it."}
+                {L(
+                  "Connectez-vous avec l'adresse email de contact de votre faction pour la modifier.",
+                  "Sign in with your faction's contact email address to edit it.",
+                  "Meld je aan met het contact-e-mailadres van je factie om ze te bewerken.",
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => navigate("/auth")}>{fr ? "Se connecter" : "Sign in"}</Button>
+              <Button onClick={() => navigate("/auth")}>{L("Se connecter", "Sign in", "Aanmelden")}</Button>
             </CardContent>
           </Card>
         )}
@@ -198,12 +205,14 @@ const MesFactions = () => {
           <Card>
             <CardContent className="py-8 text-center space-y-3">
               <p className="text-muted-foreground">
-                {fr
-                  ? `Aucune faction liée à ${email}.`
-                  : `No faction linked to ${email}.`}
+                {L(
+                  `Aucune faction liée à ${email}.`,
+                  `No faction linked to ${email}.`,
+                  `Geen factie gekoppeld aan ${email}.`,
+                )}
               </p>
               <Link to="/factions">
-                <Button>{fr ? "Créer une faction" : "Create a faction"}</Button>
+                <Button>{L("Créer une faction", "Create a faction", "Een factie maken")}</Button>
               </Link>
             </CardContent>
           </Card>
@@ -216,13 +225,15 @@ const MesFactions = () => {
                 {f.nom}
                 <Badge variant="outline">{f.statut || "active"}</Badge>
                 <span className="text-sm font-normal text-muted-foreground">
-                  {f.marques_disponibles}/{f.marques_total} {fr ? "marques disponibles" : "marks available"}
+                  {f.marques_disponibles}/{f.marques_total} {L("marques disponibles", "marks available", "beschikbare merken")}
                 </span>
               </CardTitle>
               <CardDescription>
-                {fr
-                  ? "Cliquez pour réécrire votre faction (titres, bâtiment, propriété, background)."
-                  : "Click to rewrite your faction (titles, building, property, background)."}
+                {L(
+                  "Cliquez pour réécrire votre faction (titres, bâtiment, propriété, background).",
+                  "Click to rewrite your faction (titles, building, property, background).",
+                  "Klik om je factie te herschrijven (titels, gebouw, eigendom, achtergrond).",
+                )}
               </CardDescription>
             </CardHeader>
 
@@ -230,14 +241,14 @@ const MesFactions = () => {
               <CardContent className="space-y-4 border-t border-border pt-4">
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <Label>{fr ? "Nom de la faction" : "Faction name"}</Label>
+                    <Label>{L("Nom de la faction", "Faction name", "Naam van de factie")}</Label>
                     <Input
                       value={form.nom || ""}
                       onChange={(e) => setForm({ ...form, nom: e.target.value })}
                     />
                   </div>
                   <div>
-                    <Label>{fr ? "Propriété terrienne" : "Land property"}</Label>
+                    <Label>{L("Propriété terrienne", "Land property", "Grondbezit")}</Label>
                     <Input
                       value={form.propriete_terrienne || ""}
                       onChange={(e) => setForm({ ...form, propriete_terrienne: e.target.value })}
@@ -246,7 +257,7 @@ const MesFactions = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{fr ? "Bâtiment / navire" : "Building / ship"}</Label>
+                  <Label>{L("Bâtiment / navire", "Building / ship", "Gebouw / schip")}</Label>
                   {batiment ? (
                     <div className="flex items-start justify-between gap-2 bg-accent/20 p-3 rounded">
                       <div>
@@ -269,11 +280,11 @@ const MesFactions = () => {
                       }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={fr ? "Choisir un bâtiment ou navire" : "Choose a building or ship"} />
+                        <SelectValue placeholder={L("Choisir un bâtiment ou navire", "Choose a building or ship", "Kies een gebouw of schip")} />
                       </SelectTrigger>
                       <SelectContent className="max-h-[400px]">
                         <SelectGroup>
-                          <SelectLabel>{fr ? "Bâtiments uniques" : "Unique buildings"}</SelectLabel>
+                          <SelectLabel>{L("Bâtiments uniques", "Unique buildings", "Unieke gebouwen")}</SelectLabel>
                           {batimentsUniques.map((b) => (
                             <SelectItem key={b.nom} value={`${b.nom}||Bâtiment||${b.avantages}`}>
                               {translateGameData(b.nom, "batiment", language)}
@@ -281,7 +292,7 @@ const MesFactions = () => {
                           ))}
                         </SelectGroup>
                         <SelectGroup>
-                          <SelectLabel>{fr ? "Navires" : "Ships"}</SelectLabel>
+                          <SelectLabel>{L("Navires", "Ships", "Schepen")}</SelectLabel>
                           {navires.map((n) => (
                             <SelectItem key={n.nom} value={`${n.nom}||Navire||${n.avantages}`}>
                               {translateGameData(n.nom, "batiment", language)}
@@ -294,10 +305,10 @@ const MesFactions = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{fr ? "Titres (max. 2)" : "Titles (max. 2)"}</Label>
+                  <Label>{L("Titres (max. 2)", "Titles (max. 2)", "Titels (max. 2)")}</Label>
                   <Select onValueChange={ajouterTitre} disabled={titres.length >= 2}>
                     <SelectTrigger>
-                      <SelectValue placeholder={fr ? "Ajouter un titre" : "Add a title"} />
+                      <SelectValue placeholder={L("Ajouter un titre", "Add a title", "Een titel toevoegen")} />
                     </SelectTrigger>
                     <SelectContent className="max-h-[400px]">
                       {titresCarrieres.map((t) => (
@@ -320,7 +331,7 @@ const MesFactions = () => {
                 </div>
 
                 <div>
-                  <Label>{fr ? "Description courte" : "Short description"}</Label>
+                  <Label>{L("Description courte", "Short description", "Korte beschrijving")}</Label>
                   <Textarea
                     rows={3}
                     value={form.description_courte || ""}
@@ -329,7 +340,7 @@ const MesFactions = () => {
                 </div>
 
                 <div>
-                  <Label>{fr ? "Background" : "Background"}</Label>
+                  <Label>{L("Background", "Background", "Achtergrond")}</Label>
                   <Textarea
                     rows={8}
                     value={form.background || ""}
@@ -338,17 +349,19 @@ const MesFactions = () => {
                 </div>
 
                 <p className="text-xs text-muted-foreground">
-                  {fr
-                    ? "Les marques de destinée sont gérées par les Orgas. Contactez-les si un ajustement est nécessaire."
-                    : "Destiny marks are managed by the Organizers. Contact them if an adjustment is needed."}
+                  {L(
+                    "Les marques de destinée sont gérées par les Orgas. Contactez-les si un ajustement est nécessaire.",
+                    "Destiny marks are managed by the Organizers. Contact them if an adjustment is needed.",
+                    "Lotsmerken worden beheerd door de organisatie. Neem contact op als een aanpassing nodig is.",
+                  )}
                 </p>
 
                 <div className="flex gap-2">
                   <Button onClick={save} className="gap-2">
-                    <Save className="h-4 w-4" /> {fr ? "Enregistrer" : "Save"}
+                    <Save className="h-4 w-4" /> {L("Enregistrer", "Save", "Opslaan")}
                   </Button>
                   <Button variant="outline" className="gap-2" onClick={() => telechargerFiche(f)}>
-                    <FileDown className="h-4 w-4" /> {fr ? "Fiche PDF" : "PDF sheet"}
+                    <FileDown className="h-4 w-4" /> {L("Fiche PDF", "PDF sheet", "PDF-blad")}
                   </Button>
                 </div>
               </CardContent>
