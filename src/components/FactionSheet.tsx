@@ -488,7 +488,7 @@ export const openFactionSheet = (faction: {
   background: string;
   contactEmail: string;
   dateCreation: string;
-}, language: 'fr' | 'en') => {
+}, language: 'fr' | 'en' | 'nl') => {
   const labels = {
     title: language === 'en' ? 'FACTION SHEET' : 'FICHE DE FACTION',
     factionName: language === 'en' ? 'Faction Name' : 'Nom de la Faction',

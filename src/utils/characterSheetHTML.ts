@@ -22,7 +22,7 @@ interface SheetCharacter {
 
 export function generateCharacterSheetHTML(
   character: SheetCharacter,
-  language: 'fr' | 'en',
+  language: 'fr' | 'en' | 'nl',
   t: (key: string) => string
 ): string {
   const competencesMagiques = ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"];
