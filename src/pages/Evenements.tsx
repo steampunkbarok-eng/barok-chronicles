@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CalendarDays, MapPin, Sparkles } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTri } from "@/i18n/tri";
 
 interface Evenement {
   id: string;
@@ -19,11 +19,11 @@ interface Evenement {
   statut: "a_venir" | "en_cours" | "termine" | "annule";
 }
 
-export const statutEvtLabels: Record<Evenement["statut"], { fr: string; en: string }> = {
-  a_venir: { fr: "À venir", en: "Upcoming" },
-  en_cours: { fr: "En cours", en: "Ongoing" },
-  termine: { fr: "Terminé", en: "Finished" },
-  annule: { fr: "Annulé", en: "Cancelled" },
+export const statutEvtLabels: Record<Evenement["statut"], { fr: string; en: string; nl: string }> = {
+  a_venir: { fr: "À venir", en: "Upcoming", nl: "Binnenkort" },
+  en_cours: { fr: "En cours", en: "Ongoing", nl: "Bezig" },
+  termine: { fr: "Terminé", en: "Finished", nl: "Afgelopen" },
+  annule: { fr: "Annulé", en: "Cancelled", nl: "Geannuleerd" },
 };
 
 export const statutEvtColors: Record<Evenement["statut"], string> = {
@@ -41,9 +41,8 @@ const formatDates = (e: Evenement, locale: string) => {
 };
 
 const Evenements = () => {
-  const { language } = useLanguage();
-  const fr = language === "fr";
-  const locale = fr ? "fr-FR" : "en-GB";
+  const { language, L } = useTri();
+  const locale = language === "en" ? "en-GB" : language === "nl" ? "nl-NL" : "fr-FR";
   const [evenements, setEvenements] = useState<Evenement[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -84,7 +83,7 @@ const Evenements = () => {
             </CardDescription>
           </div>
           <Badge className={statutEvtColors[e.statut]}>
-            {fr ? statutEvtLabels[e.statut].fr : statutEvtLabels[e.statut].en}
+            {statutEvtLabels[e.statut][language]}
           </Badge>
         </div>
       </CardHeader>
@@ -93,7 +92,7 @@ const Evenements = () => {
           {e.description && <p className="whitespace-pre-line text-muted-foreground">{e.description}</p>}
           {e.compte_rendu && (
             <div>
-              <h3 className="font-serif text-base mb-1">{fr ? "Compte-rendu" : "Report"}</h3>
+              <h3 className="font-serif text-base mb-1">{L("Compte-rendu", "Report", "Verslag")}</h3>
               <p className="whitespace-pre-line text-muted-foreground">{e.compte_rendu}</p>
             </div>
           )}
@@ -110,21 +109,23 @@ const Evenements = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <CalendarDays className="w-6 h-6 text-primary" />
-          <h1 className="font-serif text-2xl">{fr ? "Événements" : "Events"}</h1>
+          <h1 className="font-serif text-2xl">{L("Événements", "Events", "Evenementen")}</h1>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 space-y-8 max-w-4xl">
-        {loading && <p className="text-muted-foreground">{fr ? "Chargement…" : "Loading…"}</p>}
+        {loading && <p className="text-muted-foreground">{L("Chargement…", "Loading…", "Laden…")}</p>}
 
         {!loading && evenements.length === 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="font-serif">{fr ? "Aucun événement annoncé" : "No event announced"}</CardTitle>
+              <CardTitle className="font-serif">{L("Aucun événement annoncé", "No event announced", "Geen evenement aangekondigd")}</CardTitle>
               <CardDescription>
-                {fr
-                  ? "Les prochaines sessions de jeu apparaîtront ici dès leur publication par les orgas."
-                  : "Upcoming game sessions will appear here once published by the organisers."}
+                {L(
+                  "Les prochaines sessions de jeu apparaîtront ici dès leur publication par les orgas.",
+                  "Upcoming game sessions will appear here once published by the organisers.",
+                  "Komende speelsessies verschijnen hier zodra de organisatie ze publiceert.",
+                )}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -132,21 +133,21 @@ const Evenements = () => {
 
         {aVenir.length > 0 && (
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl text-primary">{fr ? "Prochaines sessions" : "Upcoming sessions"}</h2>
+            <h2 className="font-serif text-2xl text-primary">{L("Prochaines sessions", "Upcoming sessions", "Volgende sessies")}</h2>
             {aVenir.map(renderCard)}
           </section>
         )}
 
         {passes.length > 0 && (
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl text-primary">{fr ? "Sessions passées" : "Past sessions"}</h2>
+            <h2 className="font-serif text-2xl text-primary">{L("Sessions passées", "Past sessions", "Afgelopen sessies")}</h2>
             {passes.map(renderCard)}
           </section>
         )}
 
         <div className="pt-4">
           <Link to="/personnages">
-            <Button variant="outline">{fr ? "Créer un personnage" : "Create a character"}</Button>
+            <Button variant="outline">{L("Créer un personnage", "Create a character", "Een personage maken")}</Button>
           </Link>
         </div>
       </main>
