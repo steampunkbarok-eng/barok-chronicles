@@ -22,7 +22,7 @@ interface SheetCharacter {
 
 export function generateCharacterSheetHTML(
   character: SheetCharacter,
-  language: 'fr' | 'en',
+  language: 'fr' | 'en' | 'nl',
   t: (key: string) => string
 ): string {
   const competencesMagiques = ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"];
@@ -424,7 +424,7 @@ export function generateCharacterSheetHTML(
 
     <div class="footer">
       <strong>${t('sheet.contact')}</strong> ${character.email} | 
-      <strong>${t('sheet.creationDate')}</strong> ${new Date().toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')}
+      <strong>${t('sheet.creationDate')}</strong> ${new Date().toLocaleDateString(language === 'en' ? 'en-US' : language === 'nl' ? 'nl-NL' : 'fr-FR')}
     </div>
   </div>
 

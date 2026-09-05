@@ -22,6 +22,7 @@ import {
   xpDepensee,
   xpEnAttente,
 } from "@/data/xpAchats";
+import { useTri } from "@/i18n/tri";
 
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
@@ -57,15 +58,16 @@ const statutColors: Record<Statut, string> = {
   archive: "bg-red-500/20 text-red-700 dark:text-red-400",
 };
 
-const statutLabels: Record<Statut, string> = {
-  brouillon: "Brouillon",
-  soumis: "En attente de validation",
-  valide: "Validé",
-  archive: "Archivé",
+const statutLabels: Record<Statut, { fr: string; en: string; nl: string }> = {
+  brouillon: { fr: "Brouillon", en: "Draft", nl: "Ontwerp" },
+  soumis: { fr: "En attente de validation", en: "Awaiting validation", nl: "Wacht op goedkeuring" },
+  valide: { fr: "Validé", en: "Validated", nl: "Goedgekeurd" },
+  archive: { fr: "Archivé", en: "Archived", nl: "Gearchiveerd" },
 };
 
 const MesPersonnages = () => {
   const navigate = useNavigate();
+  const { language, L } = useTri();
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
   const [persos, setPersos] = useState<PersoRow[]>([]);
@@ -130,10 +132,16 @@ const MesPersonnages = () => {
   const envoyerDemande = async () => {
     if (!selected) return;
     const libelle = nouvelleDemande.libelle.trim();
-    if (!libelle) return toast.error("Choisis ou décris ce que tu veux acquérir.");
-    if (nouvelleDemande.cout <= 0) return toast.error("Indique un coût en XP supérieur à 0.");
+    if (!libelle) return toast.error(L("Choisis ou décris ce que tu veux acquérir.", "Choose or describe what you want to acquire.", "Kies of beschrijf wat je wilt verwerven."));
+    if (nouvelleDemande.cout <= 0) return toast.error(L("Indique un coût en XP supérieur à 0.", "Enter an XP cost greater than 0.", "Geef een XP-kost hoger dan 0 op."));
     if (nouvelleDemande.cout > disponible) {
-      return toast.error(`XP insuffisante : il te reste ${disponible} XP disponible(s).`);
+      return toast.error(
+        L(
+          `XP insuffisante : il te reste ${disponible} XP disponible(s).`,
+          `Not enough XP: you have ${disponible} XP left.`,
+          `Onvoldoende XP: je hebt nog ${disponible} XP over.`,
+        ),
+      );
     }
     setEnvoi(true);
     const { error } = await supabase.from("demandes_xp").insert({
@@ -145,7 +153,7 @@ const MesPersonnages = () => {
     });
     setEnvoi(false);
     if (error) return toast.error(error.message);
-    toast.success("Demande envoyée à l'organisation");
+    toast.success(L("Demande envoyée à l'organisation", "Request sent to the organisation", "Aanvraag verzonden naar de organisatie"));
     setNouvelleDemande({ type: nouvelleDemande.type, libelle: "", cout: 0, justification: "" });
     loadDemandes(selected.id);
   };
@@ -153,7 +161,7 @@ const MesPersonnages = () => {
   const annulerDemande = async (id: string) => {
     const { error } = await supabase.from("demandes_xp").delete().eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Demande annulée");
+    toast.success(L("Demande annulée", "Request cancelled", "Aanvraag geannuleerd"));
     if (selected) loadDemandes(selected.id);
   };
 
@@ -164,7 +172,7 @@ const MesPersonnages = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Chargement…</div>;
+    return <div className="min-h-screen flex items-center justify-center">{L("Chargement…", "Loading…", "Laden…")}</div>;
   }
 
   const totalXp = persos.reduce((s, p) => s + (p.xp || 0), 0);
@@ -178,12 +186,12 @@ const MesPersonnages = () => {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <ScrollText className="w-6 h-6 text-primary" />
-            <h1 className="font-serif text-2xl">Mes Personnages</h1>
+            <h1 className="font-serif text-2xl">{L("Mes Personnages", "My Characters", "Mijn Personages")}</h1>
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="text-muted-foreground hidden sm:inline">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={logout}>
-              <LogOut className="w-4 h-4 mr-1" /> Déconnexion
+              <LogOut className="w-4 h-4 mr-1" /> {L("Déconnexion", "Sign out", "Afmelden")}
             </Button>
           </div>
         </div>
@@ -195,15 +203,15 @@ const MesPersonnages = () => {
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
                 <CardTitle className="font-serif">
-                  {persos.length} personnage{persos.length > 1 ? "s" : ""}
+                  {persos.length} {L(`personnage${persos.length > 1 ? "s" : ""}`, `character${persos.length > 1 ? "s" : ""}`, persos.length > 1 ? "personages" : "personage")}
                 </CardTitle>
                 <CardDescription>
-                  XP totale cumulée : <span className="font-semibold text-foreground">{totalXp}</span>
+                  {L("XP totale cumulée :", "Total XP earned:", "Totale XP:")} <span className="font-semibold text-foreground">{totalXp}</span>
                 </CardDescription>
               </div>
               <Button asChild>
                 <Link to="/personnages">
-                  <Plus className="w-4 h-4 mr-1" /> Nouveau personnage
+                  <Plus className="w-4 h-4 mr-1" /> {L("Nouveau personnage", "New character", "Nieuw personage")}
                 </Link>
               </Button>
             </div>
@@ -212,12 +220,12 @@ const MesPersonnages = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nom</TableHead>
+                  <TableHead>{L("Nom", "Name", "Naam")}</TableHead>
                   <TableHead>Faction</TableHead>
-                  <TableHead>Espèce</TableHead>
+                  <TableHead>{L("Espèce", "Species", "Soort")}</TableHead>
                   <TableHead>XP</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Soumis le</TableHead>
+                  <TableHead>{L("Statut", "Status", "Status")}</TableHead>
+                  <TableHead>{L("Soumis le", "Submitted on", "Ingediend op")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -230,7 +238,7 @@ const MesPersonnages = () => {
                     <TableCell>{p.espece}</TableCell>
                     <TableCell>{p.xp}</TableCell>
                     <TableCell>
-                      <Badge className={statutColors[p.statut]}>{statutLabels[p.statut]}</Badge>
+                      <Badge className={statutColors[p.statut]}>{statutLabels[p.statut][language]}</Badge>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       {new Date(p.created_at).toLocaleDateString()}
@@ -240,7 +248,11 @@ const MesPersonnages = () => {
                 {persos.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                      Aucun personnage soumis avec cet email ({userEmail}). Crée ta première fiche !
+                      {L(
+                        `Aucun personnage soumis avec cet email (${userEmail}). Crée ta première fiche !`,
+                        `No character submitted with this email (${userEmail}). Create your first sheet!`,
+                        `Geen personage ingediend met dit e-mailadres (${userEmail}). Maak je eerste blad!`,
+                      )}
                     </TableCell>
                   </TableRow>
                 )}
@@ -259,7 +271,7 @@ const MesPersonnages = () => {
                   {selected.prenom} {selected.nom}
                 </DialogTitle>
                 <DialogDescription>
-                  {selected.espece} — {selected.faction || "Sans faction"}
+                  {selected.espece} — {selected.faction || L("Sans faction", "No faction", "Geen factie")}
                 </DialogDescription>
               </DialogHeader>
 
@@ -267,30 +279,34 @@ const MesPersonnages = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <Card className="bg-muted/30">
                     <CardContent className="pt-4">
-                      <p className="text-xs text-muted-foreground">Statut</p>
-                      <Badge className={statutColors[selected.statut]}>{statutLabels[selected.statut]}</Badge>
+                      <p className="text-xs text-muted-foreground">{L("Statut", "Status", "Status")}</p>
+                      <Badge className={statutColors[selected.statut]}>{statutLabels[selected.statut][language]}</Badge>
                     </CardContent>
                   </Card>
                   <Card className="bg-muted/30">
                     <CardContent className="pt-4">
-                      <p className="text-xs text-muted-foreground">XP totale</p>
+                      <p className="text-xs text-muted-foreground">{L("XP totale", "Total XP", "Totale XP")}</p>
                       <p className="text-xl font-semibold">{selected.xp}</p>
                       <p className="text-xs text-muted-foreground">
-                        {depensee} dépensée{depensee > 1 ? "s" : ""} · {reservee} en attente
+                        {L(
+                          `${depensee} dépensée${depensee > 1 ? "s" : ""} · ${reservee} en attente`,
+                          `${depensee} spent · ${reservee} pending`,
+                          `${depensee} besteed · ${reservee} in afwachting`,
+                        )}
                       </p>
-                      <p className="text-sm font-semibold text-primary">{disponible} disponible(s)</p>
+                      <p className="text-sm font-semibold text-primary">{L(`${disponible} disponible(s)`, `${disponible} available`, `${disponible} beschikbaar`)}</p>
                     </CardContent>
                   </Card>
 
                   <Card className="bg-muted/30">
                     <CardContent className="pt-4">
-                      <p className="text-xs text-muted-foreground">Soumis le</p>
+                      <p className="text-xs text-muted-foreground">{L("Soumis le", "Submitted on", "Ingediend op")}</p>
                       <p className="text-sm">{new Date(selected.created_at).toLocaleDateString()}</p>
                     </CardContent>
                   </Card>
                   <Card className="bg-muted/30">
                     <CardContent className="pt-4">
-                      <p className="text-xs text-muted-foreground">Dernière MAJ</p>
+                      <p className="text-xs text-muted-foreground">{L("Dernière MAJ", "Last update", "Laatste update")}</p>
                       <p className="text-sm">{new Date(selected.updated_at).toLocaleDateString()}</p>
                     </CardContent>
                   </Card>
@@ -299,19 +315,27 @@ const MesPersonnages = () => {
                 <Card className="border-primary/30">
                   <CardHeader className="pb-2">
                     <CardTitle className="font-serif text-lg flex items-center gap-2">
-                      <Coins className="w-4 h-4 text-primary" /> Dépenser mon XP
+                      <Coins className="w-4 h-4 text-primary" /> {L("Dépenser mon XP", "Spend my XP", "Mijn XP besteden")}
                     </CardTitle>
                     <CardDescription>
                       {selected.statut === "valide"
-                        ? "Choisis une acquisition : la demande sera soumise à l'organisation, qui l'approuve ou la refuse."
-                        : "Ta fiche doit être validée par l'organisation avant de pouvoir dépenser de l'XP."}
+                        ? L(
+                            "Choisis une acquisition : la demande sera soumise à l'organisation, qui l'approuve ou la refuse.",
+                            "Choose an acquisition: the request goes to the organisation, which approves or refuses it.",
+                            "Kies een aankoop: de aanvraag gaat naar de organisatie, die ze goedkeurt of weigert.",
+                          )
+                        : L(
+                            "Ta fiche doit être validée par l'organisation avant de pouvoir dépenser de l'XP.",
+                            "Your sheet must be validated by the organisation before you can spend XP.",
+                            "Je blad moet goedgekeurd zijn door de organisatie voordat je XP kunt besteden.",
+                          )}
                     </CardDescription>
                   </CardHeader>
                   {selected.statut === "valide" && (
                     <CardContent className="space-y-3">
                       <div className="grid sm:grid-cols-3 gap-3">
                         <div>
-                          <Label>Type</Label>
+                          <Label>{L("Type", "Type", "Type")}</Label>
                           <Select
                             value={nouvelleDemande.type}
                             onValueChange={(v) =>
@@ -324,14 +348,14 @@ const MesPersonnages = () => {
                             <SelectContent>
                               {(Object.keys(labelsTypeDemande) as TypeDemande[]).map((t) => (
                                 <SelectItem key={t} value={t}>
-                                  {labelsTypeDemande[t].fr}
+                                  {labelsTypeDemande[t][language]}
                                 </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="sm:col-span-2">
-                          <Label>Acquisition souhaitée</Label>
+                          <Label>{L("Acquisition souhaitée", "Desired acquisition", "Gewenste aankoop")}</Label>
                           {optionsParType[nouvelleDemande.type].length > 0 ? (
                             <Select
                               value={nouvelleDemande.libelle}
@@ -341,7 +365,7 @@ const MesPersonnages = () => {
                               }}
                             >
                               <SelectTrigger>
-                                <SelectValue placeholder="Sélectionne…" />
+                                <SelectValue placeholder={L("Sélectionne…", "Select…", "Selecteer…")} />
                               </SelectTrigger>
                               <SelectContent className="max-h-72">
                                 {optionsParType[nouvelleDemande.type].map((o) => (
@@ -353,7 +377,7 @@ const MesPersonnages = () => {
                             </Select>
                           ) : (
                             <Input
-                              placeholder="Décris précisément l'acquisition"
+                              placeholder={L("Décris précisément l'acquisition", "Describe the acquisition precisely", "Beschrijf de aankoop nauwkeurig")}
                               value={nouvelleDemande.libelle}
                               onChange={(e) => setNouvelleDemande({ ...nouvelleDemande, libelle: e.target.value })}
                             />
@@ -362,7 +386,7 @@ const MesPersonnages = () => {
                       </div>
                       <div className="grid sm:grid-cols-3 gap-3">
                         <div>
-                          <Label>Coût en XP</Label>
+                          <Label>{L("Coût en XP", "XP cost", "XP-kost")}</Label>
                           <Input
                             type="number"
                             min={1}
@@ -373,10 +397,10 @@ const MesPersonnages = () => {
                           />
                         </div>
                         <div className="sm:col-span-2">
-                          <Label>Justification RP (optionnelle)</Label>
+                          <Label>{L("Justification RP (optionnelle)", "RP justification (optional)", "RP-verantwoording (optioneel)")}</Label>
                           <Textarea
                             className="h-20"
-                            placeholder="Comment ton personnage a-t-il acquis cela ?"
+                            placeholder={L("Comment ton personnage a-t-il acquis cela ?", "How did your character acquire this?", "Hoe heeft je personage dit verworven?")}
                             value={nouvelleDemande.justification}
                             onChange={(e) =>
                               setNouvelleDemande({ ...nouvelleDemande, justification: e.target.value })
@@ -386,22 +410,22 @@ const MesPersonnages = () => {
                       </div>
                       <Button onClick={envoyerDemande} disabled={envoi || disponible <= 0}>
                         <Plus className="w-4 h-4 mr-1" />
-                        {disponible <= 0 ? "Aucune XP disponible" : "Envoyer la demande"}
+                        {disponible <= 0 ? L("Aucune XP disponible", "No XP available", "Geen XP beschikbaar") : L("Envoyer la demande", "Send request", "Aanvraag versturen")}
                       </Button>
                     </CardContent>
                   )}
                 </Card>
 
                 <div>
-                  <h3 className="font-serif text-lg mb-2">Mes demandes ({demandes.length})</h3>
+                  <h3 className="font-serif text-lg mb-2">{L("Mes demandes", "My requests", "Mijn aanvragen")} ({demandes.length})</h3>
                   <div className="space-y-2">
                     {demandes.map((d) => (
                       <div key={d.id} className="border border-border rounded p-2 text-sm">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="outline">{labelsTypeDemande[d.type_demande as TypeDemande]?.fr || d.type_demande}</Badge>
+                          <Badge variant="outline">{labelsTypeDemande[d.type_demande as TypeDemande]?.[language] || d.type_demande}</Badge>
                           <span className="font-medium">{d.libelle}</span>
                           <span className="text-muted-foreground">— {d.cout_xp} XP</span>
-                          <Badge className={statutDemandeColors[d.statut]}>{statutDemandeLabels[d.statut]}</Badge>
+                          <Badge className={statutDemandeColors[d.statut]}>{statutDemandeLabels[d.statut][language]}</Badge>
                           <span className="text-xs text-muted-foreground ml-auto">
                             {new Date(d.created_at).toLocaleDateString()}
                           </span>
@@ -414,13 +438,13 @@ const MesPersonnages = () => {
                         {d.justification && <p className="mt-1 text-muted-foreground">{d.justification}</p>}
                         {d.reponse_orga && (
                           <p className="mt-1">
-                            <span className="font-semibold">Réponse orga :</span> {d.reponse_orga}
+                            <span className="font-semibold">{L("Réponse orga :", "Organiser reply:", "Antwoord organisatie:")}</span> {d.reponse_orga}
                           </p>
                         )}
                       </div>
                     ))}
                     {demandes.length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center py-4">Aucune demande envoyée.</p>
+                      <p className="text-sm text-muted-foreground text-center py-4">{L("Aucune demande envoyée.", "No request sent.", "Geen aanvraag verzonden.")}</p>
                     )}
                   </div>
                 </div>
@@ -429,7 +453,7 @@ const MesPersonnages = () => {
 
                 <div>
                   <h3 className="font-serif text-lg flex items-center gap-2 mb-2">
-                    <History className="w-4 h-4" /> Historique d'évolutions ({evolutions.length})
+                    <History className="w-4 h-4" /> {L("Historique d'évolutions", "Progression history", "Ontwikkelingsgeschiedenis")} ({evolutions.length})
                   </h3>
                   <div className="space-y-2">
                     {evolutions.map((e) => (
@@ -446,7 +470,11 @@ const MesPersonnages = () => {
                     ))}
                     {evolutions.length === 0 && (
                       <p className="text-sm text-muted-foreground text-center py-4">
-                        Aucune évolution enregistrée par l'orga pour l'instant.
+                        {L(
+                          "Aucune évolution enregistrée par l'orga pour l'instant.",
+                          "No progression recorded by the organisers yet.",
+                          "Nog geen ontwikkeling geregistreerd door de organisatie.",
+                        )}
                       </p>
                     )}
                   </div>
