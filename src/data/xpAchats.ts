@@ -27,11 +27,11 @@ export const optionsParType: Record<TypeDemande, OptionAchat[]> = {
   autre: [],
 };
 
-export const labelsTypeDemande: Record<TypeDemande, { fr: string; en: string }> = {
-  competence: { fr: "Compétence", en: "Skill" },
-  titre: { fr: "Titre / Carrière", en: "Title / Career" },
-  sort: { fr: "Sortilège / Rituel", en: "Spell / Ritual" },
-  autre: { fr: "Autre (à préciser)", en: "Other (specify)" },
+export const labelsTypeDemande: Record<TypeDemande, { fr: string; en: string; nl: string }> = {
+  competence: { fr: "Compétence", en: "Skill", nl: "Vaardigheid" },
+  titre: { fr: "Titre / Carrière", en: "Title / Career", nl: "Titel / Carrière" },
+  sort: { fr: "Sortilège / Rituel", en: "Spell / Ritual", nl: "Spreuk / Ritueel" },
+  autre: { fr: "Autre (à préciser)", en: "Other (specify)", nl: "Andere (specificeren)" },
 };
 
 export interface DemandeXp {
@@ -48,10 +48,10 @@ export interface DemandeXp {
   updated_at: string;
 }
 
-export const statutDemandeLabels: Record<DemandeXp["statut"], string> = {
-  en_attente: "En attente",
-  approuvee: "Approuvée",
-  refusee: "Refusée",
+export const statutDemandeLabels: Record<DemandeXp["statut"], { fr: string; en: string; nl: string }> = {
+  en_attente: { fr: "En attente", en: "Pending", nl: "In afwachting" },
+  approuvee: { fr: "Approuvée", en: "Approved", nl: "Goedgekeurd" },
+  refusee: { fr: "Refusée", en: "Refused", nl: "Geweigerd" },
 };
 
 export const statutDemandeColors: Record<DemandeXp["statut"], string> = {
