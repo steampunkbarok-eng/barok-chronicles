@@ -49,12 +49,36 @@ interface Personnage {
   glandeDraconique?: string;
 }
 
+interface EvenementLite {
+  id: string;
+  nom: string;
+  nom_en: string | null;
+  nom_nl: string | null;
+  date_debut: string;
+  date_fin: string | null;
+  lieu: string | null;
+  statut: "a_venir" | "en_cours" | "termine" | "annule";
+}
+
 const Personnages = () => {
   const { t, language } = useLanguage();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
   const [factions, setFactions] = useState<{ nom: string; titres: string[] }[]>([]);
+  const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
+  const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
+
+  const nomEvenement = (e: EvenementLite) =>
+    (language === "en" ? e.nom_en : language === "nl" ? e.nom_nl : e.nom) || e.nom;
+
+  const locale = language === "en" ? "en-GB" : language === "nl" ? "nl-NL" : "fr-FR";
+  const datesEvenement = (e: EvenementLite) => {
+    const d1 = new Date(e.date_debut).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
+    if (!e.date_fin || e.date_fin === e.date_debut) return d1;
+    return `${d1} → ${new Date(e.date_fin).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })}`;
+  };
+
 
   const [formData, setFormData] = useState<Omit<Personnage, "id">>({
     nomTO: "",
