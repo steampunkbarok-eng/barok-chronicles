@@ -10,6 +10,10 @@ import { useTri } from "@/i18n/tri";
 interface Evenement {
   id: string;
   nom: string;
+  nom_en: string | null;
+  nom_nl: string | null;
+  description_en: string | null;
+  description_nl: string | null;
   date_debut: string;
   date_fin: string | null;
   lieu: string | null;
@@ -50,7 +54,7 @@ const Evenements = () => {
     (async () => {
       const { data } = await supabase
         .from("evenements")
-        .select("id, nom, date_debut, date_fin, lieu, description, xp_attribuee, compte_rendu, statut")
+        .select("id, nom, nom_en, nom_nl, description_en, description_nl, date_debut, date_fin, lieu, description, xp_attribuee, compte_rendu, statut")
         .order("date_debut", { ascending: false });
       setEvenements((data as Evenement[]) || []);
       setLoading(false);
@@ -65,7 +69,7 @@ const Evenements = () => {
       <CardHeader>
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <CardTitle className="font-serif text-xl">{e.nom}</CardTitle>
+            <CardTitle className="font-serif text-xl">{(language === "en" ? e.nom_en : language === "nl" ? e.nom_nl : e.nom) || e.nom}</CardTitle>
             <CardDescription className="flex flex-wrap items-center gap-3 mt-1">
               <span className="inline-flex items-center gap-1">
                 <CalendarDays className="w-4 h-4" /> {formatDates(e, locale)}
@@ -89,7 +93,7 @@ const Evenements = () => {
       </CardHeader>
       {(e.description || e.compte_rendu) && (
         <CardContent className="space-y-3 text-sm">
-          {e.description && <p className="whitespace-pre-line text-muted-foreground">{e.description}</p>}
+          {e.description && <p className="whitespace-pre-line text-muted-foreground">{(language === "en" ? e.description_en : language === "nl" ? e.description_nl : e.description) || e.description}</p>}
           {e.compte_rendu && (
             <div>
               <h3 className="font-serif text-base mb-1">{L("Compte-rendu", "Report", "Verslag")}</h3>
