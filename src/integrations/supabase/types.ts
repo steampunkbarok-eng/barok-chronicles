@@ -116,9 +116,13 @@ export type Database = {
           date_debut: string
           date_fin: string | null
           description: string | null
+          description_en: string | null
+          description_nl: string | null
           id: string
           lieu: string | null
           nom: string
+          nom_en: string | null
+          nom_nl: string | null
           notes_orga: string | null
           statut: Database["public"]["Enums"]["evenement_statut"]
           updated_at: string
@@ -130,9 +134,13 @@ export type Database = {
           date_debut: string
           date_fin?: string | null
           description?: string | null
+          description_en?: string | null
+          description_nl?: string | null
           id?: string
           lieu?: string | null
           nom: string
+          nom_en?: string | null
+          nom_nl?: string | null
           notes_orga?: string | null
           statut?: Database["public"]["Enums"]["evenement_statut"]
           updated_at?: string
@@ -144,9 +152,13 @@ export type Database = {
           date_debut?: string
           date_fin?: string | null
           description?: string | null
+          description_en?: string | null
+          description_nl?: string | null
           id?: string
           lieu?: string | null
           nom?: string
+          nom_en?: string | null
+          nom_nl?: string | null
           notes_orga?: string | null
           statut?: Database["public"]["Enums"]["evenement_statut"]
           updated_at?: string
