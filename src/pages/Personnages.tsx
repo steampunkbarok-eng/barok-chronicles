@@ -724,7 +724,9 @@ const Personnages = () => {
       niveauxSortsGratuitsUtilises: 0,
       chamanismeTatoueur: ""
     });
+    setEvenementsParticipes([]);
     setRecapitulatif([]);
+
     
     toast.success(
       language === "en"
