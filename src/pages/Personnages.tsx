@@ -49,12 +49,36 @@ interface Personnage {
   glandeDraconique?: string;
 }
 
+interface EvenementLite {
+  id: string;
+  nom: string;
+  nom_en: string | null;
+  nom_nl: string | null;
+  date_debut: string;
+  date_fin: string | null;
+  lieu: string | null;
+  statut: "a_venir" | "en_cours" | "termine" | "annule";
+}
+
 const Personnages = () => {
   const { t, language } = useLanguage();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
   const [factions, setFactions] = useState<{ nom: string; titres: string[] }[]>([]);
+  const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
+  const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
+
+  const nomEvenement = (e: EvenementLite) =>
+    (language === "en" ? e.nom_en : language === "nl" ? e.nom_nl : e.nom) || e.nom;
+
+  const locale = language === "en" ? "en-GB" : language === "nl" ? "nl-NL" : "fr-FR";
+  const datesEvenement = (e: EvenementLite) => {
+    const d1 = new Date(e.date_debut).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
+    if (!e.date_fin || e.date_fin === e.date_debut) return d1;
+    return `${d1} → ${new Date(e.date_fin).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })}`;
+  };
+
 
   const [formData, setFormData] = useState<Omit<Personnage, "id">>({
     nomTO: "",
@@ -156,6 +180,19 @@ const Personnages = () => {
     };
     fetchFactions();
   }, []);
+
+  useEffect(() => {
+    const fetchEvenements = async () => {
+      const { data, error } = await supabase
+        .from('evenements')
+        .select('id, nom, nom_en, nom_nl, date_debut, date_fin, lieu, statut')
+        .order('date_debut', { ascending: true });
+      if (error) console.error("Erreur lors du chargement des événements:", error);
+      else if (data) setEvenementsDispo(data as EvenementLite[]);
+    };
+    fetchEvenements();
+  }, []);
+
 
   useEffect(() => {
     if (formData.espece) {
@@ -681,12 +718,15 @@ const Personnages = () => {
       materielTO: [],
       email: "",
       nbEvenements: 0,
+
       afficherSortilleges: false,
       competencesGratuitesUtilisees: 0,
       niveauxSortsGratuitsUtilises: 0,
       chamanismeTatoueur: ""
     });
+    setEvenementsParticipes([]);
     setRecapitulatif([]);
+
     
     toast.success(
       language === "en"
@@ -843,19 +883,61 @@ const Personnages = () => {
                     {t('characters.eventsDescription')}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <Label htmlFor="nbEvenements">{t('characters.eventsCompleted')}</Label>
-                  <Input
-                    id="nbEvenements"
-                    type="number"
-                    min="0"
-                    value={formData.nbEvenements}
-                    onChange={(e) => setFormData({ ...formData, nbEvenements: parseInt(e.target.value) || 0 })}
-                  />
+                <CardContent className="space-y-3">
+                  <Label>{t('characters.eventsCompleted')}</Label>
+                  {evenementsDispo.filter(e => e.statut !== "a_venir" && e.statut !== "annule").length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {language === "en" ? "No past episode registered yet." : language === "nl" ? "Nog geen afgelopen episode geregistreerd." : "Aucun épisode passé enregistré pour le moment."}
+                    </p>
+                  )}
+                  <div className="space-y-2">
+                    {evenementsDispo
+                      .filter(e => e.statut !== "a_venir" && e.statut !== "annule")
+                      .map((e) => {
+                        const checked = evenementsParticipes.includes(e.id);
+                        return (
+                          <label key={e.id} className="flex items-start gap-3 border border-border/60 rounded px-3 py-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="mt-1 accent-primary"
+                              checked={checked}
+                              onChange={(ev) => {
+                                const next = ev.target.checked
+                                  ? [...evenementsParticipes, e.id]
+                                  : evenementsParticipes.filter(id => id !== e.id);
+                                setEvenementsParticipes(next);
+                                setFormData(fd => ({ ...fd, nbEvenements: next.length }));
+                              }}
+                            />
+                            <span className="text-sm">
+                              <span className="font-medium">{nomEvenement(e)}</span>
+                              <span className="block text-xs text-muted-foreground">
+                                {datesEvenement(e)}{e.lieu ? ` · ${e.lieu}` : ""}
+                              </span>
+                            </span>
+                          </label>
+                        );
+                      })}
+                  </div>
+
+                  <p className="text-sm">
+                    {t('characters.eventsCompleted')}: <strong>{formData.nbEvenements}</strong>
+                    {" · "}
+                    {language === "en" ? "Free skills" : language === "nl" ? "Gratis vaardigheden" : "Compétences gratuites"}: <strong>{formData.nbEvenements * 2}</strong>
+                  </p>
+
+                  {evenementsDispo.filter(e => e.statut === "a_venir").length > 0 && (
+                    <div className="text-xs text-muted-foreground border-t border-border pt-2">
+                      {language === "en" ? "Next episode: " : language === "nl" ? "Volgende episode: " : "Prochain épisode : "}
+                      {evenementsDispo.filter(e => e.statut === "a_venir").map(e => `${nomEvenement(e)} (${datesEvenement(e)})`).join(", ")}
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground">
                     {t('characters.eventsNote')}
                   </p>
                 </CardContent>
+
               </Card>
 
               <Card className="ornament-border">
