@@ -158,6 +158,19 @@ const Personnages = () => {
   }, []);
 
   useEffect(() => {
+    const fetchEvenements = async () => {
+      const { data, error } = await supabase
+        .from('evenements')
+        .select('id, nom, nom_en, nom_nl, date_debut, date_fin, lieu, statut')
+        .order('date_debut', { ascending: true });
+      if (error) console.error("Erreur lors du chargement des événements:", error);
+      else if (data) setEvenementsDispo(data as EvenementLite[]);
+    };
+    fetchEvenements();
+  }, []);
+
+
+  useEffect(() => {
     if (formData.espece) {
       const especeData = especes.find(e => e.nom === formData.espece);
       if (especeData) {
