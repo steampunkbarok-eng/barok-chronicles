@@ -880,19 +880,61 @@ const Personnages = () => {
                     {t('characters.eventsDescription')}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <Label htmlFor="nbEvenements">{t('characters.eventsCompleted')}</Label>
-                  <Input
-                    id="nbEvenements"
-                    type="number"
-                    min="0"
-                    value={formData.nbEvenements}
-                    onChange={(e) => setFormData({ ...formData, nbEvenements: parseInt(e.target.value) || 0 })}
-                  />
+                <CardContent className="space-y-3">
+                  <Label>{t('characters.eventsCompleted')}</Label>
+                  {evenementsDispo.filter(e => e.statut !== "a_venir" && e.statut !== "annule").length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {language === "en" ? "No past episode registered yet." : language === "nl" ? "Nog geen afgelopen episode geregistreerd." : "Aucun épisode passé enregistré pour le moment."}
+                    </p>
+                  )}
+                  <div className="space-y-2">
+                    {evenementsDispo
+                      .filter(e => e.statut !== "a_venir" && e.statut !== "annule")
+                      .map((e) => {
+                        const checked = evenementsParticipes.includes(e.id);
+                        return (
+                          <label key={e.id} className="flex items-start gap-3 border border-border/60 rounded px-3 py-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="mt-1 accent-primary"
+                              checked={checked}
+                              onChange={(ev) => {
+                                const next = ev.target.checked
+                                  ? [...evenementsParticipes, e.id]
+                                  : evenementsParticipes.filter(id => id !== e.id);
+                                setEvenementsParticipes(next);
+                                setFormData(fd => ({ ...fd, nbEvenements: next.length }));
+                              }}
+                            />
+                            <span className="text-sm">
+                              <span className="font-medium">{nomEvenement(e)}</span>
+                              <span className="block text-xs text-muted-foreground">
+                                {datesEvenement(e)}{e.lieu ? ` · ${e.lieu}` : ""}
+                              </span>
+                            </span>
+                          </label>
+                        );
+                      })}
+                  </div>
+
+                  <p className="text-sm">
+                    {t('characters.eventsCompleted')}: <strong>{formData.nbEvenements}</strong>
+                    {" · "}
+                    {language === "en" ? "Free skills" : language === "nl" ? "Gratis vaardigheden" : "Compétences gratuites"}: <strong>{formData.nbEvenements * 2}</strong>
+                  </p>
+
+                  {evenementsDispo.filter(e => e.statut === "a_venir").length > 0 && (
+                    <div className="text-xs text-muted-foreground border-t border-border pt-2">
+                      {language === "en" ? "Next episode: " : language === "nl" ? "Volgende episode: " : "Prochain épisode : "}
+                      {evenementsDispo.filter(e => e.statut === "a_venir").map(e => `${nomEvenement(e)} (${datesEvenement(e)})`).join(", ")}
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground">
                     {t('characters.eventsNote')}
                   </p>
                 </CardContent>
+
               </Card>
 
               <Card className="ornament-border">
