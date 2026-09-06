@@ -718,6 +718,7 @@ const Personnages = () => {
       materielTO: [],
       email: "",
       nbEvenements: 0,
+
       afficherSortilleges: false,
       competencesGratuitesUtilisees: 0,
       niveauxSortsGratuitsUtilises: 0,
