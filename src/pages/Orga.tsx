@@ -630,7 +630,7 @@ const Orga = () => {
                         </Badge>
                         <span className="font-medium">{d.libelle}</span>
                         <span className="text-muted-foreground">— {d.cout_xp} XP</span>
-                        <Badge className={statutDemandeColors[d.statut]}>{statutDemandeLabels[d.statut]}</Badge>
+                        <Badge className={statutDemandeColors[d.statut]}>{statutDemandeLabels[d.statut].fr}</Badge>
                         <span className="text-xs text-muted-foreground ml-auto">
                           {new Date(d.created_at).toLocaleString()}
                         </span>
