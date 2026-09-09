@@ -29,6 +29,7 @@ La comptabilité des « marques disponibles / dépensées » et le bloc Titres d
 ## 3. Marque individuelle sur la fiche de personnage
 
 Nouvelle section dans la création de personnage :
+
 - **Imposée automatiquement** : Vorélan-ne → Planaire ; Draconide → Semence de Dragon (non modifiable, avec explication de l'ancrage par rituel païen)
 - **Optionnelle** pour les autres espèces, avec filtrage : espèces interdites, incompatibilité avec les origines de la faction choisie, et grille des Marques sombres
 - Rappel visible : toute Marque passe par validation Orga, deux mois avant
@@ -37,14 +38,15 @@ La faction sélectionnée affiche désormais un encart lisible : ses deux origin
 
 ## 4. Compétences mises à jour
 
-- **Nouvelles** : Épouvanter (3 pts), Esthétique morbide (gratuit, Elfe des Ténèbres), Coup bas (4 pts, origine Guilde des Murmures), Mort éradiquante (4 pts), Marche dans l'Inframonde (3 pts, Marque Béni-e de Fées)
+- **Nouvelles** : Épouvanter (3 pts), Esthétique morbide (gratuit, Elfe des Ténèbres), Coup bas (4 pts, origine Guilde des Murmures), Mort éradiquante (4 pts), Marche dans l'Inframonde (3 pts, Marque Béni-e de Fées) + intégration des règles d'obtention de ces compétences ajoutées.
 - **Corrigées** : Tisseur (2 écoles + Guérison, sans Arcanisme, pierres 10 + 2/niveau), Clerc (1 école + Arcanique), Ritualiste (hors Arcanes et Alchimie), Tatoueur (Tisseur + école Chamanisme), Perce-ligne (prérequis armes de mêlée), Barbier (+1 PV après 10 min), Alphabétisation commune (trois langues au choix), Solde (engagement spécial), Crochetage (max niveau 3 à la création), Chiffonnier, Éleveur, Lapidaire, Tabaculteur, Taxidermiste, Charpentier de marine, Glisseur, Navigation (sortis de « en révision »)
 - **Verrouillages** : les compétences liées à une origine ou une Marque ne sont proposées que si la faction ou la Marque du personnage les débloque ; Contresort reste inaccessible à la création
 - Effets et prérequis alignés sur le tableau récapitulatif du livret
+- **Vérification et corrections :** l'opérateur testera etvérifiera ce qui a été faite et suggèrera des améliorations, corrections ou modifications.
 
 ## 5. Traductions et affichage
 
-Chaque nouvel élément (origines, marques, compétences) reçoit son libellé français, anglais et néerlandais, et apparaît dans le récapitulatif final, la fiche PDF de faction et la fiche de personnage.
+Chaque nouvel élément (origines, marques, compétences) reçoit son libellé français. L'opérateur fournira quand ce sera demandé les documents des versions anglaises et néerlandais, et apparaît dans le récapitulatif final, la fiche PDF de faction et la fiche de personnage.
 
 ## Détails techniques
 
