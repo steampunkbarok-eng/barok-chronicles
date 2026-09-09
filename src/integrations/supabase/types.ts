@@ -175,10 +175,12 @@ export type Database = {
           date_creation: string | null
           description_courte: string | null
           id: string
+          marque_collective: string | null
           marques_depensees: number
           marques_disponibles: number
           marques_total: number
           nom: string
+          origines: string[]
           propriete_terrienne: string | null
           statut: string | null
           titres: string[] | null
@@ -192,10 +194,12 @@ export type Database = {
           date_creation?: string | null
           description_courte?: string | null
           id?: string
+          marque_collective?: string | null
           marques_depensees?: number
           marques_disponibles?: number
           marques_total?: number
           nom: string
+          origines?: string[]
           propriete_terrienne?: string | null
           statut?: string | null
           titres?: string[] | null
@@ -209,10 +213,12 @@ export type Database = {
           date_creation?: string | null
           description_courte?: string | null
           id?: string
+          marque_collective?: string | null
           marques_depensees?: number
           marques_disponibles?: number
           marques_total?: number
           nom?: string
+          origines?: string[]
           propriete_terrienne?: string | null
           statut?: string | null
           titres?: string[] | null
