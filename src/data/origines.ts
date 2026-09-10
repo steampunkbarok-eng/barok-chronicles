@@ -208,7 +208,8 @@ export const origines: Origine[] = [
     description: "Caïds des rues ; le réseau réel se noue en jeu via le Courtier des Ombres.",
     especes: "-",
     limitations: "Marque Planaire, Porteur-euse de Rune, Pirate, Agente d'une ONG, Garde du Corps, Archiviste des Secrets",
-    prerequis: "Une compétence de Filouterie",
+    prerequis:
+      "Une compétence de Filouterie obligatoire à la création : Crochetage, Dissimulation, Entrave, Évasion, Infiltration, Mort éradiquante ou Pickpocket (prérequis de la compétence choisie compris)",
   },
   {
     nom: "Contrebandier-ère",
@@ -467,6 +468,37 @@ export const incompatibilitesOrigines: Record<string, string[]> = {
   "Mercenaire Peau-olive": ["Chasseur-euses de Chair"],
   "Composé d'Ancien-nes Esclaves": ["Chasseur-euses de Chair", "Épervier"],
   "Agente d'une ONG": ["Épervier", "Chasseur-euses de Chair"],
+};
+
+/** Compétences « louches » satisfaisant l'obligation de Filouterie */
+export const competencesFilouterie = [
+  "Crochetage niv.1",
+  "Crochetage niv.2",
+  "Crochetage niv.3",
+  "Crochetage niv.4",
+  "Dissimulation",
+  "Entrave",
+  "Évasion",
+  "Infiltration",
+  "Mort éradiquante",
+  "Pickpocket",
+];
+
+export interface ObligationCompetenceOrigine {
+  libelle: { fr: string; en: string; nl: string };
+  parmi: string[];
+}
+
+/** Compétences obligatoires imposées par une origine à la création d'un personnage */
+export const obligationsCompetencesParOrigine: Record<string, ObligationCompetenceOrigine> = {
+  "Bande organisée": {
+    libelle: {
+      fr: "Une compétence de Filouterie est obligatoire (prérequis compris)",
+      en: "One Roguery skill is mandatory (prerequisites included)",
+      nl: "Eén Schelmerij-vaardigheid is verplicht (vereisten inbegrepen)",
+    },
+    parmi: competencesFilouterie,
+  },
 };
 
 /** Marques individuelles interdites par certaines origines (voies sombres notamment) */

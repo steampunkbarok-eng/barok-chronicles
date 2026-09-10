@@ -14,7 +14,7 @@ import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { getOrigine } from "@/data/origines";
 import { getMarqueCollective, getMarqueIndividuelle, marquesIndividuelles } from "@/data/marques";
-import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, ContextePersonnage } from "@/lib/reglesCreation";
+import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, obligationsCompetences, ContextePersonnage } from "@/lib/reglesCreation";
 import { useTri } from "@/i18n/tri";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
@@ -293,6 +293,12 @@ const Personnages = () => {
     marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || undefined,
     marqueCollective: marqueCollectiveFaction || undefined,
   };
+
+  /** Compétences obligatoires imposées par les origines de la faction (ex. Filouterie) */
+  const obligationsFaction = obligationsCompetences(
+    originesFaction,
+    formData.competences.map(c => c.nom)
+  );
 
 
 
@@ -729,6 +735,14 @@ const Personnages = () => {
 
     if (!formData.espece) {
       toast.error("Vous devez choisir une espèce");
+      return;
+    }
+
+    // Compétences obligatoires imposées par les origines de la faction
+    const manquantes = obligationsFaction.filter(o => !o.satisfaite);
+    if (manquantes.length > 0) {
+      const o = manquantes[0];
+      toast.error(`${o.origine} — ${L(o.libelle.fr, o.libelle.en, o.libelle.nl)} : ${o.parmi.join(", ")}`);
       return;
     }
 
@@ -1288,6 +1302,19 @@ const Personnages = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {obligationsFaction.map((ob) => (
+                    <div
+                      key={ob.origine}
+                      className={`p-3 rounded-lg border text-sm ${ob.satisfaite ? 'border-green-600/40 bg-green-600/10' : 'border-yellow-600/50 bg-yellow-600/10'}`}
+                    >
+                      <div className="font-semibold">
+                        {ob.satisfaite ? '✅' : '⚠️'} {ob.origine} — {L(ob.libelle.fr, ob.libelle.en, ob.libelle.nl)}
+                      </div>
+                      <div className="text-muted-foreground mt-1">
+                        {L("Au choix", "Choose one", "Naar keuze")} : {ob.parmi.join(", ")}
+                      </div>
+                    </div>
+                  ))}
                   <div className="flex items-center space-x-2 bg-accent/20 p-3 rounded-lg">
                     <input
                       type="checkbox"
