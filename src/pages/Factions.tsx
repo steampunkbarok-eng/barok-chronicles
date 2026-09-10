@@ -253,7 +253,7 @@ const Factions = () => {
               <Shield className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold text-primary">{t('factions.title')}</h1>
             </div>
-            {!showForm && (
+            {!showForm && sessionEmail && (
               <Button onClick={() => setShowForm(true)} className="gap-2">
                 <Plus className="h-5 w-5" />
                 {t('factions.create')}
@@ -264,7 +264,28 @@ const Factions = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {showForm ? (
+        {!checkingSession && !sessionEmail ? (
+          <Card className="ornament-border max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>{L("Connexion requise", "Sign in required", "Aanmelden vereist")}</CardTitle>
+              <CardDescription>
+                {L(
+                  "Créez d'abord votre compte (ou connectez-vous) : votre faction sera rattachée à cette adresse email, ce qui vous permettra de la corriger plus tard et de suivre les fiches de personnage qui la rejoignent.",
+                  "First create your account (or sign in): your faction will be linked to this email address, so you can correct it later and follow the character sheets joining it.",
+                  "Maak eerst je account aan (of meld je aan): je factie wordt aan dit e-mailadres gekoppeld, zodat je ze later kunt corrigeren en de personagebladen kunt volgen.",
+                )}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-3">
+              <Button onClick={() => navigate("/auth?next=/factions")}>
+                {L("Créer un compte / Se connecter", "Create an account / Sign in", "Account aanmaken / Aanmelden")}
+              </Button>
+              <Link to="/mes-factions">
+                <Button variant="outline">{L("Gérer mes factions", "Manage my factions", "Mijn facties beheren")}</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ) : showForm ? (
           <Card className="ornament-border max-w-4xl mx-auto">
             <CardHeader>
               <CardTitle>{t('factions.createNew')}</CardTitle>
@@ -520,8 +541,17 @@ const Factions = () => {
                   value={formData.contactEmail}
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
                   placeholder={t('factions.emailPlaceholder')}
+                  readOnly={!!sessionEmail}
                 />
-                <p className="text-xs text-muted-foreground">{t('factions.emailNote')}</p>
+                <p className="text-xs text-muted-foreground">
+                  {sessionEmail
+                    ? L(
+                        "Votre faction est rattachée à votre compte : vous pourrez la corriger dans « Mes factions ».",
+                        "Your faction is linked to your account: you can correct it in \"My factions\".",
+                        "Je factie is gekoppeld aan je account: je kunt ze corrigeren in \"Mijn facties\".",
+                      )
+                    : t('factions.emailNote')}
+                </p>
               </div>
 
               <div className="flex gap-3 pt-4">
