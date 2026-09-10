@@ -13,7 +13,7 @@ import { useTri } from "@/i18n/tri";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { L } = useTri();
+  const { L, language: lang } = useTri();
   const [params] = useSearchParams();
   const next = params.get("next");
   const [email, setEmail] = useState(params.get("email") || "");
