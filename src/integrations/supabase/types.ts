@@ -341,36 +341,7 @@ export type Database = {
       }
     }
     Views: {
-      factions_publiques: {
-        Row: {
-          id: string | null
-          marque_collective: string | null
-          marque_collective_detail: string | null
-          nom: string | null
-          origines: string[] | null
-          statut: string | null
-          titres: string[] | null
-        }
-        Insert: {
-          id?: string | null
-          marque_collective?: string | null
-          marque_collective_detail?: string | null
-          nom?: string | null
-          origines?: string[] | null
-          statut?: string | null
-          titres?: string[] | null
-        }
-        Update: {
-          id?: string | null
-          marque_collective?: string | null
-          marque_collective_detail?: string | null
-          nom?: string | null
-          origines?: string[] | null
-          statut?: string | null
-          titres?: string[] | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       has_role: {
@@ -382,6 +353,18 @@ export type Database = {
       }
       is_faction_manager: { Args: { _faction: string }; Returns: boolean }
       is_orga: { Args: { _user_id: string }; Returns: boolean }
+      liste_factions_publiques: {
+        Args: never
+        Returns: {
+          id: string
+          marque_collective: string
+          marque_collective_detail: string
+          nom: string
+          origines: string[]
+          statut: string
+          titres: string[]
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "orga" | "user"
