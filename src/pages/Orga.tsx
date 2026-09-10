@@ -184,13 +184,37 @@ const Orga = () => {
 
 
   const deletePerso = async (id: string) => {
-    if (!confirm("Supprimer définitivement ce personnage ?")) return;
-    const { error } = await supabase.from("personnages").delete().eq("id", id);
+    if (!confirm("Mettre cette fiche à la corbeille ? Elle restera récupérable.")) return;
+    const { error } = await supabase
+      .from("personnages")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: userEmail })
+      .eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Supprimé");
+    toast.success("Fiche mise à la corbeille");
     setSelected(null);
     loadPersos();
+    loadCorbeille();
   };
+
+  const restaurerPerso = async (id: string) => {
+    const { error } = await supabase
+      .from("personnages")
+      .update({ deleted_at: null, deleted_by: null })
+      .eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Fiche restaurée");
+    loadPersos();
+    loadCorbeille();
+  };
+
+  const supprimerDefinitivement = async (id: string) => {
+    if (!confirm("Supprimer DÉFINITIVEMENT cette fiche ? Cette action est irréversible.")) return;
+    const { error } = await supabase.from("personnages").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Fiche supprimée définitivement");
+    loadCorbeille();
+  };
+
 
   const saveEdit = async () => {
     if (!selected) return;
