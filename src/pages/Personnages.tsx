@@ -14,7 +14,7 @@ import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { getOrigine } from "@/data/origines";
 import { getMarqueCollective, getMarqueIndividuelle, marquesIndividuelles } from "@/data/marques";
-import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, ContextePersonnage } from "@/lib/reglesCreation";
+import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, obligationsCompetences, ContextePersonnage } from "@/lib/reglesCreation";
 import { useTri } from "@/i18n/tri";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
