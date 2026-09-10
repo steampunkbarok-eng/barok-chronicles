@@ -77,6 +77,9 @@ const Personnages = () => {
   const [factions, setFactions] = useState<{ nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null; marque_collective_detail: string | null }[]>([]);
   const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
   const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
+  const { id: editId } = useParams();
+  const [chargementFiche, setChargementFiche] = useState(false);
+  const [ficheMeta, setFicheMeta] = useState<{ statut: string; xp: number } | null>(null);
 
   const nomEvenement = (e: EvenementLite) =>
     (language === "en" ? e.nom_en : language === "nl" ? e.nom_nl : e.nom) || e.nom;
