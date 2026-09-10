@@ -82,7 +82,7 @@ serve(async (req) => {
     let envoyes = 0;
     let echecs = 0;
     for (const [mail, noms] of parEmail) {
-      const lien = `${SITE_URL}/auth?email=${encodeURIComponent(mail)}&next=${encodeURIComponent("/mes-factions")}`;
+      const lien = `${siteUrl}/auth?email=${encodeURIComponent(mail)}&next=${encodeURIComponent("/mes-factions")}`;
       try {
         const res = await resend.emails.send({
           from: "Barok GN <noreply@barok-steampunk.be>",
