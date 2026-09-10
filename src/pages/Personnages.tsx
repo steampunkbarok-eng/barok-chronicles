@@ -294,6 +294,12 @@ const Personnages = () => {
     marqueCollective: marqueCollectiveFaction || undefined,
   };
 
+  /** Compétences obligatoires imposées par les origines de la faction (ex. Filouterie) */
+  const obligationsFaction = obligationsCompetences(
+    originesFaction,
+    formData.competences.map(c => c.nom)
+  );
+
 
 
   const genererRecapitulatif = () => {
