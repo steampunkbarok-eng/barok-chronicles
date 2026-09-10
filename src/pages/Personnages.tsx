@@ -799,6 +799,9 @@ const Personnages = () => {
       especeGratuit: especeData?.gratuit,
       especeInterdit: especeData?.interdit,
       factionInterdit: factionInterdit,
+      origines: factionData?.origines || undefined,
+      marqueCollective: factionData?.marque_collective || undefined,
+      marqueIndividuelle: nouveauPersonnage.marqueIndividuelle || undefined,
       sorts: nouveauPersonnage.sorts,
       afficherSortilleges: nouveauPersonnage.afficherSortilleges,
     }, language, t);
@@ -1627,6 +1630,9 @@ const Personnages = () => {
                             });
                             return interdits.length > 0 ? interdits.join(' + ') : 'Aucun';
                           })(),
+                          origines: factions.find(f => f.nom === perso.faction)?.origines || undefined,
+                          marqueCollective: factions.find(f => f.nom === perso.faction)?.marque_collective || undefined,
+                          marqueIndividuelle: perso.marqueIndividuelle || undefined,
                           sorts: perso.sorts,
                           afficherSortilleges: perso.afficherSortilleges || false
                         }}
