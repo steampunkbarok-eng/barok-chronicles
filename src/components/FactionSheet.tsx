@@ -3,22 +3,29 @@ import { translateGameData } from "@/i18n/gameData";
 import { Button } from "@/components/ui/button";
 import { Printer, Download } from "lucide-react";
 import { titresCarrieres } from "@/data/titres";
+import { getOrigine } from "@/data/origines";
+import { getMarqueCollective } from "@/data/marques";
+
+interface FactionData {
+  nom: string;
+  marquesTotal: number;
+  marquesDepensees: number;
+  marquesDisponibles: number;
+  propriete: string;
+  batiment: { type: string; nom: string; avantages: string } | null;
+  titres?: string[];
+  origines?: string[];
+  marqueCollective?: string | null;
+  descriptionCourte: string;
+  background: string;
+  contactEmail: string;
+  dateCreation: string;
+}
 
 interface FactionSheetProps {
-  faction: {
-    nom: string;
-    marquesTotal: number;
-    marquesDepensees: number;
-    marquesDisponibles: number;
-    propriete: string;
-    batiment: { type: string; nom: string; avantages: string } | null;
-    titres: string[];
-    descriptionCourte: string;
-    background: string;
-    contactEmail: string;
-    dateCreation: string;
-  };
+  faction: FactionData;
 }
+
 
 const pick = (language: 'fr' | 'en' | 'nl', fr: string, en: string, nl: string) =>
   language === 'en' ? en : language === 'nl' ? nl : fr;
