@@ -465,6 +465,9 @@ const Orga = () => {
                           </Button>
                         </>
                       )}
+                      <Button size="sm" variant="outline" asChild onClick={(e) => e.stopPropagation()}>
+                        <a href={`/personnages/${p.id}`} target="_blank" rel="noopener noreferrer">Ouvrir la fiche</a>
+                      </Button>
                       <Button size="sm" variant="ghost" title="Mettre à la corbeille" onClick={() => deletePerso(p.id)}>
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>

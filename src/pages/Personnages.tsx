@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -77,6 +77,9 @@ const Personnages = () => {
   const [factions, setFactions] = useState<{ nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null; marque_collective_detail: string | null }[]>([]);
   const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
   const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
+  const { id: editId } = useParams();
+  const [chargementFiche, setChargementFiche] = useState(false);
+  const [ficheMeta, setFicheMeta] = useState<{ statut: string; xp: number } | null>(null);
 
   const nomEvenement = (e: EvenementLite) =>
     (language === "en" ? e.nom_en : language === "nl" ? e.nom_nl : e.nom) || e.nom;
@@ -135,20 +138,20 @@ const Personnages = () => {
   const competencesGratuitesDisponibles = formData.nbEvenements * 2;
   const competencesGratuitesRestantes = competencesGratuitesDisponibles - formData.competencesGratuitesUtilisees;
 
-  // Sauvegarde automatique dans localStorage
+  // Sauvegarde automatique dans localStorage (uniquement en création)
   useEffect(() => {
-    if (showForm && (formData.nomTO || formData.nomTI || formData.espece || formData.competences.length > 0)) {
+    if (!editId && showForm && (formData.nomTO || formData.nomTI || formData.espece || formData.competences.length > 0)) {
       localStorage.setItem('personnage_en_cours', JSON.stringify(formData));
     }
-  }, [formData, showForm]);
+  }, [formData, showForm, editId]);
 
   // Charger les données sauvegardées au démarrage
   useEffect(() => {
+    if (editId) return;
     const savedData = localStorage.getItem('personnage_en_cours');
     if (savedData && !showForm) {
       try {
         const parsed = JSON.parse(savedData);
-        // Vérifier si des données significatives existent
         if (parsed.nomTO || parsed.nomTI || parsed.espece || parsed.competences?.length > 0) {
           toast.info("Brouillon trouvé ! Cliquez sur 'Créer un Personnage' pour le restaurer.");
         }
@@ -156,10 +159,11 @@ const Personnages = () => {
         console.error("Erreur lors du chargement du brouillon:", error);
       }
     }
-  }, []);
+  }, [editId]);
 
   // Restaurer le brouillon lors de l'ouverture du formulaire
   useEffect(() => {
+    if (editId) return;
     if (showForm) {
       const savedData = localStorage.getItem('personnage_en_cours');
       if (savedData) {
@@ -174,7 +178,48 @@ const Personnages = () => {
         }
       }
     }
-  }, [showForm]);
+  }, [showForm, editId]);
+
+  // Chargement d'une fiche existante (édition / évolution)
+  useEffect(() => {
+    if (!editId) return;
+    (async () => {
+      setChargementFiche(true);
+      const { data, error } = await supabase
+        .from("personnages")
+        .select("id,nom,prenom,faction,espece,email,statut,xp,data")
+        .eq("id", editId)
+        .maybeSingle();
+      setChargementFiche(false);
+      if (error || !data) {
+        toast.error(
+          L(
+            "Fiche introuvable ou accès refusé. Connectez-vous avec le compte concerné.",
+            "Sheet not found or access denied. Sign in with the relevant account.",
+            "Blad niet gevonden of toegang geweigerd. Meld je aan met het juiste account.",
+          ),
+        );
+        return;
+      }
+      const d = (data.data || {}) as Record<string, any>;
+      setFicheMeta({ statut: data.statut, xp: data.xp });
+      setFormData((fd) => ({
+        ...fd,
+        ...d,
+        nomTO: d.nomTO ?? data.prenom ?? "",
+        nomTI: d.nomTI ?? data.nom ?? "",
+        faction: d.faction ?? data.faction ?? "",
+        espece: d.espece ?? data.espece ?? "",
+        email: d.email ?? data.email ?? "",
+        competences: Array.isArray(d.competences) ? d.competences : [],
+        sorts: d.sorts ?? { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
+        materielTO: Array.isArray(d.materielTO) ? d.materielTO : [],
+      }));
+      setEvenementsParticipes(Array.isArray(d.evenementsParticipes) ? d.evenementsParticipes : []);
+      setShowForm(true);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
 
   useEffect(() => {
     const fetchFactions = async () => {
@@ -769,7 +814,7 @@ const Personnages = () => {
     }
 
     const nouveauPersonnage: Personnage = {
-      id: crypto.randomUUID(),
+      id: editId || crypto.randomUUID(),
       ...formData,
       marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || "",
       marqueIndividuelleDetail:
@@ -777,6 +822,35 @@ const Personnages = () => {
           ? (formData.marqueIndividuelleDetail || "").trim()
           : ""
     };
+
+    // Mode édition / évolution d'une fiche existante
+    if (editId) {
+      const { error } = await supabase
+        .from("personnages")
+        .update({
+          nom: nouveauPersonnage.nomTI,
+          prenom: nouveauPersonnage.nomTO,
+          faction: nouveauPersonnage.faction || null,
+          espece: nouveauPersonnage.espece,
+          email: nouveauPersonnage.email,
+          statut: "soumis",
+          data: { ...nouveauPersonnage, evenementsParticipes } as any,
+        })
+        .eq("id", editId);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      setFicheMeta((m) => (m ? { ...m, statut: "soumis" } : m));
+      toast.success(
+        L(
+          "Fiche mise à jour et soumise à validation de l'Organisation.",
+          "Sheet updated and submitted for the Organisation's approval.",
+          "Blad bijgewerkt en ingediend ter goedkeuring van de Organisatie.",
+        ),
+      );
+      return;
+    }
 
     setPersonnages([...personnages, nouveauPersonnage]);
     setShowForm(false);
@@ -886,7 +960,7 @@ const Personnages = () => {
         email: nouveauPersonnage.email,
         statut: "soumis",
         xp: 0,
-        data: nouveauPersonnage as any,
+        data: { ...nouveauPersonnage, evenementsParticipes } as any,
       });
       if (dbError) {
         console.error("Erreur de sauvegarde personnage:", dbError);
@@ -950,11 +1024,21 @@ const Personnages = () => {
                 </Button>
               </Link>
               <Scroll className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-primary">{t('characters.title')}</h1>
+              <h1 className="text-3xl font-bold text-primary">
+                {editId
+                  ? `${formData.nomTO} ${formData.nomTI}`.trim() ||
+                    L("Gestion de la fiche", "Sheet management", "Bladbeheer")
+                  : t('characters.title')}
+              </h1>
+              {editId && ficheMeta && (
+                <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
+                  {ficheMeta.statut} · {ficheMeta.xp} XP
+                </span>
+              )}
             </div>
             <div className="flex gap-2">
               <BlankCharacterSheet />
-              {!showForm && (
+              {!showForm && !editId && (
                 <Button onClick={() => setShowForm(true)} className="gap-2">
                   <Plus className="h-5 w-5" />
                   {t('characters.create')}
@@ -966,6 +1050,18 @@ const Personnages = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {chargementFiche && (
+          <p className="text-muted-foreground mb-4">{L("Chargement de la fiche…", "Loading the sheet…", "Blad laden…")}</p>
+        )}
+        {editId && !chargementFiche && showForm && (
+          <div className="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm">
+            {L(
+              "Vous modifiez une fiche existante : cochez les nouveaux épisodes auxquels le personnage a participé, ajustez compétences et sorts, puis enregistrez pour soumettre l'évolution à validation.",
+              "You are editing an existing sheet: tick the new episodes the character attended, adjust skills and spells, then save to submit the evolution for approval.",
+              "Je bewerkt een bestaand blad: vink de nieuwe episodes aan, pas vaardigheden en spreuken aan en sla op om de evolutie ter goedkeuring in te dienen.",
+            )}
+          </div>
+        )}
         {showForm ? (
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Formulaire principal */}
@@ -1617,11 +1713,15 @@ const Personnages = () => {
               <div className="flex gap-3">
                 <Button onClick={sauvegarderPersonnage} className="flex-1 gap-2">
                   <Save className="h-4 w-4" />
-                  {t('characters.save')}
+                  {editId
+                    ? L("Enregistrer et soumettre à validation", "Save and submit for approval", "Opslaan en ter goedkeuring indienen")
+                    : t('characters.save')}
                 </Button>
-                <Button onClick={handleAnnulerCreation} variant="outline">
-                  {t('characters.cancel')}
-                </Button>
+                {!editId && (
+                  <Button onClick={handleAnnulerCreation} variant="outline">
+                    {t('characters.cancel')}
+                  </Button>
+                )}
               </div>
             </div>
 

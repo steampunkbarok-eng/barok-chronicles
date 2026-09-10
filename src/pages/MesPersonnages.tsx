@@ -226,6 +226,7 @@ const MesPersonnages = () => {
                   <TableHead>XP</TableHead>
                   <TableHead>{L("Statut", "Status", "Status")}</TableHead>
                   <TableHead>{L("Soumis le", "Submitted on", "Ingediend op")}</TableHead>
+                  <TableHead className="text-right">{L("Fiche", "Sheet", "Blad")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -243,11 +244,18 @@ const MesPersonnages = () => {
                     <TableCell className="text-xs text-muted-foreground">
                       {new Date(p.created_at).toLocaleDateString()}
                     </TableCell>
+                    <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                      <Button size="sm" variant="outline" asChild>
+                        <a href={`/personnages/${p.id}`} target="_blank" rel="noopener noreferrer">
+                          {L("Modifier / faire évoluer", "Edit / evolve", "Bewerken / evolueren")}
+                        </a>
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {persos.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       {L(
                         `Aucun personnage soumis avec cet email (${userEmail}). Crée ta première fiche !`,
                         `No character submitted with this email (${userEmail}). Create your first sheet!`,

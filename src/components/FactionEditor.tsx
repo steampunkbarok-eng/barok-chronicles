@@ -436,6 +436,11 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
                 <span className="text-muted-foreground">{p.xp} XP</span>
                 <span className="text-xs text-muted-foreground">{p.email}</span>
                 <div className="flex items-center gap-1 ml-auto">
+                  <Button size="sm" variant="outline" asChild>
+                    <a href={`/personnages/${p.id}`} target="_blank" rel="noopener noreferrer">
+                      {L("Ouvrir la fiche", "Open sheet", "Blad openen")}
+                    </a>
+                  </Button>
                   {p.statut !== "valide" && (
                     <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "valide")}>
                       <Check className="h-4 w-4 text-green-600" />

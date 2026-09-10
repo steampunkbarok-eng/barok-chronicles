@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.protect_personnage_self_update() FROM PUBLIC, anon, authenticated;
