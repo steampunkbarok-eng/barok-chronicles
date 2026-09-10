@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Shield, ArrowLeft, Save, Plus, X, Info, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { typesBatiments, batimentsUniques, navires } from "@/data/batiments";
-import { origines as toutesOrigines, categoriesOrigines, getOrigine } from "@/data/origines";
+import { origines as toutesOrigines, categoriesOrigines, getOrigine, origineIncompatibleAvec } from "@/data/origines";
 import { marquesCollectives, getMarqueCollective } from "@/data/marques";
 import { originesCompatibles, marqueCollectiveCompatible } from "@/lib/reglesCreation";
 import { supabase } from "@/integrations/supabase/client";
