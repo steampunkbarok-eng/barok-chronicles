@@ -458,20 +458,9 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
         : `<div class="empty">${labels.none}</div>`}
     </div>
     
-    <div class="section">
-      <div class="section-title">${labels.titlesCareers}</div>
-      ${titlesWithDetails.length > 0 
-        ? titlesWithDetails.map(titre => `
-            <div class="title-card">
-              <span class="title-name">${translateGameData(titre.nom, 'titre', language)}</span>
-              <div class="title-details">
-                ${titre.prerequis ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translateGameData(titre.prerequis, 'titrePrerequisit', language)}</div>` : ''}
-                ${titre.incompatible ? `<div class="title-incomp"><strong>${labels.incompatible}:</strong> ${titre.incompatible.split(', ').map(inc => translateGameData(inc.trim(), 'titre', language)).join(', ')}</div>` : ''}
-              </div>
-            </div>
-          `).join('')
-        : `<div class="empty">${labels.none}</div>`}
-    </div>
+    ${originesHtml}
+    ${titlesSection}
+
     
     <div class="section">
       <div class="section-title">${labels.shortDescription}</div>
