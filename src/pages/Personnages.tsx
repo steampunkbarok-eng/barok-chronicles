@@ -66,6 +66,8 @@ interface EvenementLite {
   statut: "a_venir" | "en_cours" | "termine" | "annule";
 }
 
+const MARQUE_AUTRE = "Autre Marque personnelle de Destinée";
+
 const Personnages = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
