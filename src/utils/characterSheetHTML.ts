@@ -33,6 +33,8 @@ export function generateCharacterSheetHTML(
   const competencesMagiques = ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"];
   const aCompetenceMagique = character.competences.some(c => competencesMagiques.includes(c));
   const afficherMagie = aCompetenceMagique || character.afficherSortilleges;
+  // Téphromancie : les Pierres de Vie deviennent des Obsidiennes de la Mort
+  const tephromancie = character.marqueIndividuelle === "Téphromancie";
 
   return `
 <!DOCTYPE html>
