@@ -71,7 +71,7 @@ const Personnages = () => {
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
-  const [factions, setFactions] = useState<{ nom: string; titres: string[] }[]>([]);
+  const [factions, setFactions] = useState<{ nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null }[]>([]);
   const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
   const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
 
@@ -111,7 +111,8 @@ const Personnages = () => {
     competencesGratuitesUtilisees: 0,
     niveauxSortsGratuitsUtilises: 0,
     chamanismeTatoueur: "",
-    glandeDraconique: ""
+    glandeDraconique: "",
+    marqueIndividuelle: ""
   });
 
   // Calculer le coût des sorts
@@ -175,7 +176,7 @@ const Personnages = () => {
     const fetchFactions = async () => {
       const { data, error } = await supabase
         .from('factions')
-        .select('nom, titres')
+        .select('nom, titres, origines, marque_collective')
         .eq('statut', 'active');
       
       if (error) {
