@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { AlertTriangle, FileDown, Save, Users, X } from "lucide-react";
+import { AlertTriangle, Archive, Check, FileDown, RotateCcw, Save, Trash2, Users, X } from "lucide-react";
 import { batimentsUniques, navires } from "@/data/batiments";
 import { origines as toutesOrigines, categoriesOrigines, getOrigine, origineIncompatibleAvec } from "@/data/origines";
 import { marquesCollectives, getMarqueCollective } from "@/data/marques";
