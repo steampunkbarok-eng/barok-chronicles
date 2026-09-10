@@ -738,6 +738,14 @@ const Personnages = () => {
       return;
     }
 
+    // Compétences obligatoires imposées par les origines de la faction
+    const manquantes = obligationsFaction.filter(o => !o.satisfaite);
+    if (manquantes.length > 0) {
+      const o = manquantes[0];
+      toast.error(`${o.origine} — ${L(o.libelle.fr, o.libelle.en, o.libelle.nl)} : ${o.parmi.join(", ")}`);
+      return;
+    }
+
     // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim() || !emailRegex.test(formData.email)) {
