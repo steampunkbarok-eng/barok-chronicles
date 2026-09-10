@@ -51,6 +51,7 @@ interface Personnage {
   niveauxSortsGratuitsUtilises: number;
   chamanismeTatoueur: string;
   glandeDraconique?: string;
+  marqueIndividuelle?: string;
 }
 
 interface EvenementLite {
@@ -66,6 +67,7 @@ interface EvenementLite {
 
 const Personnages = () => {
   const { t, language } = useLanguage();
+  const { L } = useTri();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
