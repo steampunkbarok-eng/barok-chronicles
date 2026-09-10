@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Factions from "./pages/Factions";
 import Personnages from "./pages/Personnages";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Orga from "./pages/Orga";
 import MesPersonnages from "./pages/MesPersonnages";
 import MesFactions from "./pages/MesFactions";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/factions" element={<Factions />} />
             <Route path="/personnages" element={<Personnages />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/mes-personnages" element={<MesPersonnages />} />
             <Route path="/mes-factions" element={<MesFactions />} />
             <Route path="/evenements" element={<Evenements />} />
