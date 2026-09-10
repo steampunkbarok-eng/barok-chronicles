@@ -51,6 +51,9 @@ const mentionne = (haystack: string | undefined, needle: string): boolean => {
 export const originesCompatibles = (nomA: string, nomB: string): Verdict => {
   if (!nomA || !nomB) return { ok: true };
   if (nomA === nomB) return { ok: false, raison: "Les deux origines doivent être différentes." };
+  if (origineIncompatibleAvec(nomA).includes(nomB)) {
+    return { ok: false, raison: `${nomA} est incompatible avec ${nomB}.` };
+  }
   const a = getOrigine(nomA);
   const b = getOrigine(nomB);
   if (!a || !b) return { ok: true };
