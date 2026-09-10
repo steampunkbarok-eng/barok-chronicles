@@ -1253,6 +1253,31 @@ const Personnages = () => {
                           })()}
                         </>
                       )}
+                      {formData.marqueIndividuelle === MARQUE_AUTRE && (
+                        <div className="space-y-1 pt-1">
+                          <Label htmlFor="marqueAutre">
+                            {L("Décrivez votre Marque personnelle", "Describe your personal Mark", "Beschrijf uw persoonlijke Merk")}
+                          </Label>
+                          <Textarea
+                            id="marqueAutre"
+                            rows={3}
+                            value={formData.marqueIndividuelleDetail || ""}
+                            onChange={(e) => setFormData({ ...formData, marqueIndividuelleDetail: e.target.value })}
+                            placeholder={L(
+                              "En cas d'hésitation ou sans idée précise, écrivez « Je contacterai l'Orga » : nous en discuterons ensemble.",
+                              "If you hesitate or have no precise idea, write \"I will contact the Orga\": we will discuss it together.",
+                              "Bij twijfel of zonder duidelijk idee, schrijf \"Ik neem contact op met de Orga\": we bespreken het samen.",
+                            )}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            {L(
+                              "Ce texte apparaîtra dans le récapitulatif et sur la fiche générée.",
+                              "This text will appear in the summary and on the generated sheet.",
+                              "Deze tekst verschijnt in de samenvatting en op het gegenereerde blad.",
+                            )}
+                          </p>
+                        </div>
+                      )}
                       <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
                         <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
                         {L(
