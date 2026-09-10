@@ -1182,7 +1182,8 @@ const Personnages = () => {
                             .filter(c => c.categorie === categorie)
                             .map((comp) => {
                               const interdits = getInterditsFromFaction();
-                              const isInterdit = interdits.some(interdit => 
+                              const verdictComp = competenceAutorisee(comp, contexteRegles);
+                              const isInterdit = !verdictComp.ok || interdits.some(interdit => 
                                 comp.nom.toLowerCase().includes(interdit.toLowerCase()) ||
                                 interdit.toLowerCase().includes(comp.nom.toLowerCase())
                               );
@@ -1197,6 +1198,10 @@ const Personnages = () => {
                                     <span className={`font-medium ${isInterdit ? 'text-destructive' : ''}`}>
                                       {translateGameData(comp.nom, 'competence', language)} ({comp.cout} {t('selection.pts')}) {isInterdit ? `(${t('selection.forbidden')})` : ''}
                                     </span>
+                                    {!verdictComp.ok && (
+                                      <span className="text-xs text-destructive">{verdictComp.raison}</span>
+                                    )}
+
                                     <span className="text-xs text-muted-foreground">{translateGameData(comp.effet, 'effet', language)}</span>
                                     {comp.prerequis && (
                                       <span className="text-xs text-primary">{t('selection.prerequisites')}: {comp.prerequis.split(' + ').map(p => translateGameData(p.trim(), 'competence', language)).join(' + ')}</span>
