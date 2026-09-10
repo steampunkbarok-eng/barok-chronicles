@@ -14,10 +14,12 @@ const corsHeaders = {
 interface FactionEmailRequest {
   factionName: string;
   contactEmail: string;
-  marques: { total: number; disponibles: number };
+  marques?: { total: number; disponibles: number };
   propriete: string | null;
   batiment: { type: string; nom: string; avantages: string } | null;
-  titres: string[];
+  titres?: string[];
+  origines?: string[];
+  marqueCollective?: string | null;
   descriptionCourte: string;
   background: string;
 }
@@ -46,13 +48,15 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
         <div style="background-color: white; padding: 30px; border-radius: 0 0 8px 8px;">
           <h2 style="color: #6B1836; border-bottom: 2px solid #D4A851; padding-bottom: 10px;">${data.factionName}</h2>
-          <div style="margin: 20px 0;">
+          ${data.marques ? `<div style="margin: 20px 0;">
             <h3 style="color: #6B1836;">📊 Marques de Destinée</h3>
             <p><strong>Total:</strong> ${data.marques.total} | <strong>Disponibles:</strong> ${data.marques.disponibles}</p>
-          </div>
+          </div>` : ''}
+          ${(data.origines || []).length > 0 ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">🧭 Origines de la faction</h3><ul style="list-style: none; padding: 0;">${(data.origines || []).map(o => `<li style="margin: 5px 0; padding: 5px 10px; background: #f0f0f0; border-left: 3px solid #D4A851;">• ${o}</li>`).join('')}</ul></div>` : ''}
+          ${data.marqueCollective ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">🔥 Marque collective</h3><p style="padding: 10px; background: #f0f0f0; border-radius: 4px;">${data.marqueCollective}</p></div>` : ''}
           ${data.propriete ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">🏰 Propriété Terrienne</h3><p>${data.propriete}</p></div>` : ''}
           ${data.batiment ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">🏛️ ${data.batiment.type}</h3><p><strong>${data.batiment.nom}</strong></p><p style="padding: 10px; background: #f0f0f0; border-radius: 4px;">${data.batiment.avantages}</p></div>` : ''}
-          ${data.titres.length > 0 ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">🎖️ Titres/Carrières</h3><ul style="list-style: none; padding: 0;">${data.titres.map(t => `<li style="margin: 5px 0; padding: 5px 10px; background: #f0f0f0; border-left: 3px solid #D4A851;">• ${t}</li>`).join('')}</ul></div>` : ''}
+          ${(data.titres || []).length > 0 ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">🎖️ Titres/Carrières</h3><ul style="list-style: none; padding: 0;">${(data.titres || []).map(t => `<li style="margin: 5px 0; padding: 5px 10px; background: #f0f0f0; border-left: 3px solid #D4A851;">• ${t}</li>`).join('')}</ul></div>` : ''}
           ${data.descriptionCourte ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">📝 Description</h3><p style="font-style: italic;">${data.descriptionCourte}</p></div>` : ''}
           ${data.background ? `<div style="margin: 20px 0;"><h3 style="color: #6B1836;">📖 Background</h3><p style="white-space: pre-wrap;">${data.background}</p></div>` : ''}
           <div style="margin: 30px 0; padding: 20px; background: #f0f0f0; border-radius: 4px; text-align: center;">
