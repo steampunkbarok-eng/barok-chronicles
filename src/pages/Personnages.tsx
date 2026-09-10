@@ -1049,6 +1049,18 @@ const Personnages = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {chargementFiche && (
+          <p className="text-muted-foreground mb-4">{L("Chargement de la fiche…", "Loading the sheet…", "Blad laden…")}</p>
+        )}
+        {editId && !chargementFiche && showForm && (
+          <div className="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm">
+            {L(
+              "Vous modifiez une fiche existante : cochez les nouveaux épisodes auxquels le personnage a participé, ajustez compétences et sorts, puis enregistrez pour soumettre l'évolution à validation.",
+              "You are editing an existing sheet: tick the new episodes the character attended, adjust skills and spells, then save to submit the evolution for approval.",
+              "Je bewerkt een bestaand blad: vink de nieuwe episodes aan, pas vaardigheden en spreuken aan en sla op om de evolutie ter goedkeuring in te dienen.",
+            )}
+          </div>
+        )}
         {showForm ? (
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Formulaire principal */}
