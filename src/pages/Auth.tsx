@@ -13,7 +13,7 @@ import { useTri } from "@/i18n/tri";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { L } = useTri();
+  const { L, language: lang } = useTri();
   const [params] = useSearchParams();
   const next = params.get("next");
   const [email, setEmail] = useState(params.get("email") || "");
@@ -77,13 +77,26 @@ const Auth = () => {
       toast.error(L("Indique d'abord ton email", "Enter your email first", "Vul eerst je e-mail in"));
       return;
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+    setLoading(true);
+    const { error } = await supabase.functions.invoke("send-password-reset", {
+      body: { email, lang, siteUrl: window.location.origin },
     });
-    if (error) toast.error(error.message);
+    setLoading(false);
+    if (error)
+      toast.error(
+        L(
+          "Envoi impossible pour le moment, réessaie dans un instant.",
+          "Could not send right now, please try again shortly.",
+          "Verzenden lukt nu niet, probeer het zo meteen opnieuw.",
+        ),
+      );
     else
       toast.success(
-        L("Email de réinitialisation envoyé", "Reset email sent", "E-mail voor opnieuw instellen verzonden"),
+        L(
+          "Email de réinitialisation envoyé. Vérifie ta boîte mail (et les spams).",
+          "Reset email sent. Check your inbox (and spam).",
+          "E-mail verzonden. Controleer je mailbox (en spam).",
+        ),
       );
   };
 

@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.invite-faction-managers]
 verify_jwt = true
+
+[functions.send-password-reset]
+verify_jwt = false

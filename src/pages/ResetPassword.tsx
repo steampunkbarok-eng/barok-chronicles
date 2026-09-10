@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useTri } from "@/i18n/tri";
 
 const ResetPassword = () => {
-  const { L } = useTri();
+  const { L, language: lang } = useTri();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -105,10 +105,13 @@ const ResetPassword = () => {
     if (!resendEmail) {
       return toast.error(L("Indique ton email", "Enter your email", "Vul je e-mail in"));
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(resendEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
+    const { error } = await supabase.functions.invoke("send-password-reset", {
+      body: { email: resendEmail, lang, siteUrl: window.location.origin },
     });
-    if (error) return toast.error(error.message);
+    if (error)
+      return toast.error(
+        L("Envoi impossible pour le moment.", "Could not send right now.", "Verzenden lukt nu niet."),
+      );
     toast.success(L("Nouveau lien envoyé", "New link sent", "Nieuwe link verzonden"));
   };
 
