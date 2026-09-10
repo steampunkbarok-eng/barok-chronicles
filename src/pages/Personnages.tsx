@@ -1256,7 +1256,16 @@ const Personnages = () => {
                                 {m.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
                               </div>
                             );
-                          })()}
+                           })()}
+                          {formData.marqueIndividuelle === "Téphromancie" && (
+                            <p className="text-xs text-primary font-medium pt-1">
+                              {L(
+                                "Vos Pierres de Vie sont automatiquement transformées en Obsidiennes de la Mort : aucune Pierre de Vie n'est conservée.",
+                                "Your Life Stones are automatically turned into Death Obsidians: no Life Stones are kept.",
+                                "Uw Levensstenen worden automatisch omgezet in Obsidianen van de Dood: er blijven geen Levensstenen over."
+                              )}
+                            </p>
+                          )}
                         </>
                       )}
                       {formData.marqueIndividuelle === MARQUE_AUTRE && (
