@@ -97,9 +97,11 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
       .from("personnages")
       .select("id,nom,prenom,espece,email,statut,xp")
       .ilike("faction", faction.nom)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
     setPersos((data as PersoLie[]) || []);
   }, [faction.nom]);
+
 
   useEffect(() => {
     loadPersos();
