@@ -560,7 +560,7 @@ const Orga = () => {
                       Archiver
                     </Button>
                     <Button variant="destructive" onClick={() => deletePerso(selected.id)}>
-                      <Trash2 className="w-4 h-4 mr-1" /> Supprimer
+                      <Trash2 className="w-4 h-4 mr-1" /> Mettre à la corbeille
                     </Button>
                   </div>
                   <div className="text-sm text-muted-foreground">
