@@ -138,6 +138,9 @@ export const marqueIndividuelleCompatible = (
     return { ok: false, raison: `${m.nom} est interdite aux ${espece}.` };
   }
   for (const o of originesFaction) {
+    if (marquesInterditesParOrigine[o]?.includes(nomMarque)) {
+      return { ok: false, raison: `L'origine ${o} de votre faction interdit la Marque ${m.nom}.` };
+    }
     if (m.originesIncompatibles?.includes(o)) {
       return { ok: false, raison: `${m.nom} est incompatible avec l'origine ${o} de votre faction.` };
     }
