@@ -2,3 +2,6 @@ project_id = "autwytojolijmbpgksnr"
 
 [functions.send-faction-email]
 verify_jwt = false
+
+[functions.invite-faction-managers]
+verify_jwt = true

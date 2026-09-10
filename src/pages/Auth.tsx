@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -14,19 +14,34 @@ import { useTri } from "@/i18n/tri";
 const Auth = () => {
   const navigate = useNavigate();
   const { L } = useTri();
-  const [email, setEmail] = useState("");
+  const [params] = useSearchParams();
+  const next = params.get("next");
+  const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const goAfterAuth = useCallback(
+    async (userId: string) => {
+      if (next) {
+        navigate(next);
+        return;
+      }
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+      const isOrga = (roles || []).some((r) => r.role === "orga" || r.role === "admin");
+      navigate(isOrga ? "/orga" : "/mes-factions");
+    },
+    [navigate, next],
+  );
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/orga");
+      if (data.session) goAfterAuth(data.session.user.id);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) navigate("/orga");
+      if (session) setTimeout(() => goAfterAuth(session.user.id), 0);
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+  }, [goAfterAuth]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,11 +58,33 @@ const Auth = () => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/orga` },
+      options: { emailRedirectTo: `${window.location.origin}${next || "/mes-factions"}` },
     });
     setLoading(false);
     if (error) toast.error(error.message);
-    else toast.success(L("Compte créé. Un orga doit t'attribuer le rôle pour accéder à la gestion.", "Account created. An organiser must grant you the role to access management.", "Account aangemaakt. Een organisator moet je de rol toekennen voor toegang tot het beheer."));
+    else
+      toast.success(
+        L(
+          "Compte créé. Vérifie ta boîte mail, puis connecte-toi pour gérer ta faction.",
+          "Account created. Check your inbox, then sign in to manage your faction.",
+          "Account aangemaakt. Controleer je mailbox en meld je aan om je factie te beheren.",
+        ),
+      );
+  };
+
+  const handleReset = async () => {
+    if (!email) {
+      toast.error(L("Indique d'abord ton email", "Enter your email first", "Vul eerst je e-mail in"));
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) toast.error(error.message);
+    else
+      toast.success(
+        L("Email de réinitialisation envoyé", "Reset email sent", "E-mail voor opnieuw instellen verzonden"),
+      );
   };
 
   const handleGoogle = async () => {
@@ -61,9 +98,8 @@ const Auth = () => {
       return;
     }
     if (result.redirected) return;
-    navigate("/orga");
+    navigate(next || "/mes-factions");
   };
-
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -73,11 +109,19 @@ const Auth = () => {
         </Link>
         <Card className="border-primary/30">
           <CardHeader>
-            <CardTitle className="font-serif text-2xl">{L("Accès Orga", "Organiser access", "Toegang organisatie")}</CardTitle>
-            <CardDescription>{L("Connecte-toi pour gérer les personnages et factions.", "Sign in to manage characters and factions.", "Meld je aan om personages en facties te beheren.")}</CardDescription>
+            <CardTitle className="font-serif text-2xl">
+              {L("Compte Barok GN", "Barok GN account", "Barok GN-account")}
+            </CardTitle>
+            <CardDescription>
+              {L(
+                "Créez votre compte avec l'adresse email de contact de votre faction pour la créer, la corriger et suivre les fiches de personnage liées. Les orgas accèdent à la gestion complète.",
+                "Create your account with your faction's contact email to create it, correct it and follow the linked character sheets. Organisers get full management access.",
+                "Maak je account met het contact-e-mailadres van je factie om ze aan te maken, te corrigeren en de gekoppelde personagebladen te volgen. Organisatoren krijgen volledig beheer.",
+              )}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin">
+            <Tabs defaultValue={params.get("email") ? "signup" : "signin"}>
               <TabsList className="grid w-full grid-cols-2 mb-4">
                 <TabsTrigger value="signin">{L("Connexion", "Sign in", "Aanmelden")}</TabsTrigger>
                 <TabsTrigger value="signup">{L("Créer un compte", "Create an account", "Account aanmaken")}</TabsTrigger>
@@ -94,6 +138,9 @@ const Auth = () => {
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {L("Se connecter", "Sign in", "Aanmelden")}
+                  </Button>
+                  <Button type="button" variant="link" className="w-full" onClick={handleReset}>
+                    {L("Mot de passe oublié ?", "Forgot password?", "Wachtwoord vergeten?")}
                   </Button>
                 </form>
               </TabsContent>

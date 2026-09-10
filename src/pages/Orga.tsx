@@ -420,14 +420,17 @@ const Orga = () => {
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       {p.statut === "soumis" && (
                         <>
-                          <Button size="sm" variant="ghost" onClick={() => setStatut(p.id, "valide")}>
+                          <Button size="sm" variant="ghost" title="Valider" onClick={() => setStatut(p.id, "valide")}>
                             <Check className="w-4 h-4 text-green-600" />
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setStatut(p.id, "archive")}>
+                          <Button size="sm" variant="ghost" title="Archiver" onClick={() => setStatut(p.id, "archive")}>
                             <X className="w-4 h-4 text-red-600" />
                           </Button>
                         </>
                       )}
+                      <Button size="sm" variant="ghost" title="Supprimer définitivement" onClick={() => deletePerso(p.id)}>
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
