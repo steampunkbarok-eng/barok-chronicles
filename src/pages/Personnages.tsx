@@ -279,6 +279,23 @@ const Personnages = () => {
     return interdits;
   };
 
+  /** Faction sélectionnée (modèle 2026-2027) */
+  const factionCourante = factions.find(f => f.nom === formData.faction) || null;
+  const originesFaction = factionCourante?.origines || [];
+  const marqueCollectiveFaction = factionCourante?.marque_collective || null;
+
+  /** Marque individuelle imposée par l'espèce (Vorélan-ne, Draconide…) */
+  const marqueForcee = formData.espece ? marqueImposee(formData.espece) : undefined;
+
+  const contexteRegles: ContextePersonnage = {
+    espece: formData.espece,
+    originesFaction,
+    marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || undefined,
+    marqueCollective: marqueCollectiveFaction || undefined,
+  };
+
+
+
   const genererRecapitulatif = () => {
     const recap: string[] = [];
     
