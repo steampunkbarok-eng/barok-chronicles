@@ -1690,7 +1690,7 @@ const Personnages = () => {
                         <span className="font-bold">{perso.competences.length}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">{t('card.lifeStones')}:</span>
+                        <span className="text-muted-foreground">{perso.marqueIndividuelle === "Téphromancie" ? t('sheet.deathObsidian') : t('card.lifeStones')}:</span>
                         <span className="font-bold">{perso.pierresDeVie}</span>
                       </div>
                       <div className="flex justify-between text-sm">
