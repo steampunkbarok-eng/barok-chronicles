@@ -164,15 +164,15 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
       <div class="marks-grid">
         <div class="mark-box">
           <div class="mark-label">${labels.total}</div>
-          <div class="mark-value">${faction.marquesTotal}</div>
+          <div class="mark-value">${faction.marquesTotal ?? 0}</div>
         </div>
         <div class="mark-box">
           <div class="mark-label">${labels.spent}</div>
-          <div class="mark-value">${faction.marquesDepensees * 2}</div>
+          <div class="mark-value">${(faction.marquesDepensees ?? 0) * 2}</div>
         </div>
         <div class="mark-box">
           <div class="mark-label">${labels.available}</div>
-          <div class="mark-value">${faction.marquesDisponibles}</div>
+          <div class="mark-value">${faction.marquesDisponibles ?? 0}</div>
         </div>
       </div>
     </div>`;
@@ -764,15 +764,15 @@ export const openFactionSheet = (faction: FactionData, language: 'fr' | 'en' | '
       <div class="marks-grid">
         <div class="mark-box">
           <div class="mark-label">${labels.total}</div>
-          <div class="mark-value">${faction.marquesTotal}</div>
+          <div class="mark-value">${faction.marquesTotal ?? 0}</div>
         </div>
         <div class="mark-box">
           <div class="mark-label">${labels.spent}</div>
-          <div class="mark-value">${faction.marquesDepensees * 2}</div>
+          <div class="mark-value">${(faction.marquesDepensees ?? 0) * 2}</div>
         </div>
         <div class="mark-box">
           <div class="mark-label">${labels.available}</div>
-          <div class="mark-value">${faction.marquesDisponibles}</div>
+          <div class="mark-value">${faction.marquesDisponibles ?? 0}</div>
         </div>
       </div>
     </div>`;
