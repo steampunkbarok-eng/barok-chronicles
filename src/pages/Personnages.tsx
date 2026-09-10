@@ -404,6 +404,9 @@ const Personnages = () => {
     
     // Calcul et affichage des Pierres de Vie avec détail pour Tisseur/Clerc
     // Nouvelle règle: +2 pierres par niveau de sort utilisé
+    // Téphromancie : les Pierres de Vie sont transformées en Obsidiennes de la Mort
+    const estTephromancien = marqueRecap === "Téphromancie";
+    const libellePierres = estTephromancien ? t('sheet.deathObsidian') : t('summary.lifeStones');
     const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
     if (hasTisseurOrClerc) {
       let niveauxUtilises = 0;
@@ -411,9 +414,12 @@ const Personnages = () => {
       if (formData.sorts.niv2 > 0) niveauxUtilises++;
       if (formData.sorts.niv3 > 0) niveauxUtilises++;
       if (formData.sorts.niv4 > 0) niveauxUtilises++;
-      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${t('common.levels')} × 2)`);
+      recap.push(`   ${libellePierres}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${t('common.levels')} × 2)`);
     } else {
-      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie}`);
+      recap.push(`   ${libellePierres}: ${formData.pierresDeVie}`);
+    }
+    if (estTephromancien) {
+      recap.push(`   ⚠️ ${t('summary.lifeStones')} → ${t('sheet.deathObsidian')} (Téphromancie)`);
     }
     
     recap.push(`   ${t('summary.faithCards')}: ${formData.foi}`);
@@ -1250,7 +1256,16 @@ const Personnages = () => {
                                 {m.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
                               </div>
                             );
-                          })()}
+                           })()}
+                          {formData.marqueIndividuelle === "Téphromancie" && (
+                            <p className="text-xs text-primary font-medium pt-1">
+                              {L(
+                                "Vos Pierres de Vie sont automatiquement transformées en Obsidiennes de la Mort : aucune Pierre de Vie n'est conservée.",
+                                "Your Life Stones are automatically turned into Death Obsidians: no Life Stones are kept.",
+                                "Uw Levensstenen worden automatisch omgezet in Obsidianen van de Dood: er blijven geen Levensstenen over."
+                              )}
+                            </p>
+                          )}
                         </>
                       )}
                       {formData.marqueIndividuelle === MARQUE_AUTRE && (
@@ -1684,7 +1699,7 @@ const Personnages = () => {
                         <span className="font-bold">{perso.competences.length}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">{t('card.lifeStones')}:</span>
+                        <span className="text-muted-foreground">{perso.marqueIndividuelle === "Téphromancie" ? t('sheet.deathObsidian') : t('card.lifeStones')}:</span>
                         <span className="font-bold">{perso.pierresDeVie}</span>
                       </div>
                       <div className="flex justify-between text-sm">

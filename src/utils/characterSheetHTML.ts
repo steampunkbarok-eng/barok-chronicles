@@ -33,6 +33,8 @@ export function generateCharacterSheetHTML(
   const competencesMagiques = ["Initié", "Ritualiste", "Tisseur", "Guérisseur", "Clerc", "Cérémonialiste"];
   const aCompetenceMagique = character.competences.some(c => competencesMagiques.includes(c));
   const afficherMagie = aCompetenceMagique || character.afficherSortilleges;
+  // Téphromancie : les Pierres de Vie deviennent des Obsidiennes de la Mort
+  const tephromancie = character.marqueIndividuelle === "Téphromancie";
 
   return `
 <!DOCTYPE html>
@@ -258,7 +260,7 @@ export function generateCharacterSheetHTML(
 
     <div class="info-grid" style="margin-bottom: 0.2cm;">
       <div class="info-item" style="grid-column: span 2;">
-        <div class="info-label">${t('sheet.lifeStones')}</div>
+        <div class="info-label">${tephromancie ? t('sheet.deathObsidian') : t('sheet.lifeStones')}</div>
         <div class="info-value" style="min-height: 0.6cm; font-size: 12pt; font-weight: bold;">${character.pierresDeVie}</div>
       </div>
       <div class="info-item" style="grid-column: span 2;">
@@ -267,8 +269,9 @@ export function generateCharacterSheetHTML(
       </div>
     </div>
 
+    ${tephromancie ? '' : `
     <div style="font-weight: bold; font-size: 8pt; margin: 0.15cm 0 0.05cm 0;">${t('sheet.deathObsidian')}</div>
-    <div style="min-height: 1cm; padding: 0.2cm; margin-bottom: 0.1cm;"></div>
+    <div style="min-height: 1cm; padding: 0.2cm; margin-bottom: 0.1cm;"></div>`}
 
     <h2>${t('sheet.skillsChosen')} (${character.competences.length})</h2>
     <div class="two-columns">
