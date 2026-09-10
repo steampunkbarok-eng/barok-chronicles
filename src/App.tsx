@@ -28,6 +28,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/factions" element={<Factions />} />
             <Route path="/personnages" element={<Personnages />} />
+            <Route path="/personnages/:id" element={<Personnages />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/mes-personnages" element={<MesPersonnages />} />
