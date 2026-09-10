@@ -298,6 +298,26 @@ const Personnages = () => {
 
   const genererRecapitulatif = () => {
     const recap: string[] = [];
+
+    // Origines de faction et Marques (règles 2026-2027)
+    if (originesFaction.length > 0 || marqueCollectiveFaction) {
+      recap.push(`🏴 ${L("Faction", "Faction", "Factie")}: ${formData.faction}`);
+      if (originesFaction.length > 0) {
+        recap.push(`   ${L("Origines", "Origins", "Oorsprongen")}: ${originesFaction.join(" + ")}`);
+      }
+      if (marqueCollectiveFaction) {
+        recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${marqueCollectiveFaction}`);
+      }
+      recap.push('');
+    }
+    const marqueRecap = marqueForcee || formData.marqueIndividuelle;
+    if (marqueRecap) {
+      recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${marqueRecap}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
+      recap.push(`   ⚠️ ${L("Validation Orga requise 2 mois avant l'événement", "Orga approval required 2 months before the event", "Orga-goedkeuring vereist 2 maanden voor het evenement")}`);
+      recap.push('');
+    }
+    
+
     
     // Événements et compétences gratuites
     if (formData.nbEvenements > 0) {
@@ -721,7 +741,8 @@ const Personnages = () => {
 
     const nouveauPersonnage: Personnage = {
       id: crypto.randomUUID(),
-      ...formData
+      ...formData,
+      marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || ""
     };
 
     setPersonnages([...personnages, nouveauPersonnage]);
@@ -799,6 +820,9 @@ const Personnages = () => {
       especeGratuit: especeData?.gratuit,
       especeInterdit: especeData?.interdit,
       factionInterdit: factionInterdit,
+      origines: factionData?.origines || undefined,
+      marqueCollective: factionData?.marque_collective || undefined,
+      marqueIndividuelle: nouveauPersonnage.marqueIndividuelle || undefined,
       sorts: nouveauPersonnage.sorts,
       afficherSortilleges: nouveauPersonnage.afficherSortilleges,
     }, language, t);
@@ -1137,6 +1161,79 @@ const Personnages = () => {
                       </p>
                     </div>
                   )}
+
+                  {/* MARQUE INDIVIDUELLE DE DESTINÉE */}
+                  {formData.espece && (
+                    <div className="space-y-2 p-3 border rounded-md bg-muted/30">
+                      <Label className="font-bold text-primary">
+                        {L("Marque individuelle de Destinée", "Individual Mark of Destiny", "Individueel Lotsmerk")}
+                      </Label>
+                      {marqueForcee ? (
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium">
+                            {marqueForcee} — {L("imposée par votre espèce", "imposed by your species", "opgelegd door uw soort")}
+                          </p>
+                          {(() => {
+                            const m = getMarqueIndividuelle(marqueForcee);
+                            return (
+                              <>
+                                {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
+                                {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                              </>
+                            );
+                          })()}
+                        </div>
+                      ) : (
+                        <>
+                          <Select
+                            value={formData.marqueIndividuelle || "__aucune__"}
+                            onValueChange={(value) =>
+                              setFormData({ ...formData, marqueIndividuelle: value === "__aucune__" ? "" : value })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder={L("Aucune Marque", "No Mark", "Geen Merk")} />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-[400px]">
+                              <SelectItem value="__aucune__">{L("Aucune Marque", "No Mark", "Geen Merk")}</SelectItem>
+                              {marquesIndividuellesFiltrees(formData.espece, originesFaction, marqueCollectiveFaction || undefined)
+                                .filter(({ marque }) => !marque.imposeePourEspece)
+                                .map(({ marque, verdict }) => (
+                                  <SelectItem key={marque.nom} value={marque.nom} disabled={!verdict.ok}>
+                                    <div className="flex flex-col max-w-[520px]">
+                                      <span className="font-medium">{marque.nom}</span>
+                                      <span className="text-xs text-muted-foreground line-clamp-2">{marque.pourQui}</span>
+                                      {!verdict.ok && <span className="text-xs text-destructive">{verdict.raison}</span>}
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                          {formData.marqueIndividuelle && (() => {
+                            const m = getMarqueIndividuelle(formData.marqueIndividuelle);
+                            if (!m) return null;
+                            return (
+                              <div className="space-y-1 pt-1">
+                                {m.citation && <p className="text-sm italic">« {m.citation} »</p>}
+                                <p className="text-xs">{m.pourQui}</p>
+                                {m.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                              </div>
+                            );
+                          })()}
+                        </>
+                      )}
+                      <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
+                        <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
+                        {L(
+                          "Toute Marque doit être validée par l'Orga, deux mois avant l'événement.",
+                          "Every Mark must be approved by the Orga, two months before the event.",
+                          "Elk Merk moet twee maanden voor het evenement door de Orga worden goedgekeurd.",
+                        )}
+                      </p>
+                    </div>
+                  )}
+
+
 
 
                   <div className="space-y-2">
@@ -1554,6 +1651,9 @@ const Personnages = () => {
                             });
                             return interdits.length > 0 ? interdits.join(' + ') : 'Aucun';
                           })(),
+                          origines: factions.find(f => f.nom === perso.faction)?.origines || undefined,
+                          marqueCollective: factions.find(f => f.nom === perso.faction)?.marque_collective || undefined,
+                          marqueIndividuelle: perso.marqueIndividuelle || undefined,
                           sorts: perso.sorts,
                           afficherSortilleges: perso.afficherSortilleges || false
                         }}

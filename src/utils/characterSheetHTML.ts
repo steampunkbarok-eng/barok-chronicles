@@ -16,6 +16,9 @@ interface SheetCharacter {
   especeGratuit?: string;
   especeInterdit?: string;
   factionInterdit?: string;
+  origines?: string[];
+  marqueCollective?: string;
+  marqueIndividuelle?: string;
   sorts?: { niv1: number; niv2: number; niv3: number; niv4: number };
   afficherSortilleges?: boolean;
 }
@@ -361,6 +364,16 @@ export function generateCharacterSheetHTML(
       <div style="font-size: 8pt; color: #000;">${character.factionInterdit.split('+').map(comp => translateGameData(comp.trim(), 'titre', language)).join(', ')}</div>
     </div>
     ` : ''}
+
+    ${(character.origines?.length || character.marqueCollective || character.marqueIndividuelle) ? `
+    <div style="border: 1px solid #000; padding: 0.3cm; margin: 0.3cm 0; page-break-inside: avoid;">
+      <div style="font-weight: bold; font-size: 9pt; margin-bottom: 0.1cm;">${language === 'en' ? 'Origins & Marks' : language === 'nl' ? 'Oorsprongen & Merken' : 'Origines & Marques'}</div>
+      ${character.origines?.length ? `<div style="font-size: 8pt;">${language === 'en' ? 'Faction origins' : language === 'nl' ? 'Factie-oorsprongen' : 'Origines de faction'} : ${character.origines.join(' · ')}</div>` : ''}
+      ${character.marqueCollective ? `<div style="font-size: 8pt;">${language === 'en' ? 'Collective Mark' : language === 'nl' ? 'Collectief Merk' : 'Marque collective'} : ${character.marqueCollective}</div>` : ''}
+      ${character.marqueIndividuelle ? `<div style="font-size: 8pt; font-weight: bold;">${language === 'en' ? 'Individual Mark' : language === 'nl' ? 'Individueel Merk' : 'Marque individuelle'} : ${character.marqueIndividuelle}</div>` : ''}
+    </div>
+    ` : ''}
+
 
     <h2>${t('sheet.learnedSkills')}</h2>
     <div class="two-columns">
