@@ -483,6 +483,41 @@ const Orga = () => {
           </CardContent>
         </Card>
 
+        <Card className="border-destructive/30">
+          <CardHeader>
+            <CardTitle className="font-serif flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-destructive" /> Corbeille ({corbeille.length})
+            </CardTitle>
+            <CardDescription>
+              Fiches mises à la corbeille par un joueur, un gestionnaire de faction ou l'Orga. Vous pouvez les restaurer
+              (elles redeviennent visibles avec leur statut) ou les effacer définitivement.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {corbeille.length === 0 && <p className="text-sm text-muted-foreground">La corbeille est vide.</p>}
+            {corbeille.map((p) => (
+              <div key={p.id} className="flex flex-wrap items-center gap-2 border border-border rounded p-2 text-sm">
+                <span className="font-medium">{p.prenom} {p.nom}</span>
+                <span className="text-muted-foreground">{p.espece}</span>
+                <span className="text-muted-foreground">{p.faction || "Sans faction"}</span>
+                <Badge className={statutColors[p.statut]}>{p.statut}</Badge>
+                <span className="text-xs text-muted-foreground">
+                  supprimée par {(p as any).deleted_by || "?"} le{" "}
+                  {(p as any).deleted_at ? new Date((p as any).deleted_at).toLocaleString() : ""}
+                </span>
+                <div className="ml-auto flex gap-1">
+                  <Button size="sm" variant="outline" onClick={() => restaurerPerso(p.id)}>
+                    Restaurer
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => supprimerDefinitivement(p.id)}>
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
         <EvenementsManager persos={persos} userEmail={userEmail} onXpChanged={loadPersos} />
 
         <FactionsManager />
