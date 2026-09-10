@@ -52,6 +52,7 @@ interface Personnage {
   chamanismeTatoueur: string;
   glandeDraconique?: string;
   marqueIndividuelle?: string;
+  marqueIndividuelleDetail?: string;
 }
 
 interface EvenementLite {
@@ -65,13 +66,15 @@ interface EvenementLite {
   statut: "a_venir" | "en_cours" | "termine" | "annule";
 }
 
+const MARQUE_AUTRE = "Autre Marque personnelle de Destinée";
+
 const Personnages = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
-  const [factions, setFactions] = useState<{ nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null }[]>([]);
+  const [factions, setFactions] = useState<{ nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null; marque_collective_detail: string | null }[]>([]);
   const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
   const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
 
@@ -112,7 +115,8 @@ const Personnages = () => {
     niveauxSortsGratuitsUtilises: 0,
     chamanismeTatoueur: "",
     glandeDraconique: "",
-    marqueIndividuelle: ""
+    marqueIndividuelle: "",
+    marqueIndividuelleDetail: ""
   });
 
   // Calculer le coût des sorts
@@ -176,7 +180,7 @@ const Personnages = () => {
     const fetchFactions = async () => {
       const { data, error } = await supabase
         .from('factions')
-        .select('nom, titres, origines, marque_collective')
+        .select('nom, titres, origines, marque_collective, marque_collective_detail')
         .eq('statut', 'active');
       
       if (error) {
@@ -283,6 +287,7 @@ const Personnages = () => {
   const factionCourante = factions.find(f => f.nom === formData.faction) || null;
   const originesFaction = factionCourante?.origines || [];
   const marqueCollectiveFaction = factionCourante?.marque_collective || null;
+  const marqueCollectiveDetailFaction = factionCourante?.marque_collective_detail || null;
 
   /** Marque individuelle imposée par l'espèce (Vorélan-ne, Draconide…) */
   const marqueForcee = formData.espece ? marqueImposee(formData.espece) : undefined;
@@ -313,12 +318,15 @@ const Personnages = () => {
       }
       if (marqueCollectiveFaction) {
         recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${marqueCollectiveFaction}`);
+        if (marqueCollectiveDetailFaction) recap.push(`     "${marqueCollectiveDetailFaction}"`);
       }
       recap.push('');
     }
     const marqueRecap = marqueForcee || formData.marqueIndividuelle;
+    const marqueIndividuelleDetail = marqueRecap === MARQUE_AUTRE ? (formData.marqueIndividuelleDetail || "").trim() : "";
     if (marqueRecap) {
       recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${marqueRecap}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
+      if (marqueIndividuelleDetail) recap.push(`   "${marqueIndividuelleDetail}"`);
       recap.push(`   ⚠️ ${L("Validation Orga requise 2 mois avant l'événement", "Orga approval required 2 months before the event", "Orga-goedkeuring vereist 2 maanden voor het evenement")}`);
       recap.push('');
     }
@@ -487,6 +495,7 @@ const Personnages = () => {
       chamanismeTatoueur: "",
       glandeDraconique: nouvelleEspece === "Draconide" ? formData.glandeDraconique : "",
       marqueIndividuelle: marqueImposee(nouvelleEspece) || "",
+      marqueIndividuelleDetail: "",
     });
     if (compsGratuites.length > 0) {
       toast.success(`${compsGratuites.length} compétence(s) gratuite(s) ajoutée(s) pour ${nouvelleEspece}`);
@@ -756,7 +765,11 @@ const Personnages = () => {
     const nouveauPersonnage: Personnage = {
       id: crypto.randomUUID(),
       ...formData,
-      marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || ""
+      marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || "",
+      marqueIndividuelleDetail:
+        (marqueForcee || formData.marqueIndividuelle) === MARQUE_AUTRE
+          ? (formData.marqueIndividuelleDetail || "").trim()
+          : ""
     };
 
     setPersonnages([...personnages, nouveauPersonnage]);
@@ -790,7 +803,9 @@ const Personnages = () => {
       afficherSortilleges: false,
       competencesGratuitesUtilisees: 0,
       niveauxSortsGratuitsUtilises: 0,
-      chamanismeTatoueur: ""
+      chamanismeTatoueur: "",
+      marqueIndividuelle: "",
+      marqueIndividuelleDetail: ""
     });
     setEvenementsParticipes([]);
     setRecapitulatif([]);
@@ -836,7 +851,9 @@ const Personnages = () => {
       factionInterdit: factionInterdit,
       origines: factionData?.origines || undefined,
       marqueCollective: factionData?.marque_collective || undefined,
+      marqueCollectiveDetail: factionData?.marque_collective_detail || undefined,
       marqueIndividuelle: nouveauPersonnage.marqueIndividuelle || undefined,
+      marqueIndividuelleDetail: nouveauPersonnage.marqueIndividuelleDetail || undefined,
       sorts: nouveauPersonnage.sorts,
       afficherSortilleges: nouveauPersonnage.afficherSortilleges,
     }, language, t);
@@ -1235,6 +1252,31 @@ const Personnages = () => {
                             );
                           })()}
                         </>
+                      )}
+                      {formData.marqueIndividuelle === MARQUE_AUTRE && (
+                        <div className="space-y-1 pt-1">
+                          <Label htmlFor="marqueAutre">
+                            {L("Décrivez votre Marque personnelle", "Describe your personal Mark", "Beschrijf uw persoonlijke Merk")}
+                          </Label>
+                          <Textarea
+                            id="marqueAutre"
+                            rows={3}
+                            value={formData.marqueIndividuelleDetail || ""}
+                            onChange={(e) => setFormData({ ...formData, marqueIndividuelleDetail: e.target.value })}
+                            placeholder={L(
+                              "En cas d'hésitation ou sans idée précise, écrivez « Je contacterai l'Orga » : nous en discuterons ensemble.",
+                              "If you hesitate or have no precise idea, write \"I will contact the Orga\": we will discuss it together.",
+                              "Bij twijfel of zonder duidelijk idee, schrijf \"Ik neem contact op met de Orga\": we bespreken het samen.",
+                            )}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            {L(
+                              "Ce texte apparaîtra dans le récapitulatif et sur la fiche générée.",
+                              "This text will appear in the summary and on the generated sheet.",
+                              "Deze tekst verschijnt in de samenvatting en op het gegenereerde blad.",
+                            )}
+                          </p>
+                        </div>
                       )}
                       <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
                         <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
@@ -1680,6 +1722,8 @@ const Personnages = () => {
                           })(),
                           origines: factions.find(f => f.nom === perso.faction)?.origines || undefined,
                           marqueCollective: factions.find(f => f.nom === perso.faction)?.marque_collective || undefined,
+                          marqueCollectiveDetail: factions.find(f => f.nom === perso.faction)?.marque_collective_detail || undefined,
+                          marqueIndividuelleDetail: perso.marqueIndividuelleDetail || undefined,
                           marqueIndividuelle: perso.marqueIndividuelle || undefined,
                           sorts: perso.sorts,
                           afficherSortilleges: perso.afficherSortilleges || false

@@ -25,6 +25,7 @@ interface Faction {
   batiment: { type: string; nom: string; avantages: string } | null;
   origines: string[];
   marqueCollective: string | null;
+  marqueCollectiveDetail?: string;
   descriptionCourte: string;
   background: string;
   contactEmail: string;
@@ -33,6 +34,7 @@ interface Faction {
 }
 
 const AUCUNE = "__aucune__";
+const MARQUE_SECRETE = "Marque secrète";
 
 const Factions = () => {
   const { t, language } = useLanguage();
@@ -46,6 +48,7 @@ const Factions = () => {
     batiment: null,
     origines: [],
     marqueCollective: null,
+    marqueCollectiveDetail: "",
     descriptionCourte: "",
     background: "",
     contactEmail: "",
@@ -91,7 +94,7 @@ const Factions = () => {
 
   const choisirMarque = (valeur: string) => {
     if (valeur === AUCUNE) {
-      setFormData({ ...formData, marqueCollective: null });
+      setFormData({ ...formData, marqueCollective: null, marqueCollectiveDetail: "" });
       return;
     }
     const v = marqueCollectiveCompatible(valeur, formData.origines);
@@ -99,7 +102,11 @@ const Factions = () => {
       toast.error(v.raison!);
       return;
     }
-    setFormData({ ...formData, marqueCollective: valeur });
+    setFormData({
+      ...formData,
+      marqueCollective: valeur,
+      marqueCollectiveDetail: valeur === MARQUE_SECRETE ? formData.marqueCollectiveDetail || "" : "",
+    });
   };
 
   const origineDisabled = (nom: string) => {
@@ -143,6 +150,7 @@ const Factions = () => {
         titres: [],
         origines: nouvelleFaction.origines,
         marque_collective: nouvelleFaction.marqueCollective,
+        marque_collective_detail: nouvelleFaction.marqueCollectiveDetail?.trim() || null,
         description_courte: nouvelleFaction.descriptionCourte,
         background: nouvelleFaction.background,
         contact_email: nouvelleFaction.contactEmail,
@@ -164,6 +172,7 @@ const Factions = () => {
             titres: [],
             origines: nouvelleFaction.origines,
             marqueCollective: nouvelleFaction.marqueCollective,
+            marqueCollectiveDetail: nouvelleFaction.marqueCollectiveDetail?.trim() || null,
             descriptionCourte: nouvelleFaction.descriptionCourte,
             background: nouvelleFaction.background,
           },
@@ -184,6 +193,7 @@ const Factions = () => {
         batiment: null,
         origines: [],
         marqueCollective: null,
+        marqueCollectiveDetail: "",
         descriptionCourte: "",
         background: "",
         contactEmail: "",
@@ -202,6 +212,7 @@ const Factions = () => {
           batiment: nouvelleFaction.batiment,
           origines: nouvelleFaction.origines,
           marqueCollective: nouvelleFaction.marqueCollective,
+          marqueCollectiveDetail: nouvelleFaction.marqueCollectiveDetail?.trim() || null,
           descriptionCourte: nouvelleFaction.descriptionCourte,
           background: nouvelleFaction.background,
           contactEmail: nouvelleFaction.contactEmail,
@@ -424,6 +435,31 @@ const Factions = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {formData.marqueCollective === MARQUE_SECRETE && (
+                  <div className="space-y-1">
+                    <Label htmlFor="marqueSecrete">
+                      {L("Décrivez votre Marque secrète", "Describe your secret Mark", "Beschrijf uw geheime Merk")}
+                    </Label>
+                    <Textarea
+                      id="marqueSecrete"
+                      rows={3}
+                      value={formData.marqueCollectiveDetail || ""}
+                      onChange={(e) => setFormData({ ...formData, marqueCollectiveDetail: e.target.value })}
+                      placeholder={L(
+                        "En cas d'hésitation ou sans idée précise, écrivez « Nous contacterons l'Orga » : nous en discuterons ensemble.",
+                        "If you hesitate or have no precise idea, write \"We will contact the Orga\": we will discuss it together.",
+                        "Bij twijfel of zonder duidelijk idee, schrijf \"Wij nemen contact op met de Orga\": we bespreken het samen.",
+                      )}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {L(
+                        "Ce texte apparaîtra sur la fiche de faction générée.",
+                        "This text will appear on the generated faction sheet.",
+                        "Deze tekst verschijnt op het gegenereerde factieblad.",
+                      )}
+                    </p>
+                  </div>
+                )}
                 {formData.marqueCollective && (() => {
                   const m = getMarqueCollective(formData.marqueCollective);
                   if (!m) return null;

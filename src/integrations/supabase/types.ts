@@ -176,6 +176,7 @@ export type Database = {
           description_courte: string | null
           id: string
           marque_collective: string | null
+          marque_collective_detail: string | null
           marques_depensees: number
           marques_disponibles: number
           marques_total: number
@@ -195,6 +196,7 @@ export type Database = {
           description_courte?: string | null
           id?: string
           marque_collective?: string | null
+          marque_collective_detail?: string | null
           marques_depensees?: number
           marques_disponibles?: number
           marques_total?: number
@@ -214,6 +216,7 @@ export type Database = {
           description_courte?: string | null
           id?: string
           marque_collective?: string | null
+          marque_collective_detail?: string | null
           marques_depensees?: number
           marques_disponibles?: number
           marques_total?: number
