@@ -79,10 +79,21 @@ const Orga = () => {
     const { data, error } = await supabase
       .from("personnages")
       .select("*")
+      .is("deleted_at", null)
       .order("updated_at", { ascending: false });
     if (error) toast.error(error.message);
     else setPersos((data as PersoRow[]) || []);
   }, []);
+
+  const loadCorbeille = useCallback(async () => {
+    const { data } = await supabase
+      .from("personnages")
+      .select("*")
+      .not("deleted_at", "is", null)
+      .order("deleted_at", { ascending: false });
+    setCorbeille((data as PersoRow[]) || []);
+  }, []);
+
 
   const loadDemandesEnAttente = useCallback(async () => {
     const { data } = await supabase
