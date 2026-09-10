@@ -125,10 +125,11 @@ const Orga = () => {
       }
       setAuthorized(true);
       await loadPersos();
+      await loadCorbeille();
       await loadDemandesEnAttente();
       setChecking(false);
     })();
-  }, [navigate, loadPersos, loadDemandesEnAttente]);
+  }, [navigate, loadPersos, loadCorbeille, loadDemandesEnAttente]);
 
   const loadDemandes = useCallback(async (personnageId: string) => {
     const { data } = await supabase
