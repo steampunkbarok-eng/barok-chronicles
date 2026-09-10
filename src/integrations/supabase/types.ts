@@ -271,6 +271,8 @@ export type Database = {
         Row: {
           created_at: string
           data: Json
+          deleted_at: string | null
+          deleted_by: string | null
           email: string
           espece: string
           faction: string | null
@@ -285,6 +287,8 @@ export type Database = {
         Insert: {
           created_at?: string
           data: Json
+          deleted_at?: string | null
+          deleted_by?: string | null
           email: string
           espece: string
           faction?: string | null
@@ -299,6 +303,8 @@ export type Database = {
         Update: {
           created_at?: string
           data?: Json
+          deleted_at?: string | null
+          deleted_by?: string | null
           email?: string
           espece?: string
           faction?: string | null
@@ -335,7 +341,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      factions_publiques: {
+        Row: {
+          id: string | null
+          marque_collective: string | null
+          marque_collective_detail: string | null
+          nom: string | null
+          origines: string[] | null
+          statut: string | null
+          titres: string[] | null
+        }
+        Insert: {
+          id?: string | null
+          marque_collective?: string | null
+          marque_collective_detail?: string | null
+          nom?: string | null
+          origines?: string[] | null
+          statut?: string | null
+          titres?: string[] | null
+        }
+        Update: {
+          id?: string | null
+          marque_collective?: string | null
+          marque_collective_detail?: string | null
+          nom?: string | null
+          origines?: string[] | null
+          statut?: string | null
+          titres?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -345,6 +380,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_faction_manager: { Args: { _faction: string }; Returns: boolean }
       is_orga: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
