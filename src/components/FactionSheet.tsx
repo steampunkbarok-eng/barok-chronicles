@@ -740,8 +740,11 @@ export const openFactionSheet = (faction: {
     return titresCarrieres.find(t => t.nom === titreName);
   };
 
-  // Generate titles with details
-  const titlesWithDetails = faction.titres.map(titre => {
+  // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
+  const modeleOrigines = !!(faction.origines && faction.origines.length);
+  const originesHtml = originesSectionHtml(faction, labels);
+
+  const titlesWithDetails = (faction.titres || []).map(titre => {
     const titreData = getTitreDetailsLocal(titre);
     return {
       nom: titre,
@@ -749,6 +752,40 @@ export const openFactionSheet = (faction: {
       incompatible: titreData?.incompatible || ''
     };
   });
+
+  const titlesSection = modeleOrigines || titlesWithDetails.length === 0 ? '' : `
+    <div class="section">
+      <div class="section-title">${labels.titlesCareers}</div>
+      ${titlesWithDetails.map(titre => `
+            <div class="title-card">
+              <span class="title-name">${translateTitre(titre.nom)}</span>
+              <div class="title-details">
+                ${titre.prerequis ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translatePrereq(titre.prerequis)}</div>` : ''}
+                ${titre.incompatible ? `<div class="title-incomp"><strong>${labels.incompatible}:</strong> ${titre.incompatible.split(', ').map(inc => translateTitre(inc.trim())).join(', ')}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+    </div>`;
+
+  const marksSection = modeleOrigines ? '' : `
+    <div class="section">
+      <div class="section-title">${labels.destinyMarks}</div>
+      <div class="marks-grid">
+        <div class="mark-box">
+          <div class="mark-label">${labels.total}</div>
+          <div class="mark-value">${faction.marquesTotal}</div>
+        </div>
+        <div class="mark-box">
+          <div class="mark-label">${labels.spent}</div>
+          <div class="mark-value">${faction.marquesDepensees * 2}</div>
+        </div>
+        <div class="mark-box">
+          <div class="mark-label">${labels.available}</div>
+          <div class="mark-value">${faction.marquesDisponibles}</div>
+        </div>
+      </div>
+    </div>`;
+
 
   const html = `
 <!DOCTYPE html>
