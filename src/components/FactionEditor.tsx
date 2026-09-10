@@ -432,9 +432,34 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
                 <span className="text-muted-foreground">{p.espece}</span>
                 <Badge variant="outline">{p.statut}</Badge>
                 <span className="text-muted-foreground">{p.xp} XP</span>
-                <span className="text-xs text-muted-foreground ml-auto">{p.email}</span>
+                <span className="text-xs text-muted-foreground">{p.email}</span>
+                <div className="flex items-center gap-1 ml-auto">
+                  {p.statut !== "valide" && (
+                    <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "valide")}>
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="sr-only">{L("Valider", "Validate", "Valideren")}</span>
+                    </Button>
+                  )}
+                  {p.statut !== "soumis" && (
+                    <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "soumis")}>
+                      <RotateCcw className="h-4 w-4" />
+                      <span className="sr-only">{L("Remettre en attente", "Set back to pending", "Terug naar in behandeling")}</span>
+                    </Button>
+                  )}
+                  {p.statut !== "archive" && (
+                    <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "archive")}>
+                      <Archive className="h-4 w-4 text-amber-600" />
+                      <span className="sr-only">{L("Archiver", "Archive", "Archiveren")}</span>
+                    </Button>
+                  )}
+                  <Button size="sm" variant="ghost" onClick={() => mettreCorbeille(p.id, `${p.prenom} ${p.nom}`.trim())}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                    <span className="sr-only">{L("Corbeille", "Bin", "Prullenbak")}</span>
+                  </Button>
+                </div>
               </div>
             ))}
+
           </div>
         )}
       </div>
