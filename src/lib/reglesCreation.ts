@@ -1,7 +1,13 @@
 // Validation centralisée des règles de création 2026-2027
 // Utilisée par le formulaire de faction, le formulaire de personnage et l'espace Orga.
 
-import { origines, getOrigine, Origine } from "@/data/origines";
+import {
+  origines,
+  getOrigine,
+  Origine,
+  origineIncompatibleAvec,
+  marquesInterditesParOrigine,
+} from "@/data/origines";
 import {
   marquesCollectives,
   marquesIndividuelles,
@@ -45,6 +51,9 @@ const mentionne = (haystack: string | undefined, needle: string): boolean => {
 export const originesCompatibles = (nomA: string, nomB: string): Verdict => {
   if (!nomA || !nomB) return { ok: true };
   if (nomA === nomB) return { ok: false, raison: "Les deux origines doivent être différentes." };
+  if (origineIncompatibleAvec(nomA).includes(nomB)) {
+    return { ok: false, raison: `${nomA} est incompatible avec ${nomB}.` };
+  }
   const a = getOrigine(nomA);
   const b = getOrigine(nomB);
   if (!a || !b) return { ok: true };
@@ -129,6 +138,9 @@ export const marqueIndividuelleCompatible = (
     return { ok: false, raison: `${m.nom} est interdite aux ${espece}.` };
   }
   for (const o of originesFaction) {
+    if (marquesInterditesParOrigine[o]?.includes(nomMarque)) {
+      return { ok: false, raison: `L'origine ${o} de votre faction interdit la Marque ${m.nom}.` };
+    }
     if (m.originesIncompatibles?.includes(o)) {
       return { ok: false, raison: `${m.nom} est incompatible avec l'origine ${o} de votre faction.` };
     }
