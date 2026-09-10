@@ -298,6 +298,26 @@ const Personnages = () => {
 
   const genererRecapitulatif = () => {
     const recap: string[] = [];
+
+    // Origines de faction et Marques (règles 2026-2027)
+    if (originesFaction.length > 0 || marqueCollectiveFaction) {
+      recap.push(`🏴 ${L("Faction", "Faction", "Factie")}: ${formData.faction}`);
+      if (originesFaction.length > 0) {
+        recap.push(`   ${L("Origines", "Origins", "Oorsprongen")}: ${originesFaction.join(" + ")}`);
+      }
+      if (marqueCollectiveFaction) {
+        recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${marqueCollectiveFaction}`);
+      }
+      recap.push('');
+    }
+    const marqueRecap = marqueForcee || formData.marqueIndividuelle;
+    if (marqueRecap) {
+      recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${marqueRecap}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
+      recap.push(`   ⚠️ ${L("Validation Orga requise 2 mois avant l'événement", "Orga approval required 2 months before the event", "Orga-goedkeuring vereist 2 maanden voor het evenement")}`);
+      recap.push('');
+    }
+    
+
     
     // Événements et compétences gratuites
     if (formData.nbEvenements > 0) {
