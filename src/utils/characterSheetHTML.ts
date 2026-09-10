@@ -16,6 +16,9 @@ interface SheetCharacter {
   especeGratuit?: string;
   especeInterdit?: string;
   factionInterdit?: string;
+  origines?: string[];
+  marqueCollective?: string;
+  marqueIndividuelle?: string;
   sorts?: { niv1: number; niv2: number; niv3: number; niv4: number };
   afficherSortilleges?: boolean;
 }
