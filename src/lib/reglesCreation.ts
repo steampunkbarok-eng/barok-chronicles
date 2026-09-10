@@ -7,6 +7,7 @@ import {
   Origine,
   origineIncompatibleAvec,
   marquesInterditesParOrigine,
+  obligationsCompetencesParOrigine,
 } from "@/data/origines";
 import {
   marquesCollectives,
