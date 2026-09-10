@@ -959,7 +959,7 @@ const Personnages = () => {
         email: nouveauPersonnage.email,
         statut: "soumis",
         xp: 0,
-        data: nouveauPersonnage as any,
+        data: { ...nouveauPersonnage, evenementsParticipes } as any,
       });
       if (dbError) {
         console.error("Erreur de sauvegarde personnage:", dbError);
