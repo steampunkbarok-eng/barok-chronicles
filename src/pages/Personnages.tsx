@@ -460,6 +460,7 @@ const Personnages = () => {
       pierresDeVie: pierres,
       chamanismeTatoueur: "",
       glandeDraconique: nouvelleEspece === "Draconide" ? formData.glandeDraconique : "",
+      marqueIndividuelle: marqueImposee(nouvelleEspece) || "",
     });
     if (compsGratuites.length > 0) {
       toast.success(`${compsGratuites.length} compétence(s) gratuite(s) ajoutée(s) pour ${nouvelleEspece}`);
