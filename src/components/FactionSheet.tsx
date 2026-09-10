@@ -71,6 +71,52 @@ const getTitreDetails = (titreName: string) => {
   return titresCarrieres.find(t => t.nom === titreName);
 };
 
+/** Bloc HTML des origines 2026-2027 et de la Marque collective */
+const originesSectionHtml = (
+  faction: FactionData,
+  labels: ReturnType<typeof factionLabels>,
+) => {
+  const noms = faction.origines || [];
+  const marque = faction.marqueCollective ? getMarqueCollective(faction.marqueCollective) : null;
+  if (noms.length === 0 && !marque) return '';
+
+  const cards = noms.map((nom) => {
+    const o = getOrigine(nom);
+    return `
+      <div class="title-card">
+        <span class="title-name">${nom}</span>
+        <div class="title-details">
+          ${o?.description ? `<div class="title-prereq">${o.description}</div>` : ''}
+          ${o?.especes && o.especes !== '-' ? `<div class="title-prereq"><strong>${labels.speciesRule}:</strong> ${o.especes}</div>` : ''}
+          ${o?.limitations && o.limitations !== '-' ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${o.limitations}</div>` : ''}
+          ${o?.prerequis && o.prerequis !== '-' ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${o.prerequis}</div>` : ''}
+          ${o?.contactOrga ? `<div class="title-incomp"><strong>${labels.orgaContact}</strong></div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  const marqueHtml = marque
+    ? `<div class="section">
+      <div class="section-title">${labels.collectiveMark}</div>
+      <div class="title-card">
+        <span class="title-name">${marque.nom}</span>
+        <div class="title-details">
+          ${marque.pourQui ? `<div class="title-prereq">${marque.pourQui}</div>` : ''}
+          ${marque.interdits ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${marque.interdits}</div>` : ''}
+        </div>
+      </div>
+    </div>`
+    : '';
+
+  return `
+    <div class="section">
+      <div class="section-title">${labels.origins}</div>
+      ${cards || `<div class="empty">${labels.none}</div>`}
+    </div>
+    ${marqueHtml}`;
+};
+
+
 export const FactionSheet = ({ faction }: FactionSheetProps) => {
   const { t, language } = useLanguage();
 
