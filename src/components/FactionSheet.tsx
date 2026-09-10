@@ -8,9 +8,9 @@ import { getMarqueCollective } from "@/data/marques";
 
 interface FactionData {
   nom: string;
-  marquesTotal: number;
-  marquesDepensees: number;
-  marquesDisponibles: number;
+  marquesTotal?: number;
+  marquesDepensees?: number;
+  marquesDisponibles?: number;
   propriete: string;
   batiment: { type: string; nom: string; avantages: string } | null;
   titres?: string[];
