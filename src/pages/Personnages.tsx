@@ -178,15 +178,15 @@ const Personnages = () => {
 
   useEffect(() => {
     const fetchFactions = async () => {
-      const { data, error } = await supabase
-        .from('factions')
-        .select('nom, titres, origines, marque_collective, marque_collective_detail')
-        .eq('statut', 'active');
-      
+      const { data, error } = await supabase.rpc('liste_factions_publiques');
+
       if (error) {
         console.error("Erreur lors du chargement des factions:", error);
       } else if (data) {
-        setFactions(data);
+        setFactions(
+          (data as { nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null; marque_collective_detail: string | null; statut: string | null }[])
+            .filter((f) => (f.statut ?? 'active') === 'active'),
+        );
       }
     };
     fetchFactions();

@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { AlertTriangle, FileDown, Save, Users, X } from "lucide-react";
+import { AlertTriangle, Archive, Check, FileDown, RotateCcw, Save, Trash2, Users, X } from "lucide-react";
 import { batimentsUniques, navires } from "@/data/batiments";
 import { origines as toutesOrigines, categoriesOrigines, getOrigine, origineIncompatibleAvec } from "@/data/origines";
 import { marquesCollectives, getMarqueCollective } from "@/data/marques";
@@ -97,13 +97,44 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
       .from("personnages")
       .select("id,nom,prenom,espece,email,statut,xp")
       .ilike("faction", faction.nom)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
     setPersos((data as PersoLie[]) || []);
   }, [faction.nom]);
 
+
   useEffect(() => {
     loadPersos();
   }, [loadPersos]);
+
+  const changerStatutPerso = async (id: string, statut: "soumis" | "valide" | "archive") => {
+    const { error } = await supabase.from("personnages").update({ statut }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(L("Statut mis à jour", "Status updated", "Status bijgewerkt"));
+    loadPersos();
+  };
+
+  const mettreCorbeille = async (id: string, nomComplet: string) => {
+    if (
+      !confirm(
+        L(
+          `Mettre la fiche de ${nomComplet} à la corbeille ? L'Organisation pourra la restaurer.`,
+          `Move ${nomComplet}'s sheet to the bin? The Organisation will be able to restore it.`,
+          `Het blad van ${nomComplet} naar de prullenbak verplaatsen? De Organisatie kan het herstellen.`,
+        ),
+      )
+    )
+      return;
+    const { data: sess } = await supabase.auth.getSession();
+    const { error } = await supabase
+      .from("personnages")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: sess.session?.user?.email ?? null })
+      .eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(L("Fiche mise à la corbeille", "Sheet moved to the bin", "Blad naar de prullenbak verplaatst"));
+    loadPersos();
+  };
+
 
   const ajouterOrigine = (o: string) => {
     if (origines.includes(o)) return;
@@ -403,9 +434,34 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
                 <span className="text-muted-foreground">{p.espece}</span>
                 <Badge variant="outline">{p.statut}</Badge>
                 <span className="text-muted-foreground">{p.xp} XP</span>
-                <span className="text-xs text-muted-foreground ml-auto">{p.email}</span>
+                <span className="text-xs text-muted-foreground">{p.email}</span>
+                <div className="flex items-center gap-1 ml-auto">
+                  {p.statut !== "valide" && (
+                    <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "valide")}>
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="sr-only">{L("Valider", "Validate", "Valideren")}</span>
+                    </Button>
+                  )}
+                  {p.statut !== "soumis" && (
+                    <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "soumis")}>
+                      <RotateCcw className="h-4 w-4" />
+                      <span className="sr-only">{L("Remettre en attente", "Set back to pending", "Terug naar in behandeling")}</span>
+                    </Button>
+                  )}
+                  {p.statut !== "archive" && (
+                    <Button size="sm" variant="ghost" onClick={() => changerStatutPerso(p.id, "archive")}>
+                      <Archive className="h-4 w-4 text-amber-600" />
+                      <span className="sr-only">{L("Archiver", "Archive", "Archiveren")}</span>
+                    </Button>
+                  )}
+                  <Button size="sm" variant="ghost" onClick={() => mettreCorbeille(p.id, `${p.prenom} ${p.nom}`.trim())}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                    <span className="sr-only">{L("Corbeille", "Bin", "Prullenbak")}</span>
+                  </Button>
+                </div>
               </div>
             ))}
+
           </div>
         )}
       </div>

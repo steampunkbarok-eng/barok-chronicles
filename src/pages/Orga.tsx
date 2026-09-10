@@ -74,15 +74,27 @@ const Orga = () => {
   const [demandes, setDemandes] = useState<DemandeXp[]>([]);
   const [reponses, setReponses] = useState<Record<string, string>>({});
   const [demandesEnAttente, setDemandesEnAttente] = useState<DemandeXp[]>([]);
+  const [corbeille, setCorbeille] = useState<PersoRow[]>([]);
 
   const loadPersos = useCallback(async () => {
     const { data, error } = await supabase
       .from("personnages")
       .select("*")
+      .is("deleted_at", null)
       .order("updated_at", { ascending: false });
     if (error) toast.error(error.message);
     else setPersos((data as PersoRow[]) || []);
   }, []);
+
+  const loadCorbeille = useCallback(async () => {
+    const { data } = await supabase
+      .from("personnages")
+      .select("*")
+      .not("deleted_at", "is", null)
+      .order("deleted_at", { ascending: false });
+    setCorbeille((data as PersoRow[]) || []);
+  }, []);
+
 
   const loadDemandesEnAttente = useCallback(async () => {
     const { data } = await supabase
@@ -113,10 +125,11 @@ const Orga = () => {
       }
       setAuthorized(true);
       await loadPersos();
+      await loadCorbeille();
       await loadDemandesEnAttente();
       setChecking(false);
     })();
-  }, [navigate, loadPersos, loadDemandesEnAttente]);
+  }, [navigate, loadPersos, loadCorbeille, loadDemandesEnAttente]);
 
   const loadDemandes = useCallback(async (personnageId: string) => {
     const { data } = await supabase
@@ -171,13 +184,37 @@ const Orga = () => {
 
 
   const deletePerso = async (id: string) => {
-    if (!confirm("Supprimer définitivement ce personnage ?")) return;
-    const { error } = await supabase.from("personnages").delete().eq("id", id);
+    if (!confirm("Mettre cette fiche à la corbeille ? Elle restera récupérable.")) return;
+    const { error } = await supabase
+      .from("personnages")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: userEmail })
+      .eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Supprimé");
+    toast.success("Fiche mise à la corbeille");
     setSelected(null);
     loadPersos();
+    loadCorbeille();
   };
+
+  const restaurerPerso = async (id: string) => {
+    const { error } = await supabase
+      .from("personnages")
+      .update({ deleted_at: null, deleted_by: null })
+      .eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Fiche restaurée");
+    loadPersos();
+    loadCorbeille();
+  };
+
+  const supprimerDefinitivement = async (id: string) => {
+    if (!confirm("Supprimer DÉFINITIVEMENT cette fiche ? Cette action est irréversible.")) return;
+    const { error } = await supabase.from("personnages").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Fiche supprimée définitivement");
+    loadCorbeille();
+  };
+
 
   const saveEdit = async () => {
     if (!selected) return;
@@ -428,7 +465,7 @@ const Orga = () => {
                           </Button>
                         </>
                       )}
-                      <Button size="sm" variant="ghost" title="Supprimer définitivement" onClick={() => deletePerso(p.id)}>
+                      <Button size="sm" variant="ghost" title="Mettre à la corbeille" onClick={() => deletePerso(p.id)}>
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
                     </TableCell>
@@ -443,6 +480,41 @@ const Orga = () => {
                 )}
               </TableBody>
             </Table>
+          </CardContent>
+        </Card>
+
+        <Card className="border-destructive/30">
+          <CardHeader>
+            <CardTitle className="font-serif flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-destructive" /> Corbeille ({corbeille.length})
+            </CardTitle>
+            <CardDescription>
+              Fiches mises à la corbeille par un joueur, un gestionnaire de faction ou l'Orga. Vous pouvez les restaurer
+              (elles redeviennent visibles avec leur statut) ou les effacer définitivement.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {corbeille.length === 0 && <p className="text-sm text-muted-foreground">La corbeille est vide.</p>}
+            {corbeille.map((p) => (
+              <div key={p.id} className="flex flex-wrap items-center gap-2 border border-border rounded p-2 text-sm">
+                <span className="font-medium">{p.prenom} {p.nom}</span>
+                <span className="text-muted-foreground">{p.espece}</span>
+                <span className="text-muted-foreground">{p.faction || "Sans faction"}</span>
+                <Badge className={statutColors[p.statut]}>{p.statut}</Badge>
+                <span className="text-xs text-muted-foreground">
+                  supprimée par {(p as any).deleted_by || "?"} le{" "}
+                  {(p as any).deleted_at ? new Date((p as any).deleted_at).toLocaleString() : ""}
+                </span>
+                <div className="ml-auto flex gap-1">
+                  <Button size="sm" variant="outline" onClick={() => restaurerPerso(p.id)}>
+                    Restaurer
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => supprimerDefinitivement(p.id)}>
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
 
@@ -488,7 +560,7 @@ const Orga = () => {
                       Archiver
                     </Button>
                     <Button variant="destructive" onClick={() => deletePerso(selected.id)}>
-                      <Trash2 className="w-4 h-4 mr-1" /> Supprimer
+                      <Trash2 className="w-4 h-4 mr-1" /> Mettre à la corbeille
                     </Button>
                   </div>
                   <div className="text-sm text-muted-foreground">

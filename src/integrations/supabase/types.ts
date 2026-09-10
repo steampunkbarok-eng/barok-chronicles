@@ -271,6 +271,8 @@ export type Database = {
         Row: {
           created_at: string
           data: Json
+          deleted_at: string | null
+          deleted_by: string | null
           email: string
           espece: string
           faction: string | null
@@ -285,6 +287,8 @@ export type Database = {
         Insert: {
           created_at?: string
           data: Json
+          deleted_at?: string | null
+          deleted_by?: string | null
           email: string
           espece: string
           faction?: string | null
@@ -299,6 +303,8 @@ export type Database = {
         Update: {
           created_at?: string
           data?: Json
+          deleted_at?: string | null
+          deleted_by?: string | null
           email?: string
           espece?: string
           faction?: string | null
@@ -345,7 +351,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_faction_manager: { Args: { _faction: string }; Returns: boolean }
       is_orga: { Args: { _user_id: string }; Returns: boolean }
+      liste_factions_publiques: {
+        Args: never
+        Returns: {
+          id: string
+          marque_collective: string
+          marque_collective_detail: string
+          nom: string
+          origines: string[]
+          statut: string
+          titres: string[]
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "orga" | "user"
