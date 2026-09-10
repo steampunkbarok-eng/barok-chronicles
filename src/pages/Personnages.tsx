@@ -813,7 +813,7 @@ const Personnages = () => {
     }
 
     const nouveauPersonnage: Personnage = {
-      id: crypto.randomUUID(),
+      id: editId || crypto.randomUUID(),
       ...formData,
       marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || "",
       marqueIndividuelleDetail:
@@ -821,6 +821,35 @@ const Personnages = () => {
           ? (formData.marqueIndividuelleDetail || "").trim()
           : ""
     };
+
+    // Mode édition / évolution d'une fiche existante
+    if (editId) {
+      const { error } = await supabase
+        .from("personnages")
+        .update({
+          nom: nouveauPersonnage.nomTI,
+          prenom: nouveauPersonnage.nomTO,
+          faction: nouveauPersonnage.faction || null,
+          espece: nouveauPersonnage.espece,
+          email: nouveauPersonnage.email,
+          statut: "soumis",
+          data: { ...nouveauPersonnage, evenementsParticipes } as any,
+        })
+        .eq("id", editId);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      setFicheMeta((m) => (m ? { ...m, statut: "soumis" } : m));
+      toast.success(
+        L(
+          "Fiche mise à jour et soumise à validation de l'Organisation.",
+          "Sheet updated and submitted for the Organisation's approval.",
+          "Blad bijgewerkt en ingediend ter goedkeuring van de Organisatie.",
+        ),
+      );
+      return;
+    }
 
     setPersonnages([...personnages, nouveauPersonnage]);
     setShowForm(false);
