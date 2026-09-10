@@ -105,6 +105,35 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
     loadPersos();
   }, [loadPersos]);
 
+  const changerStatutPerso = async (id: string, statut: "soumis" | "valide" | "archive") => {
+    const { error } = await supabase.from("personnages").update({ statut }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(L("Statut mis à jour", "Status updated", "Status bijgewerkt"));
+    loadPersos();
+  };
+
+  const mettreCorbeille = async (id: string, nomComplet: string) => {
+    if (
+      !confirm(
+        L(
+          `Mettre la fiche de ${nomComplet} à la corbeille ? L'Organisation pourra la restaurer.`,
+          `Move ${nomComplet}'s sheet to the bin? The Organisation will be able to restore it.`,
+          `Het blad van ${nomComplet} naar de prullenbak verplaatsen? De Organisatie kan het herstellen.`,
+        ),
+      )
+    )
+      return;
+    const { data: sess } = await supabase.auth.getSession();
+    const { error } = await supabase
+      .from("personnages")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: sess.session?.user?.email ?? null })
+      .eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(L("Fiche mise à la corbeille", "Sheet moved to the bin", "Blad naar de prullenbak verplaatst"));
+    loadPersos();
+  };
+
+
   const ajouterOrigine = (o: string) => {
     if (origines.includes(o)) return;
     if (origines.length >= 2) {
