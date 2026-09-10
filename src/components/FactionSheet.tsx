@@ -554,19 +554,8 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
   );
 };
 
-export const openFactionSheet = (faction: {
-  nom: string;
-  marquesTotal: number;
-  marquesDepensees: number;
-  marquesDisponibles: number;
-  propriete: string;
-  batiment: { type: string; nom: string; avantages: string } | null;
-  titres: string[];
-  descriptionCourte: string;
-  background: string;
-  contactEmail: string;
-  dateCreation: string;
-}, language: 'fr' | 'en' | 'nl') => {
+export const openFactionSheet = (faction: FactionData, language: 'fr' | 'en' | 'nl') => {
+
   const labels = factionLabels(language);
 
   const batimentType = faction.batiment?.type === 'Bâtiment' 
