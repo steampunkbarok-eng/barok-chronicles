@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -39,8 +39,20 @@ const MARQUE_SECRETE = "Marque secrète";
 const Factions = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
+  const navigate = useNavigate();
   const [factions, setFactions] = useState<Faction[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      const mail = data.session?.user?.email ?? null;
+      setSessionEmail(mail);
+      if (mail) setFormData((f) => ({ ...f, contactEmail: mail }));
+      setCheckingSession(false);
+    });
+  }, []);
 
   const [formData, setFormData] = useState<Omit<Faction, "id" | "dateCreation">>({
     nom: "",
