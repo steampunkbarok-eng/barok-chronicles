@@ -1033,23 +1033,8 @@ export const openFactionSheet = (faction: {
     
     <div class="faction-name">${faction.nom}</div>
     
-    <div class="section">
-      <div class="section-title">${labels.destinyMarks}</div>
-      <div class="marks-grid">
-        <div class="mark-box">
-          <div class="mark-label">${labels.total}</div>
-          <div class="mark-value">${faction.marquesTotal}</div>
-        </div>
-        <div class="mark-box">
-          <div class="mark-label">${labels.spent}</div>
-          <div class="mark-value">${faction.marquesDepensees * 2}</div>
-        </div>
-        <div class="mark-box">
-          <div class="mark-label">${labels.available}</div>
-          <div class="mark-value">${faction.marquesDisponibles}</div>
-        </div>
-      </div>
-    </div>
+    ${marksSection}
+
     
     <div class="section">
       <div class="section-title">${labels.landProperty}</div>
