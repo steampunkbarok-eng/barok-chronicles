@@ -208,7 +208,8 @@ export const origines: Origine[] = [
     description: "Caïds des rues ; le réseau réel se noue en jeu via le Courtier des Ombres.",
     especes: "-",
     limitations: "Marque Planaire, Porteur-euse de Rune, Pirate, Agente d'une ONG, Garde du Corps, Archiviste des Secrets",
-    prerequis: "Une compétence de Filouterie",
+    prerequis:
+      "Une compétence de Filouterie obligatoire à la création : Crochetage, Dissimulation, Entrave, Évasion, Infiltration, Mort éradiquante ou Pickpocket (prérequis de la compétence choisie compris)",
   },
   {
     nom: "Contrebandier-ère",
