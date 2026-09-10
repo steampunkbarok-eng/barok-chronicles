@@ -1023,11 +1023,21 @@ const Personnages = () => {
                 </Button>
               </Link>
               <Scroll className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-primary">{t('characters.title')}</h1>
+              <h1 className="text-3xl font-bold text-primary">
+                {editId
+                  ? `${formData.nomTO} ${formData.nomTI}`.trim() ||
+                    L("Gestion de la fiche", "Sheet management", "Bladbeheer")
+                  : t('characters.title')}
+              </h1>
+              {editId && ficheMeta && (
+                <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
+                  {ficheMeta.statut} · {ficheMeta.xp} XP
+                </span>
+              )}
             </div>
             <div className="flex gap-2">
               <BlankCharacterSheet />
-              {!showForm && (
+              {!showForm && !editId && (
                 <Button onClick={() => setShowForm(true)} className="gap-2">
                   <Plus className="h-5 w-5" />
                   {t('characters.create')}
