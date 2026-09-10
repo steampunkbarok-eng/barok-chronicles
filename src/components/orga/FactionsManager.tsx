@@ -34,7 +34,9 @@ const FactionsManager = () => {
   const inviterGestionnaires = async () => {
     if (!confirm("Envoyer à chaque email de contact de faction une invitation à créer son compte de gestion ?")) return;
     setSending(true);
-    const { data, error } = await supabase.functions.invoke("invite-faction-managers", { body: {} });
+    const { data, error } = await supabase.functions.invoke("invite-faction-managers", {
+      body: { siteUrl: window.location.origin },
+    });
     setSending(false);
     if (error) return toast.error(error.message);
     const res = data as { envoyes?: number; echecs?: number };

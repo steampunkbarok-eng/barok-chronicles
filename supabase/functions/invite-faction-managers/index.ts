@@ -63,6 +63,14 @@ serve(async (req) => {
       });
     }
 
+    let siteUrl = SITE_URL;
+    try {
+      const body = await req.json();
+      if (body?.siteUrl && /^https?:\/\//.test(body.siteUrl)) siteUrl = body.siteUrl.replace(/\/$/, "");
+    } catch {
+      // corps vide accepté
+    }
+
     const { data: factions } = await admin.from("factions").select("nom, contact_email");
     const parEmail = new Map<string, string[]>();
     for (const f of factions || []) {
