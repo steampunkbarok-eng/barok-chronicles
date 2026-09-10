@@ -16,6 +16,7 @@ interface FactionData {
   titres?: string[];
   origines?: string[];
   marqueCollective?: string | null;
+  marqueCollectiveDetail?: string | null;
   descriptionCourte: string;
   background: string;
   contactEmail: string;
@@ -102,6 +103,7 @@ const originesSectionHtml = (
         <span class="title-name">${marque.nom}</span>
         <div class="title-details">
           ${marque.pourQui ? `<div class="title-prereq">${marque.pourQui}</div>` : ''}
+          ${faction.marqueCollectiveDetail ? `<div class="title-prereq"><strong>${labels.collectiveMark}:</strong> ${faction.marqueCollectiveDetail}</div>` : ''}
           ${marque.interdits ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${marque.interdits}</div>` : ''}
         </div>
       </div>

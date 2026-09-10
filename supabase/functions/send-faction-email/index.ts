@@ -20,6 +20,7 @@ interface FactionEmailRequest {
   titres?: string[];
   origines?: string[];
   marqueCollective?: string | null;
+  marqueCollectiveDetail?: string | null;
   descriptionCourte: string;
   background: string;
 }
