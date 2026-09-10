@@ -218,7 +218,8 @@ const Personnages = () => {
       setEvenementsParticipes(Array.isArray(d.evenementsParticipes) ? d.evenementsParticipes : []);
       setShowForm(true);
     })();
-  }, [editId, L]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
 
   useEffect(() => {
     const fetchFactions = async () => {
