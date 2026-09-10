@@ -470,6 +470,37 @@ export const incompatibilitesOrigines: Record<string, string[]> = {
   "Agente d'une ONG": ["Épervier", "Chasseur-euses de Chair"],
 };
 
+/** Compétences « louches » satisfaisant l'obligation de Filouterie */
+export const competencesFilouterie = [
+  "Crochetage niv.1",
+  "Crochetage niv.2",
+  "Crochetage niv.3",
+  "Crochetage niv.4",
+  "Dissimulation",
+  "Entrave",
+  "Évasion",
+  "Infiltration",
+  "Mort éradiquante",
+  "Pickpocket",
+];
+
+export interface ObligationCompetenceOrigine {
+  libelle: { fr: string; en: string; nl: string };
+  parmi: string[];
+}
+
+/** Compétences obligatoires imposées par une origine à la création d'un personnage */
+export const obligationsCompetencesParOrigine: Record<string, ObligationCompetenceOrigine> = {
+  "Bande organisée": {
+    libelle: {
+      fr: "Une compétence de Filouterie est obligatoire (prérequis compris)",
+      en: "One Roguery skill is mandatory (prerequisites included)",
+      nl: "Eén Schelmerij-vaardigheid is verplicht (vereisten inbegrepen)",
+    },
+    parmi: competencesFilouterie,
+  },
+};
+
 /** Marques individuelles interdites par certaines origines (voies sombres notamment) */
 export const marquesInterditesParOrigine: Record<string, string[]> = {
   "Corsaire elfique": ["Graine des Ténèbres", "Téphromancie", "Nécromancie"],
