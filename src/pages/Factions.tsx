@@ -379,6 +379,12 @@ const Factions = () => {
                             {o?.limitations && o.limitations !== "-" && (
                               <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
                             )}
+                            {origineIncompatibleAvec(nom).length > 0 && (
+                              <p className="text-xs text-destructive">
+                                <strong>{L("Origines incompatibles", "Incompatible origins", "Onverenigbare oorsprongen")} :</strong>{" "}
+                                {origineIncompatibleAvec(nom).join(", ")}
+                              </p>
+                            )}
                             {o?.prerequis && o.prerequis !== "-" && (
                               <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
                             )}
