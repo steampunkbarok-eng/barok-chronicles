@@ -1,7 +1,13 @@
 // Validation centralisée des règles de création 2026-2027
 // Utilisée par le formulaire de faction, le formulaire de personnage et l'espace Orga.
 
-import { origines, getOrigine, Origine } from "@/data/origines";
+import {
+  origines,
+  getOrigine,
+  Origine,
+  origineIncompatibleAvec,
+  marquesInterditesParOrigine,
+} from "@/data/origines";
 import {
   marquesCollectives,
   marquesIndividuelles,
