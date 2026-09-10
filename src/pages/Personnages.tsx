@@ -1690,11 +1690,15 @@ const Personnages = () => {
               <div className="flex gap-3">
                 <Button onClick={sauvegarderPersonnage} className="flex-1 gap-2">
                   <Save className="h-4 w-4" />
-                  {t('characters.save')}
+                  {editId
+                    ? L("Enregistrer et soumettre à validation", "Save and submit for approval", "Opslaan en ter goedkeuring indienen")
+                    : t('characters.save')}
                 </Button>
-                <Button onClick={handleAnnulerCreation} variant="outline">
-                  {t('characters.cancel')}
-                </Button>
+                {!editId && (
+                  <Button onClick={handleAnnulerCreation} variant="outline">
+                    {t('characters.cancel')}
+                  </Button>
+                )}
               </div>
             </div>
 
