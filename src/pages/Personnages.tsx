@@ -405,7 +405,7 @@ const Personnages = () => {
     // Calcul et affichage des Pierres de Vie avec détail pour Tisseur/Clerc
     // Nouvelle règle: +2 pierres par niveau de sort utilisé
     // Téphromancie : les Pierres de Vie sont transformées en Obsidiennes de la Mort
-    const estTephromancien = formData.marqueIndividuelle === "Téphromancie";
+    const estTephromancien = marqueRecap === "Téphromancie";
     const libellePierres = estTephromancien ? t('sheet.deathObsidian') : t('summary.lifeStones');
     const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
     if (hasTisseurOrClerc) {
