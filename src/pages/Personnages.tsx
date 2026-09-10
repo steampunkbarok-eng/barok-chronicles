@@ -1302,6 +1302,19 @@ const Personnages = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {obligationsFaction.map((ob) => (
+                    <div
+                      key={ob.origine}
+                      className={`p-3 rounded-lg border text-sm ${ob.satisfaite ? 'border-green-600/40 bg-green-600/10' : 'border-yellow-600/50 bg-yellow-600/10'}`}
+                    >
+                      <div className="font-semibold">
+                        {ob.satisfaite ? '✅' : '⚠️'} {ob.origine} — {L(ob.libelle.fr, ob.libelle.en, ob.libelle.nl)}
+                      </div>
+                      <div className="text-muted-foreground mt-1">
+                        {L("Au choix", "Choose one", "Naar keuze")} : {ob.parmi.join(", ")}
+                      </div>
+                    </div>
+                  ))}
                   <div className="flex items-center space-x-2 bg-accent/20 p-3 rounded-lg">
                     <input
                       type="checkbox"
