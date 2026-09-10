@@ -621,7 +621,7 @@ export const batimentAvantagesTranslations: Record<string, string> = {
   "2 Fiole + 2 Alcool pur + 2 Acide + 2 Toxic | Potion expérimentale/événement": "2 Vial + 2 Pure Alcohol + 2 Acid + 2 Toxic | Experimental potion/event",
   "5 Abîme + 3 Gemme + 2 Pierre": "5 Abyss + 3 Gem + 2 Stone",
   "6 Fleur + 2 Végétal + 2 Encens": "6 Flower + 2 Plant + 2 Incense",
-  "3 Oliga sabré + 3 Alcool pur + 2 Pts éthylisme": "3 Sabered Oliga + 3 Pure Alcohol + 2 Alcoholism Pts",
+  "3 Oliga sabré + 3 Alcool pur + 1 Tonnelet": "3 Sabered Oliga + 3 Pure Alcohol + 1 Barrel",
   "4 Munitions + 2 Engrenage + 2 Piston + 2 Ressort | 2 armes bonne facture": "4 Ammunition + 2 Gear + 2 Piston + 2 Spring | 2 quality weapons",
   "3 Âme + 3 Cadavre + 2 Poupée chamane + 2 Antiquité | 1 arme tape abîme": "3 Soul + 3 Corpse + 2 Shaman Doll + 2 Antique | 1 abyss-striking weapon",
   "5 Tissu + 3 Voile + 2 Bijoux": "5 Fabric + 3 Sail + 2 Jewelry",
