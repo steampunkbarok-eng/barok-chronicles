@@ -48,6 +48,7 @@ const Factions = () => {
     batiment: null,
     origines: [],
     marqueCollective: null,
+    marqueCollectiveDetail: "",
     descriptionCourte: "",
     background: "",
     contactEmail: "",
@@ -93,7 +94,7 @@ const Factions = () => {
 
   const choisirMarque = (valeur: string) => {
     if (valeur === AUCUNE) {
-      setFormData({ ...formData, marqueCollective: null });
+      setFormData({ ...formData, marqueCollective: null, marqueCollectiveDetail: "" });
       return;
     }
     const v = marqueCollectiveCompatible(valeur, formData.origines);
@@ -101,7 +102,11 @@ const Factions = () => {
       toast.error(v.raison!);
       return;
     }
-    setFormData({ ...formData, marqueCollective: valeur });
+    setFormData({
+      ...formData,
+      marqueCollective: valeur,
+      marqueCollectiveDetail: valeur === MARQUE_SECRETE ? formData.marqueCollectiveDetail || "" : "",
+    });
   };
 
   const origineDisabled = (nom: string) => {
