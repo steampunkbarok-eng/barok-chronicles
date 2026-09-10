@@ -25,6 +25,7 @@ interface Faction {
   batiment: { type: string; nom: string; avantages: string } | null;
   origines: string[];
   marqueCollective: string | null;
+  marqueCollectiveDetail?: string;
   descriptionCourte: string;
   background: string;
   contactEmail: string;
@@ -33,6 +34,7 @@ interface Faction {
 }
 
 const AUCUNE = "__aucune__";
+const MARQUE_SECRETE = "Marque secrète";
 
 const Factions = () => {
   const { t, language } = useLanguage();
