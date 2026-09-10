@@ -445,4 +445,44 @@ export const origines: Origine[] = [
   },
 ];
 
+/**
+ * Incompatibilités explicites entre origines (règles 2026-2027).
+ * La relation est symétrique : elle est appliquée dans les deux sens.
+ */
+export const incompatibilitesOrigines: Record<string, string[]> = {
+  "Bande organisée": ["Archiviste des Secrets", "Garde du Corps"],
+  Pirate: ["Archiviste des Secrets", "Garde du Corps", "Bande organisée"],
+  "Épervier": [
+    "Archiviste des Secrets",
+    "Garde du Corps",
+    "Pirate",
+    "Mercenaire Peau-olive",
+    "Organisation sanitaire privée des Flottes et Voyageurs",
+  ],
+  "Contrebandier-ère": ["Archiviste des Secrets"],
+  "Érudite": ["Épervier", "Gros Bras"],
+  "Adepte – Fidèle": ["Sectaire ésotérico-magique"],
+  "Porteur-euse de Rune": ["Bande organisée"],
+  "Corsaire elfique": ["Contrebandier-ère", "Chasseur-euses de Chair"],
+  "Mercenaire Peau-olive": ["Chasseur-euses de Chair"],
+  "Composé d'Ancien-nes Esclaves": ["Chasseur-euses de Chair", "Épervier"],
+  "Agente d'une ONG": ["Épervier", "Chasseur-euses de Chair"],
+};
+
+/** Marques individuelles interdites par certaines origines (voies sombres notamment) */
+export const marquesInterditesParOrigine: Record<string, string[]> = {
+  "Corsaire elfique": ["Graine des Ténèbres", "Téphromancie", "Nécromancie"],
+  "Mercenaire Peau-olive": ["Nécromancie"],
+};
+
+/** Liste complète des origines incompatibles avec `nom` (relation symétrique) */
+export const origineIncompatibleAvec = (nom: string): string[] => {
+  const directes = incompatibilitesOrigines[nom] ?? [];
+  const inverses = Object.entries(incompatibilitesOrigines)
+    .filter(([, liste]) => liste.includes(nom))
+    .map(([cle]) => cle);
+  return Array.from(new Set([...directes, ...inverses]));
+};
+
 export const getOrigine = (nom: string) => origines.find((o) => o.nom === nom);
+

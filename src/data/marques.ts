@@ -55,7 +55,7 @@ export const marquesCollectives: Marque[] = [
     contactOrga: true,
   },
   {
-    nom: "Contact avec l'Inframonde",
+    nom: "Contact avec les Tréfonds Obscurs",
     citation: "Vous commercez avec ceux que la surface a oubliés.",
     pourQui:
       "Factions liées aux peuples des profondeurs (Elfes noirs, Nains des Tréfonds, Hobgobelins, Nain-es et d'autres inconnus de toustes).",
