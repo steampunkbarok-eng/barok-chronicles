@@ -721,7 +721,8 @@ const Personnages = () => {
 
     const nouveauPersonnage: Personnage = {
       id: crypto.randomUUID(),
-      ...formData
+      ...formData,
+      marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || ""
     };
 
     setPersonnages([...personnages, nouveauPersonnage]);
