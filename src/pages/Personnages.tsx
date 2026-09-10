@@ -135,20 +135,20 @@ const Personnages = () => {
   const competencesGratuitesDisponibles = formData.nbEvenements * 2;
   const competencesGratuitesRestantes = competencesGratuitesDisponibles - formData.competencesGratuitesUtilisees;
 
-  // Sauvegarde automatique dans localStorage
+  // Sauvegarde automatique dans localStorage (uniquement en création)
   useEffect(() => {
-    if (showForm && (formData.nomTO || formData.nomTI || formData.espece || formData.competences.length > 0)) {
+    if (!editId && showForm && (formData.nomTO || formData.nomTI || formData.espece || formData.competences.length > 0)) {
       localStorage.setItem('personnage_en_cours', JSON.stringify(formData));
     }
-  }, [formData, showForm]);
+  }, [formData, showForm, editId]);
 
   // Charger les données sauvegardées au démarrage
   useEffect(() => {
+    if (editId) return;
     const savedData = localStorage.getItem('personnage_en_cours');
     if (savedData && !showForm) {
       try {
         const parsed = JSON.parse(savedData);
-        // Vérifier si des données significatives existent
         if (parsed.nomTO || parsed.nomTI || parsed.espece || parsed.competences?.length > 0) {
           toast.info("Brouillon trouvé ! Cliquez sur 'Créer un Personnage' pour le restaurer.");
         }
@@ -156,10 +156,11 @@ const Personnages = () => {
         console.error("Erreur lors du chargement du brouillon:", error);
       }
     }
-  }, []);
+  }, [editId]);
 
   // Restaurer le brouillon lors de l'ouverture du formulaire
   useEffect(() => {
+    if (editId) return;
     if (showForm) {
       const savedData = localStorage.getItem('personnage_en_cours');
       if (savedData) {
@@ -174,7 +175,47 @@ const Personnages = () => {
         }
       }
     }
-  }, [showForm]);
+  }, [showForm, editId]);
+
+  // Chargement d'une fiche existante (édition / évolution)
+  useEffect(() => {
+    if (!editId) return;
+    (async () => {
+      setChargementFiche(true);
+      const { data, error } = await supabase
+        .from("personnages")
+        .select("id,nom,prenom,faction,espece,email,statut,xp,data")
+        .eq("id", editId)
+        .maybeSingle();
+      setChargementFiche(false);
+      if (error || !data) {
+        toast.error(
+          L(
+            "Fiche introuvable ou accès refusé. Connectez-vous avec le compte concerné.",
+            "Sheet not found or access denied. Sign in with the relevant account.",
+            "Blad niet gevonden of toegang geweigerd. Meld je aan met het juiste account.",
+          ),
+        );
+        return;
+      }
+      const d = (data.data || {}) as Record<string, any>;
+      setFicheMeta({ statut: data.statut, xp: data.xp });
+      setFormData((fd) => ({
+        ...fd,
+        ...d,
+        nomTO: d.nomTO ?? data.prenom ?? "",
+        nomTI: d.nomTI ?? data.nom ?? "",
+        faction: d.faction ?? data.faction ?? "",
+        espece: d.espece ?? data.espece ?? "",
+        email: d.email ?? data.email ?? "",
+        competences: Array.isArray(d.competences) ? d.competences : [],
+        sorts: d.sorts ?? { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
+        materielTO: Array.isArray(d.materielTO) ? d.materielTO : [],
+      }));
+      setEvenementsParticipes(Array.isArray(d.evenementsParticipes) ? d.evenementsParticipes : []);
+      setShowForm(true);
+    })();
+  }, [editId, L]);
 
   useEffect(() => {
     const fetchFactions = async () => {
