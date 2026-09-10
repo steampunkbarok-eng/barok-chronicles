@@ -404,6 +404,9 @@ const Personnages = () => {
     
     // Calcul et affichage des Pierres de Vie avec détail pour Tisseur/Clerc
     // Nouvelle règle: +2 pierres par niveau de sort utilisé
+    // Téphromancie : les Pierres de Vie sont transformées en Obsidiennes de la Mort
+    const estTephromancien = formData.marqueIndividuelle === "Téphromancie";
+    const libellePierres = estTephromancien ? t('sheet.deathObsidian') : t('summary.lifeStones');
     const hasTisseurOrClerc = formData.competences.some(c => c.nom === "Tisseur" || c.nom === "Clerc");
     if (hasTisseurOrClerc) {
       let niveauxUtilises = 0;
@@ -411,9 +414,12 @@ const Personnages = () => {
       if (formData.sorts.niv2 > 0) niveauxUtilises++;
       if (formData.sorts.niv3 > 0) niveauxUtilises++;
       if (formData.sorts.niv4 > 0) niveauxUtilises++;
-      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${t('common.levels')} × 2)`);
+      recap.push(`   ${libellePierres}: ${formData.pierresDeVie} (10 + ${niveauxUtilises} ${t('common.levels')} × 2)`);
     } else {
-      recap.push(`   ${t('summary.lifeStones')}: ${formData.pierresDeVie}`);
+      recap.push(`   ${libellePierres}: ${formData.pierresDeVie}`);
+    }
+    if (estTephromancien) {
+      recap.push(`   ⚠️ ${t('summary.lifeStones')} → ${t('sheet.deathObsidian')} (Téphromancie)`);
     }
     
     recap.push(`   ${t('summary.faithCards')}: ${formData.foi}`);
