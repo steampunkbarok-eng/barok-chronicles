@@ -530,7 +530,14 @@ const Personnages = () => {
       }
     }
 
-    // Vérifier les interdits de la faction
+    // Règles 2026-2027 : origines de faction, Marques, verrous de création
+    const verdict = competenceAutorisee(competence, contexteRegles);
+    if (!verdict.ok) {
+      toast.error(verdict.raison!);
+      return;
+    }
+
+    // Interdits hérités des anciens Titres/Carrières (factions historiques)
     const interdits = getInterditsFromFaction();
     const isInterdit = interdits.some(interdit => 
       competence.nom.toLowerCase().includes(interdit.toLowerCase()) ||
@@ -540,6 +547,7 @@ const Personnages = () => {
       toast.error(`Cette compétence est interdite par votre faction`);
       return;
     }
+
 
     // Déterminer si on utilise une compétence gratuite ou des points
     const utiliseCompetenceGratuite = !peutUtiliserPointsCreation && peutUtiliserCompetenceGratuite;
