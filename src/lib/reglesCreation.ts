@@ -228,4 +228,35 @@ export const competenceAutorisee = (comp: Competence, ctx: ContextePersonnage): 
 export const competencesFiltrees = (ctx: ContextePersonnage) =>
   competencesDisponibles.map((comp) => ({ comp, verdict: competenceAutorisee(comp, ctx) }));
 
+/* ─────────────── Compétences obligatoires imposées par une origine ─────────────── */
+
+export interface ObligationCompetence {
+  origine: string;
+  libelle: { fr: string; en: string; nl: string };
+  parmi: string[];
+  satisfaite: boolean;
+}
+
+/** Obligations de compétences liées aux origines de la faction (ex. Filouterie pour Bande organisée) */
+export const obligationsCompetences = (
+  originesFaction: string[],
+  competencesChoisies: string[] = []
+): ObligationCompetence[] =>
+  originesFaction.flatMap((o) => {
+    const ob = obligationsCompetencesParOrigine[o];
+    if (!ob) return [];
+    return [
+      {
+        origine: o,
+        libelle: ob.libelle,
+        parmi: ob.parmi,
+        satisfaite: competencesChoisies.some((c) => ob.parmi.includes(c)),
+      },
+    ];
+  });
+
+/** Obligations non encore remplies */
+export const obligationsNonRemplies = (originesFaction: string[], competencesChoisies: string[]) =>
+  obligationsCompetences(originesFaction, competencesChoisies).filter((o) => !o.satisfaite);
+
 export { origines, marquesCollectives, marquesIndividuelles };
