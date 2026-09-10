@@ -1019,12 +1019,50 @@ const Personnages = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    {formData.faction && factions.find(f => f.nom === formData.faction)?.titres && factions.find(f => f.nom === formData.faction)?.titres.length > 0 && (
+                    {formData.faction && originesFaction.length === 0 && (factionCourante?.titres?.length || 0) > 0 && (
                       <p className="text-xs text-muted-foreground">
-                        Titres de cette faction : {factions.find(f => f.nom === formData.faction)?.titres.join(", ")}
+                        {L("Titres de cette faction", "Titles of this faction", "Titels van deze factie")} : {factionCourante?.titres?.join(", ")}
                       </p>
                     )}
+                    {formData.faction && (originesFaction.length > 0 || marqueCollectiveFaction) && (
+                      <div className="mt-2 space-y-2 rounded-lg border border-primary/25 bg-primary/5 p-3">
+                        <p className="text-sm font-semibold text-primary">
+                          {L("Ce que votre faction impose", "What your faction imposes", "Wat uw factie oplegt")}
+                        </p>
+                        {originesFaction.map((nom) => {
+                          const o = getOrigine(nom);
+                          return (
+                            <div key={nom} className="space-y-0.5">
+                              <p className="text-sm font-medium">{nom}</p>
+                              {o?.description && <p className="text-xs text-muted-foreground">{o.description}</p>}
+                              {o?.especes && o.especes !== "-" && (
+                                <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {o.especes}</p>
+                              )}
+                              {o?.limitations && o.limitations !== "-" && (
+                                <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
+                              )}
+                              {o?.prerequis && o.prerequis !== "-" && (
+                                <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {marqueCollectiveFaction && (() => {
+                          const m = getMarqueCollective(marqueCollectiveFaction);
+                          return (
+                            <div className="space-y-0.5 border-t border-primary/20 pt-2">
+                              <p className="text-sm font-medium">
+                                {L("Marque collective", "Collective Mark", "Collectief Merk")} : {marqueCollectiveFaction}
+                              </p>
+                              {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
+                              {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
                   </div>
+
 
                   <div className="space-y-2">
                     <Label htmlFor="espece">{t('characters.species')}</Label>
