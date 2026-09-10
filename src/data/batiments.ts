@@ -17,7 +17,7 @@ export const batimentsUniques: Batiment[] = [
   { nom: "Laboratoire Alchimique", avantages: "2 Fiole + 2 Alcool pur + 2 Acide + 2 Toxic | Potion expérimentale/événement" },
   { nom: "Mine d'Abîme Maudit", avantages: "5 Abîme + 3 Gemme + 2 Pierre" },
   { nom: "Jardins Mystiques", avantages: "6 Fleur + 2 Végétal + 2 Encens" },
-  { nom: "Distillerie des Mille Saveurs", avantages: "3 Oliga sabré + 3 Alcool pur + 2 Pts éthylisme" },
+  { nom: "Distillerie des Mille Saveurs", avantages: "3 Oliga sabré + 3 Alcool pur + 1 Tonnelet" },
   { nom: "Arsenal Mécanique", avantages: "4 Munitions + 2 Engrenage + 2 Piston + 2 Ressort | 2 armes bonne facture" },
   { nom: "Nécropole Sacrée", avantages: "3 Âme + 3 Cadavre + 2 Poupée chamane + 2 Antiquité | 1 arme tape abîme" },
   { nom: "Atelier du Tisserand Royal", avantages: "5 Tissu + 3 Voile + 2 Bijoux" },

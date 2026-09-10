@@ -394,7 +394,7 @@ export const batimentAvantagesTranslationsNl: Record<string, string> = {
   "2 Fiole + 2 Alcool pur + 2 Acide + 2 Toxic | Potion expérimentale/événement": "2 Flacon + 2 Pure alcohol + 2 Zuur + 2 Toxic | Experimenteel drankje/evenement",
   "5 Abîme + 3 Gemme + 2 Pierre": "5 Afgrond + 3 Edelsteen + 2 Steen",
   "6 Fleur + 2 Végétal + 2 Encens": "6 Bloem + 2 Plant + 2 Wierook",
-  "3 Oliga sabré + 3 Alcool pur + 2 Pts éthylisme": "3 Gesabelde Oliga + 3 Pure alcohol + 2 Alcoholismepunten",
+  "3 Oliga sabré + 3 Alcool pur + 1 Tonnelet": "3 Gesabelde Oliga + 3 Pure alcohol + 1 Vaatje",
   "4 Munitions + 2 Engrenage + 2 Piston + 2 Ressort | 2 armes bonne facture": "4 Munitie + 2 Tandwiel + 2 Zuiger + 2 Veer | 2 wapens van goede makelij",
   "3 Âme + 3 Cadavre + 2 Poupée chamane + 2 Antiquité | 1 arme tape abîme": "3 Ziel + 3 Lijk + 2 Sjamanenpop + 2 Antiek | 1 afgrondslaand wapen",
   "5 Tissu + 3 Voile + 2 Bijoux": "5 Stof + 3 Zeil + 2 Juwelen",
