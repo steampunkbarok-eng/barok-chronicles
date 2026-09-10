@@ -12,6 +12,10 @@ import { especes } from "@/data/especes";
 import { glandesDraconiques } from "@/data/glandesDraconiques";
 import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
+import { getOrigine } from "@/data/origines";
+import { getMarqueCollective, getMarqueIndividuelle, marquesIndividuelles } from "@/data/marques";
+import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, ContextePersonnage } from "@/lib/reglesCreation";
+import { useTri } from "@/i18n/tri";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
@@ -47,6 +51,7 @@ interface Personnage {
   niveauxSortsGratuitsUtilises: number;
   chamanismeTatoueur: string;
   glandeDraconique?: string;
+  marqueIndividuelle?: string;
 }
 
 interface EvenementLite {
@@ -62,10 +67,11 @@ interface EvenementLite {
 
 const Personnages = () => {
   const { t, language } = useLanguage();
+  const { L } = useTri();
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
-  const [factions, setFactions] = useState<{ nom: string; titres: string[] }[]>([]);
+  const [factions, setFactions] = useState<{ nom: string; titres: string[] | null; origines: string[] | null; marque_collective: string | null }[]>([]);
   const [evenementsDispo, setEvenementsDispo] = useState<EvenementLite[]>([]);
   const [evenementsParticipes, setEvenementsParticipes] = useState<string[]>([]);
 
@@ -105,7 +111,8 @@ const Personnages = () => {
     competencesGratuitesUtilisees: 0,
     niveauxSortsGratuitsUtilises: 0,
     chamanismeTatoueur: "",
-    glandeDraconique: ""
+    glandeDraconique: "",
+    marqueIndividuelle: ""
   });
 
   // Calculer le coût des sorts
@@ -169,7 +176,7 @@ const Personnages = () => {
     const fetchFactions = async () => {
       const { data, error } = await supabase
         .from('factions')
-        .select('nom, titres')
+        .select('nom, titres, origines, marque_collective')
         .eq('statut', 'active');
       
       if (error) {
@@ -271,6 +278,23 @@ const Personnages = () => {
     
     return interdits;
   };
+
+  /** Faction sélectionnée (modèle 2026-2027) */
+  const factionCourante = factions.find(f => f.nom === formData.faction) || null;
+  const originesFaction = factionCourante?.origines || [];
+  const marqueCollectiveFaction = factionCourante?.marque_collective || null;
+
+  /** Marque individuelle imposée par l'espèce (Vorélan-ne, Draconide…) */
+  const marqueForcee = formData.espece ? marqueImposee(formData.espece) : undefined;
+
+  const contexteRegles: ContextePersonnage = {
+    espece: formData.espece,
+    originesFaction,
+    marqueIndividuelle: marqueForcee || formData.marqueIndividuelle || undefined,
+    marqueCollective: marqueCollectiveFaction || undefined,
+  };
+
+
 
   const genererRecapitulatif = () => {
     const recap: string[] = [];
@@ -436,6 +460,7 @@ const Personnages = () => {
       pierresDeVie: pierres,
       chamanismeTatoueur: "",
       glandeDraconique: nouvelleEspece === "Draconide" ? formData.glandeDraconique : "",
+      marqueIndividuelle: marqueImposee(nouvelleEspece) || "",
     });
     if (compsGratuites.length > 0) {
       toast.success(`${compsGratuites.length} compétence(s) gratuite(s) ajoutée(s) pour ${nouvelleEspece}`);
@@ -505,7 +530,14 @@ const Personnages = () => {
       }
     }
 
-    // Vérifier les interdits de la faction
+    // Règles 2026-2027 : origines de faction, Marques, verrous de création
+    const verdict = competenceAutorisee(competence, contexteRegles);
+    if (!verdict.ok) {
+      toast.error(verdict.raison!);
+      return;
+    }
+
+    // Interdits hérités des anciens Titres/Carrières (factions historiques)
     const interdits = getInterditsFromFaction();
     const isInterdit = interdits.some(interdit => 
       competence.nom.toLowerCase().includes(interdit.toLowerCase()) ||
@@ -515,6 +547,7 @@ const Personnages = () => {
       toast.error(`Cette compétence est interdite par votre faction`);
       return;
     }
+
 
     // Déterminer si on utilise une compétence gratuite ou des points
     const utiliseCompetenceGratuite = !peutUtiliserPointsCreation && peutUtiliserCompetenceGratuite;
@@ -986,12 +1019,50 @@ const Personnages = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    {formData.faction && factions.find(f => f.nom === formData.faction)?.titres && factions.find(f => f.nom === formData.faction)?.titres.length > 0 && (
+                    {formData.faction && originesFaction.length === 0 && (factionCourante?.titres?.length || 0) > 0 && (
                       <p className="text-xs text-muted-foreground">
-                        Titres de cette faction : {factions.find(f => f.nom === formData.faction)?.titres.join(", ")}
+                        {L("Titres de cette faction", "Titles of this faction", "Titels van deze factie")} : {factionCourante?.titres?.join(", ")}
                       </p>
                     )}
+                    {formData.faction && (originesFaction.length > 0 || marqueCollectiveFaction) && (
+                      <div className="mt-2 space-y-2 rounded-lg border border-primary/25 bg-primary/5 p-3">
+                        <p className="text-sm font-semibold text-primary">
+                          {L("Ce que votre faction impose", "What your faction imposes", "Wat uw factie oplegt")}
+                        </p>
+                        {originesFaction.map((nom) => {
+                          const o = getOrigine(nom);
+                          return (
+                            <div key={nom} className="space-y-0.5">
+                              <p className="text-sm font-medium">{nom}</p>
+                              {o?.description && <p className="text-xs text-muted-foreground">{o.description}</p>}
+                              {o?.especes && o.especes !== "-" && (
+                                <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {o.especes}</p>
+                              )}
+                              {o?.limitations && o.limitations !== "-" && (
+                                <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
+                              )}
+                              {o?.prerequis && o.prerequis !== "-" && (
+                                <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {marqueCollectiveFaction && (() => {
+                          const m = getMarqueCollective(marqueCollectiveFaction);
+                          return (
+                            <div className="space-y-0.5 border-t border-primary/20 pt-2">
+                              <p className="text-sm font-medium">
+                                {L("Marque collective", "Collective Mark", "Collectief Merk")} : {marqueCollectiveFaction}
+                              </p>
+                              {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
+                              {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
                   </div>
+
 
                   <div className="space-y-2">
                     <Label htmlFor="espece">{t('characters.species')}</Label>
@@ -1149,7 +1220,8 @@ const Personnages = () => {
                             .filter(c => c.categorie === categorie)
                             .map((comp) => {
                               const interdits = getInterditsFromFaction();
-                              const isInterdit = interdits.some(interdit => 
+                              const verdictComp = competenceAutorisee(comp, contexteRegles);
+                              const isInterdit = !verdictComp.ok || interdits.some(interdit => 
                                 comp.nom.toLowerCase().includes(interdit.toLowerCase()) ||
                                 interdit.toLowerCase().includes(comp.nom.toLowerCase())
                               );
@@ -1164,6 +1236,10 @@ const Personnages = () => {
                                     <span className={`font-medium ${isInterdit ? 'text-destructive' : ''}`}>
                                       {translateGameData(comp.nom, 'competence', language)} ({comp.cout} {t('selection.pts')}) {isInterdit ? `(${t('selection.forbidden')})` : ''}
                                     </span>
+                                    {!verdictComp.ok && (
+                                      <span className="text-xs text-destructive">{verdictComp.raison}</span>
+                                    )}
+
                                     <span className="text-xs text-muted-foreground">{translateGameData(comp.effet, 'effet', language)}</span>
                                     {comp.prerequis && (
                                       <span className="text-xs text-primary">{t('selection.prerequisites')}: {comp.prerequis.split(' + ').map(p => translateGameData(p.trim(), 'competence', language)).join(' + ')}</span>

@@ -6,24 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, ArrowLeft, Save, Plus, X, Info } from "lucide-react";
+import { Shield, ArrowLeft, Save, Plus, X, Info, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { typesBatiments, batimentsUniques, navires } from "@/data/batiments";
-import { titresCarrieres, Titre } from "@/data/titres";
+import { origines as toutesOrigines, categoriesOrigines, getOrigine } from "@/data/origines";
+import { marquesCollectives, getMarqueCollective } from "@/data/marques";
+import { originesCompatibles, marqueCollectiveCompatible } from "@/lib/reglesCreation";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTri } from "@/i18n/tri";
 import { translateGameData } from "@/i18n/gameData";
 import { openFactionSheet } from "@/components/FactionSheet";
 
 interface Faction {
   id: string;
   nom: string;
-  marquesTotal: number;
-  marquesDepensees: number;
-  marquesDisponibles: number;
   propriete: string;
   batiment: { type: string; nom: string; avantages: string } | null;
-  titres: string[];
+  origines: string[];
+  marqueCollective: string | null;
   descriptionCourte: string;
   background: string;
   contactEmail: string;
@@ -31,244 +32,187 @@ interface Faction {
   statut: "active" | "inactive";
 }
 
+const AUCUNE = "__aucune__";
+
 const Factions = () => {
   const { t, language } = useLanguage();
+  const { L } = useTri();
   const [factions, setFactions] = useState<Faction[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  const [formData, setFormData] = useState<Omit<Faction, "id" | "marquesDisponibles" | "dateCreation">>({
+  const [formData, setFormData] = useState<Omit<Faction, "id" | "dateCreation">>({
     nom: "",
-    marquesTotal: 4,
-    marquesDepensees: 0,
     propriete: "",
     batiment: null,
-    titres: [],
+    origines: [],
+    marqueCollective: null,
     descriptionCourte: "",
     background: "",
     contactEmail: "",
-    statut: "active"
+    statut: "active",
   });
-
-  const calculerMarquesDisponibles = () => {
-    return formData.marquesTotal - (formData.marquesDepensees * 2);
-  };
 
   const ajouterBatiment = (nom: string, type: string, avantages: string) => {
     if (formData.batiment) {
-      toast.error("Vous avez déjà un bâtiment. Retirez-le d'abord.");
+      toast.error(L("Vous avez déjà un bâtiment. Retirez-le d'abord.", "You already have a building. Remove it first.", "U heeft al een gebouw. Verwijder het eerst."));
       return;
     }
-    // Le bâtiment est maintenant gratuit
-    setFormData({
-      ...formData,
-      batiment: { type, nom, avantages }
-    });
+    setFormData({ ...formData, batiment: { type, nom, avantages } });
   };
 
-  const verifierIncompatibilite = (nouveauTitre: string): boolean => {
-    const titreData = titresCarrieres.find(t => t.nom === nouveauTitre);
-    if (!titreData) return false;
+  const retirerBatiment = () => setFormData({ ...formData, batiment: null });
 
-    // Vérifier si un titre déjà sélectionné est incompatible avec le nouveau
-    for (const titreActuel of formData.titres) {
-      const titreActuelData = titresCarrieres.find(t => t.nom === titreActuel);
-      
-      // Vérifier incompatibilité du nouveau titre avec les titres actuels
-      if (titreData.incompatible && titreData.incompatible.includes(titreActuel)) {
-        toast.error(`${nouveauTitre} est incompatible avec ${titreActuel}`);
-        return true;
-      }
-      
-      // Vérifier incompatibilité des titres actuels avec le nouveau titre
-      if (titreActuelData?.incompatible && titreActuelData.incompatible.includes(nouveauTitre)) {
-        toast.error(`${nouveauTitre} est incompatible avec ${titreActuel}`);
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  const ajouterTitre = (nomTitre: string) => {
-    if (formData.titres.length >= 2) {
-      toast.error("Maximum 2 titres par faction");
+  const ajouterOrigine = (nom: string) => {
+    if (formData.origines.includes(nom)) return;
+    if (formData.origines.length >= 2) {
+      toast.error(L("Maximum 2 origines par faction", "Maximum 2 origins per faction", "Maximaal 2 oorsprongen per factie"));
       return;
     }
-    if (formData.titres.includes(nomTitre)) {
-      toast.error("Ce titre est déjà ajouté");
-      return;
-    }
-    
-    // Vérifier les incompatibilités
-    if (verifierIncompatibilite(nomTitre)) {
-      return;
-    }
-    
-    if (calculerMarquesDisponibles() >= 2) {
-      setFormData({
-        ...formData,
-        titres: [...formData.titres, nomTitre],
-        marquesDepensees: formData.marquesDepensees + 1
-      });
-    } else {
-      toast.error("Marques de destinée insuffisantes (coût: 2 marques)");
-    }
-  };
-
-  const retirerTitre = (index: number) => {
-    const nouveauxTitres = [...formData.titres];
-    nouveauxTitres.splice(index, 1);
-    setFormData({
-      ...formData,
-      titres: nouveauxTitres,
-      marquesDepensees: formData.marquesDepensees - 1
-    });
-  };
-
-  const retirerBatiment = () => {
-    setFormData({
-      ...formData,
-      batiment: null
-    });
-  };
-
-  const getTitreDisabledStatus = (titre: Titre): boolean => {
-    // Déjà sélectionné
-    if (formData.titres.includes(titre.nom)) return true;
-
-    // Vérifier les incompatibilités avec les titres déjà sélectionnés
-    for (const titreActuel of formData.titres) {
-      const titreActuelData = titresCarrieres.find(t => t.nom === titreActuel);
-      
-      if (titre.incompatible && titre.incompatible.includes(titreActuel)) {
-        return true;
-      }
-      
-      if (titreActuelData?.incompatible && titreActuelData.incompatible.includes(titre.nom)) {
-        return true;
+    for (const deja of formData.origines) {
+      const verdict = originesCompatibles(deja, nom);
+      if (!verdict.ok) {
+        toast.error(verdict.raison!);
+        return;
       }
     }
+    const nouvelles = [...formData.origines, nom];
+    if (formData.marqueCollective) {
+      const v = marqueCollectiveCompatible(formData.marqueCollective, nouvelles);
+      if (!v.ok) {
+        toast.error(v.raison!);
+        return;
+      }
+    }
+    setFormData({ ...formData, origines: nouvelles });
+  };
 
-    return false;
+  const retirerOrigine = (nom: string) =>
+    setFormData({ ...formData, origines: formData.origines.filter((o) => o !== nom) });
+
+  const choisirMarque = (valeur: string) => {
+    if (valeur === AUCUNE) {
+      setFormData({ ...formData, marqueCollective: null });
+      return;
+    }
+    const v = marqueCollectiveCompatible(valeur, formData.origines);
+    if (!v.ok) {
+      toast.error(v.raison!);
+      return;
+    }
+    setFormData({ ...formData, marqueCollective: valeur });
+  };
+
+  const origineDisabled = (nom: string) => {
+    if (formData.origines.includes(nom)) return true;
+    return formData.origines.some((o) => !originesCompatibles(o, nom).ok);
   };
 
   const sauvegarderFaction = async () => {
     if (!formData.nom.trim()) {
-      toast.error("Le nom de la faction est requis");
+      toast.error(L("Le nom de la faction est requis", "The faction name is required", "De naam van de factie is vereist"));
       return;
     }
-
-    // Validation de l'email
+    if (formData.origines.length !== 2) {
+      toast.error(L("Choisissez exactement deux origines", "Choose exactly two origins", "Kies precies twee oorsprongen"));
+      return;
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.contactEmail.trim() || !emailRegex.test(formData.contactEmail)) {
-      toast.error("Une adresse email valide est requise");
+      toast.error(L("Une adresse email valide est requise", "A valid email address is required", "Een geldig e-mailadres is vereist"));
       return;
     }
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
     if (!supabaseUrl || !supabaseKey) {
-      toast.error(
-        language === "en"
-          ? "Missing backend environment variables on deployment"
-          : "Variables d'environnement backend manquantes sur le déploiement"
-      );
+      toast.error(L("Variables d'environnement backend manquantes", "Missing backend environment variables", "Backend-omgevingsvariabelen ontbreken"));
       return;
     }
 
     const nouvelleFaction: Faction = {
       id: crypto.randomUUID(),
       ...formData,
-      marquesDisponibles: calculerMarquesDisponibles(),
-      dateCreation: new Date().toLocaleDateString("fr-FR")
+      dateCreation: new Date().toLocaleDateString(language === "en" ? "en-US" : language === "nl" ? "nl-NL" : "fr-FR"),
     };
 
     try {
-      // Sauvegarder dans la base de données
-      const { error: dbError } = await supabase
-        .from("factions")
-        .insert({
-          nom: nouvelleFaction.nom,
-          marques_total: nouvelleFaction.marquesTotal,
-          marques_depensees: nouvelleFaction.marquesDepensees,
-          marques_disponibles: nouvelleFaction.marquesDisponibles,
-          propriete_terrienne: nouvelleFaction.propriete || null,
-          batiment: nouvelleFaction.batiment ? JSON.stringify(nouvelleFaction.batiment) : null,
-          titres: nouvelleFaction.titres,
-          description_courte: nouvelleFaction.descriptionCourte,
-          background: nouvelleFaction.background,
-          contact_email: nouvelleFaction.contactEmail,
-          statut: nouvelleFaction.statut,
-        });
+      const { error: dbError } = await supabase.from("factions").insert({
+        nom: nouvelleFaction.nom,
+        propriete_terrienne: nouvelleFaction.propriete || null,
+        batiment: nouvelleFaction.batiment ? JSON.stringify(nouvelleFaction.batiment) : null,
+        titres: [],
+        origines: nouvelleFaction.origines,
+        marque_collective: nouvelleFaction.marqueCollective,
+        description_courte: nouvelleFaction.descriptionCourte,
+        background: nouvelleFaction.background,
+        contact_email: nouvelleFaction.contactEmail,
+        statut: nouvelleFaction.statut,
+      });
 
       if (dbError) {
         console.error("Erreur DB:", dbError);
         throw new Error(`Erreur base de données: ${dbError.message}`);
       }
 
-      // Faction sauvegardée avec succès, maintenant envoyer les emails (non-bloquant)
       try {
         const { error: emailError } = await supabase.functions.invoke("send-faction-email", {
           body: {
             factionName: nouvelleFaction.nom,
             contactEmail: nouvelleFaction.contactEmail,
-            marques: {
-              total: nouvelleFaction.marquesTotal,
-              disponibles: nouvelleFaction.marquesDisponibles,
-            },
             propriete: nouvelleFaction.propriete || null,
             batiment: nouvelleFaction.batiment,
-            titres: nouvelleFaction.titres,
+            titres: [],
+            origines: nouvelleFaction.origines,
+            marqueCollective: nouvelleFaction.marqueCollective,
             descriptionCourte: nouvelleFaction.descriptionCourte,
             background: nouvelleFaction.background,
           },
         });
-
         if (emailError) {
           console.error("Erreur d'envoi d'email:", emailError);
-          toast.error(
-            language === "en"
-              ? "Faction created but email sending failed"
-              : "Faction créée mais l'envoi d'email a échoué"
-          );
+          toast.error(L("Faction créée mais l'envoi d'email a échoué", "Faction created but email sending failed", "Factie aangemaakt maar de e-mail is niet verzonden"));
         }
       } catch (emailErr) {
         console.error("Erreur d'envoi d'email:", emailErr);
-        // Ne pas bloquer - la faction est déjà sauvegardée
       }
 
       setFactions([...factions, nouvelleFaction]);
       setShowForm(false);
       setFormData({
         nom: "",
-        marquesTotal: 4,
-        marquesDepensees: 0,
         propriete: "",
         batiment: null,
-        titres: [],
+        origines: [],
+        marqueCollective: null,
         descriptionCourte: "",
         background: "",
         contactEmail: "",
         statut: "active",
       });
 
-      toast.success(
-        language === "en"
-          ? "Faction created successfully! Emails have been sent."
-          : "Faction créée avec succès ! Les emails ont été envoyés."
-      );
+      toast.success(L("Faction créée avec succès ! Les emails ont été envoyés.", "Faction created successfully! Emails have been sent.", "Factie succesvol aangemaakt! De e-mails zijn verzonden."));
 
-      // Ouvrir le PDF de la faction
-      openFactionSheet(nouvelleFaction, language);
+      openFactionSheet(
+        {
+          nom: nouvelleFaction.nom,
+          marquesTotal: 0,
+          marquesDepensees: 0,
+          marquesDisponibles: 0,
+          propriete: nouvelleFaction.propriete,
+          batiment: nouvelleFaction.batiment,
+          origines: nouvelleFaction.origines,
+          marqueCollective: nouvelleFaction.marqueCollective,
+          descriptionCourte: nouvelleFaction.descriptionCourte,
+          background: nouvelleFaction.background,
+          contactEmail: nouvelleFaction.contactEmail,
+          dateCreation: nouvelleFaction.dateCreation,
+        },
+        language,
+      );
     } catch (error: any) {
       console.error("Erreur lors de la sauvegarde:", error);
       const details = error?.message ? ` (${error.message})` : "";
-      toast.error(
-        language === "en"
-          ? `An error occurred while creating the faction${details}`
-          : `Une erreur est survenue lors de la création de la faction${details}`
-      );
+      toast.error(L(`Une erreur est survenue lors de la création de la faction${details}`, `An error occurred while creating the faction${details}`, `Er is een fout opgetreden bij het aanmaken van de factie${details}`));
     }
   };
 
@@ -302,7 +246,11 @@ const Factions = () => {
             <CardHeader>
               <CardTitle>{t('factions.createNew')}</CardTitle>
               <CardDescription>
-                {t('factions.marksAvailable')}: {calculerMarquesDisponibles()}/{formData.marquesTotal}
+                {L(
+                  "Règles 2026-2027 : deux origines obligatoires, sans coût, et une Marque collective optionnelle.",
+                  "2026-2027 rules: two mandatory origins, free of charge, and one optional collective Mark.",
+                  "Regels 2026-2027: twee verplichte oorsprongen, gratis, en één optioneel collectief Merk.",
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -324,9 +272,7 @@ const Factions = () => {
                   onChange={(e) => setFormData({ ...formData, propriete: e.target.value })}
                   placeholder={t('factions.propertyPlaceholder')}
                 />
-                <p className="text-xs text-muted-foreground">
-                  {t('factions.propertyNote')}
-                </p>
+                <p className="text-xs text-muted-foreground">{t('factions.propertyNote')}</p>
               </div>
 
               <div className="space-y-2">
@@ -375,7 +321,7 @@ const Factions = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <p className="font-bold text-primary">{translateGameData(formData.batiment.nom, 'batiment', language)}</p>
-                        <p className="text-xs text-muted-foreground mb-2">{formData.batiment.type === 'Bâtiment' ? (language === 'en' ? 'Building' : 'Bâtiment') : (language === 'en' ? 'Ship' : 'Navire')}</p>
+                        <p className="text-xs text-muted-foreground mb-2">{formData.batiment.type === 'Bâtiment' ? L('Bâtiment', 'Building', 'Gebouw') : L('Navire', 'Ship', 'Schip')}</p>
                         <div className="flex items-start gap-2 bg-muted/50 p-2 rounded">
                           <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                           <p className="text-sm">{translateGameData(formData.batiment.avantages, 'batimentAvantage', language)}</p>
@@ -389,45 +335,105 @@ const Factions = () => {
                 )}
               </div>
 
+              {/* ORIGINES */}
               <div className="space-y-2">
-                <Label>{t('factions.titles')}</Label>
-                <Select onValueChange={ajouterTitre} disabled={formData.titres.length >= 2}>
+                <Label>{L("Origines de la faction (2 obligatoires)", "Faction origins (2 required)", "Oorsprongen van de factie (2 verplicht)")}</Label>
+                <Select value="" onValueChange={ajouterOrigine} disabled={formData.origines.length >= 2}>
                   <SelectTrigger>
-                    <SelectValue placeholder={formData.titres.length >= 2 ? t('factions.titlesMaxReached') : t('factions.titlesPlaceholder')} />
+                    <SelectValue placeholder={formData.origines.length >= 2
+                      ? L("Deux origines sélectionnées", "Two origins selected", "Twee oorsprongen geselecteerd")
+                      : L("Choisir une origine…", "Choose an origin…", "Kies een oorsprong…")} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[400px]">
-                    {titresCarrieres.map((titre) => {
-                      const isDisabled = getTitreDisabledStatus(titre);
-                      return (
-                        <SelectItem 
-                          key={titre.nom} 
-                          value={titre.nom}
-                          disabled={isDisabled}
-                        >
-                          <div className="flex flex-col">
-                            <span className={`font-medium ${isDisabled ? 'opacity-50' : ''}`}>{translateGameData(titre.nom, 'titre', language)}</span>
-                            {titre.prerequis && (
-                              <span className="text-xs text-muted-foreground">{t('selection.prerequisites')}: {translateGameData(titre.prerequis, 'titrePrerequisit', language)}</span>
-                            )}
-                            {titre.incompatible && (
-                              <span className="text-xs text-destructive">{t('selection.incompatible')}: {titre.incompatible.split(', ').map(inc => translateGameData(inc.trim(), 'titre', language)).join(', ')}</span>
-                            )}
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+                    {categoriesOrigines.map((cat) => (
+                      <SelectGroup key={cat}>
+                        <SelectLabel>{cat}</SelectLabel>
+                        {toutesOrigines.filter((o) => o.categorie === cat).map((o) => (
+                          <SelectItem key={o.nom} value={o.nom} disabled={origineDisabled(o.nom)}>
+                            <div className="flex flex-col max-w-[520px]">
+                              <span className="font-medium">{o.nom}</span>
+                              <span className="text-xs text-muted-foreground line-clamp-2">{o.description}</span>
+                              {o.especes && o.especes !== "-" && (
+                                <span className="text-xs text-amber-600 dark:text-amber-400">{L("Espèces", "Species", "Soorten")}: {o.especes}</span>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
                   </SelectContent>
                 </Select>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.titres.map((titre, idx) => (
-                    <div key={idx} className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg">
-                      <span className="text-sm font-medium">{translateGameData(titre, 'titre', language)}</span>
-                      <button onClick={() => retirerTitre(idx)} className="hover:text-destructive">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
+
+                <div className="space-y-3 mt-2">
+                  {formData.origines.map((nom) => {
+                    const o = getOrigine(nom);
+                    return (
+                      <div key={nom} className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 space-y-1">
+                            <p className="font-semibold text-primary">{nom}</p>
+                            {o?.description && <p className="text-sm text-muted-foreground">{o.description}</p>}
+                            {o?.especes && o.especes !== "-" && (
+                              <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {o.especes}</p>
+                            )}
+                            {o?.limitations && o.limitations !== "-" && (
+                              <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
+                            )}
+                            {o?.prerequis && o.prerequis !== "-" && (
+                              <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
+                            )}
+                            {o?.contactOrga && (
+                              <p className="text-xs flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                                <AlertTriangle className="h-3 w-3" />
+                                {L("Contact préalable avec l'Orga requis", "Prior contact with the Orga required", "Voorafgaand contact met de Orga vereist")}
+                              </p>
+                            )}
+                          </div>
+                          <button onClick={() => retirerOrigine(nom)} className="hover:text-destructive">
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
+              </div>
+
+              {/* MARQUE COLLECTIVE */}
+              <div className="space-y-2">
+                <Label>{L("Marque collective (optionnelle, une seule)", "Collective Mark (optional, only one)", "Collectief Merk (optioneel, slechts één)")}</Label>
+                <Select value={formData.marqueCollective ?? AUCUNE} onValueChange={choisirMarque}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={L("Aucune Marque collective", "No collective Mark", "Geen collectief Merk")} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[400px]">
+                    <SelectItem value={AUCUNE}>{L("Aucune Marque collective", "No collective Mark", "Geen collectief Merk")}</SelectItem>
+                    {marquesCollectives.map((m) => (
+                      <SelectItem key={m.nom} value={m.nom}>
+                        <div className="flex flex-col max-w-[520px]">
+                          <span className="font-medium">{m.nom}</span>
+                          <span className="text-xs text-muted-foreground line-clamp-2">{m.pourQui}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {formData.marqueCollective && (() => {
+                  const m = getMarqueCollective(formData.marqueCollective);
+                  if (!m) return null;
+                  return (
+                    <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 space-y-1">
+                      {m.citation && <p className="text-sm italic">« {m.citation} »</p>}
+                      <p className="text-xs"><strong>{L("Pour qui", "For whom", "Voor wie")} :</strong> {m.pourQui}</p>
+                      {m.signale && <p className="text-xs"><strong>{L("Signale", "Signals", "Signaleert")} :</strong> {m.signale}</p>}
+                      {m.interdits && <p className="text-xs text-destructive"><strong>{L("Nécessités et interdits", "Requirements and prohibitions", "Vereisten en verboden")} :</strong> {m.interdits}</p>}
+                      <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" />
+                        {L("Toute Marque est soumise à la validation de l'Orga, deux mois avant l'événement.", "Every Mark must be approved by the Orga, two months before the event.", "Elk Merk moet twee maanden voor het evenement door de Orga worden goedgekeurd.")}
+                      </p>
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="space-y-2">
@@ -461,9 +467,7 @@ const Factions = () => {
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
                   placeholder={t('factions.emailPlaceholder')}
                 />
-                <p className="text-xs text-muted-foreground">
-                  {t('factions.emailNote')}
-                </p>
+                <p className="text-xs text-muted-foreground">{t('factions.emailNote')}</p>
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -508,16 +512,10 @@ const Factions = () => {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">{t('factions.marksAvailableShort')}</span>
-                        <span className="font-bold">{faction.marquesDisponibles}/{faction.marquesTotal}</span>
-                      </div>
                       {faction.propriete && (
                         <div>
                           <p className="text-sm font-medium mb-1">{t('factions.propertyLabel')}</p>
-                          <span className="text-xs bg-secondary/20 px-2 py-1 rounded">
-                            {faction.propriete}
-                          </span>
+                          <span className="text-xs bg-secondary/20 px-2 py-1 rounded">{faction.propriete}</span>
                         </div>
                       )}
                       {faction.batiment && (
@@ -527,22 +525,24 @@ const Factions = () => {
                           <p className="text-xs bg-muted/50 p-2 rounded">{faction.batiment.avantages}</p>
                         </div>
                       )}
-                      {faction.titres.length > 0 && (
+                      {faction.origines.length > 0 && (
                         <div>
-                          <p className="text-sm font-medium mb-1">{t('factions.titlesCareer')}</p>
+                          <p className="text-sm font-medium mb-1">{L("Origines", "Origins", "Oorsprongen")}</p>
                           <div className="flex flex-wrap gap-1">
-                            {faction.titres.map((titre, idx) => (
-                              <span key={idx} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">
-                                {translateGameData(titre, 'titre', language)}
-                              </span>
+                            {faction.origines.map((o) => (
+                              <span key={o} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">{o}</span>
                             ))}
                           </div>
                         </div>
                       )}
+                      {faction.marqueCollective && (
+                        <div>
+                          <p className="text-sm font-medium mb-1">{L("Marque collective", "Collective Mark", "Collectief Merk")}</p>
+                          <span className="text-xs bg-secondary/20 px-2 py-1 rounded">{faction.marqueCollective}</span>
+                        </div>
+                      )}
                       {faction.descriptionCourte && (
-                        <p className="text-sm text-muted-foreground italic">
-                          {faction.descriptionCourte}
-                        </p>
+                        <p className="text-sm text-muted-foreground italic">{faction.descriptionCourte}</p>
                       )}
                     </CardContent>
                   </Card>

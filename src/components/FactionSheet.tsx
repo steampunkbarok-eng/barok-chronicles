@@ -3,22 +3,29 @@ import { translateGameData } from "@/i18n/gameData";
 import { Button } from "@/components/ui/button";
 import { Printer, Download } from "lucide-react";
 import { titresCarrieres } from "@/data/titres";
+import { getOrigine } from "@/data/origines";
+import { getMarqueCollective } from "@/data/marques";
+
+interface FactionData {
+  nom: string;
+  marquesTotal: number;
+  marquesDepensees: number;
+  marquesDisponibles: number;
+  propriete: string;
+  batiment: { type: string; nom: string; avantages: string } | null;
+  titres?: string[];
+  origines?: string[];
+  marqueCollective?: string | null;
+  descriptionCourte: string;
+  background: string;
+  contactEmail: string;
+  dateCreation: string;
+}
 
 interface FactionSheetProps {
-  faction: {
-    nom: string;
-    marquesTotal: number;
-    marquesDepensees: number;
-    marquesDisponibles: number;
-    propriete: string;
-    batiment: { type: string; nom: string; avantages: string } | null;
-    titres: string[];
-    descriptionCourte: string;
-    background: string;
-    contactEmail: string;
-    dateCreation: string;
-  };
+  faction: FactionData;
 }
+
 
 const pick = (language: 'fr' | 'en' | 'nl', fr: string, en: string, nl: string) =>
   language === 'en' ? en : language === 'nl' ? nl : fr;
@@ -36,8 +43,14 @@ const factionLabels = (language: 'fr' | 'en' | 'nl') => ({
   ship: pick(language, 'Navire', 'Ship', 'Schip'),
   advantages: pick(language, 'Avantages', 'Advantages', 'Voordelen'),
   titlesCareers: pick(language, 'Titres/Carrières', 'Titles/Careers', 'Titels/Carrières'),
+  origins: pick(language, 'Origines de la Faction', 'Faction Origins', 'Oorsprongen van de Factie'),
+  collectiveMark: pick(language, 'Marque collective', 'Collective Mark', 'Collectief Merk'),
+  limitations: pick(language, 'Limitations', 'Limitations', 'Beperkingen'),
+  speciesRule: pick(language, 'Espèces', 'Species', 'Soorten'),
+  orgaContact: pick(language, "Contact Orga requis", 'Orga contact required', 'Orga-contact vereist'),
   prerequisites: pick(language, 'Prérequis', 'Prerequisites', 'Vereisten'),
   incompatible: pick(language, 'Incompatible avec', 'Incompatible with', 'Onverenigbaar met'),
+
   shortDescription: pick(language, 'Description Courte', 'Short Description', 'Korte Beschrijving'),
   background: pick(language, 'Background Complet', 'Complete Background', 'Volledige Achtergrond'),
   contactEmail: pick(language, 'Email de Contact', 'Contact Email', 'Contact-e-mail'),
@@ -58,6 +71,52 @@ const getTitreDetails = (titreName: string) => {
   return titresCarrieres.find(t => t.nom === titreName);
 };
 
+/** Bloc HTML des origines 2026-2027 et de la Marque collective */
+const originesSectionHtml = (
+  faction: FactionData,
+  labels: ReturnType<typeof factionLabels>,
+) => {
+  const noms = faction.origines || [];
+  const marque = faction.marqueCollective ? getMarqueCollective(faction.marqueCollective) : null;
+  if (noms.length === 0 && !marque) return '';
+
+  const cards = noms.map((nom) => {
+    const o = getOrigine(nom);
+    return `
+      <div class="title-card">
+        <span class="title-name">${nom}</span>
+        <div class="title-details">
+          ${o?.description ? `<div class="title-prereq">${o.description}</div>` : ''}
+          ${o?.especes && o.especes !== '-' ? `<div class="title-prereq"><strong>${labels.speciesRule}:</strong> ${o.especes}</div>` : ''}
+          ${o?.limitations && o.limitations !== '-' ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${o.limitations}</div>` : ''}
+          ${o?.prerequis && o.prerequis !== '-' ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${o.prerequis}</div>` : ''}
+          ${o?.contactOrga ? `<div class="title-incomp"><strong>${labels.orgaContact}</strong></div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  const marqueHtml = marque
+    ? `<div class="section">
+      <div class="section-title">${labels.collectiveMark}</div>
+      <div class="title-card">
+        <span class="title-name">${marque.nom}</span>
+        <div class="title-details">
+          ${marque.pourQui ? `<div class="title-prereq">${marque.pourQui}</div>` : ''}
+          ${marque.interdits ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${marque.interdits}</div>` : ''}
+        </div>
+      </div>
+    </div>`
+    : '';
+
+  return `
+    <div class="section">
+      <div class="section-title">${labels.origins}</div>
+      ${cards || `<div class="empty">${labels.none}</div>`}
+    </div>
+    ${marqueHtml}`;
+};
+
+
 export const FactionSheet = ({ faction }: FactionSheetProps) => {
   const { t, language } = useLanguage();
 
@@ -70,8 +129,11 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
         ? labels.ship 
         : faction.batiment?.type || '';
 
-    // Generate titles with details
-    const titlesWithDetails = faction.titres.map(titre => {
+    // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
+    const modeleOrigines = !!(faction.origines && faction.origines.length);
+    const originesHtml = originesSectionHtml(faction, labels);
+
+    const titlesWithDetails = (faction.titres || []).map(titre => {
       const titreData = getTitreDetails(titre);
       return {
         nom: titre,
@@ -79,6 +141,40 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
         incompatible: titreData?.incompatible || ''
       };
     });
+
+    const titlesSection = modeleOrigines || titlesWithDetails.length === 0 ? '' : `
+    <div class="section">
+      <div class="section-title">${labels.titlesCareers}</div>
+      ${titlesWithDetails.map(titre => `
+            <div class="title-card">
+              <span class="title-name">${translateGameData(titre.nom, 'titre', language)}</span>
+              <div class="title-details">
+                ${titre.prerequis ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translateGameData(titre.prerequis, 'titrePrerequisit', language)}</div>` : ''}
+                ${titre.incompatible ? `<div class="title-incomp"><strong>${labels.incompatible}:</strong> ${titre.incompatible.split(', ').map(inc => translateGameData(inc.trim(), 'titre', language)).join(', ')}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+    </div>`;
+
+    const marksSection = modeleOrigines ? '' : `
+    <div class="section">
+      <div class="section-title">${labels.destinyMarks}</div>
+      <div class="marks-grid">
+        <div class="mark-box">
+          <div class="mark-label">${labels.total}</div>
+          <div class="mark-value">${faction.marquesTotal}</div>
+        </div>
+        <div class="mark-box">
+          <div class="mark-label">${labels.spent}</div>
+          <div class="mark-value">${faction.marquesDepensees * 2}</div>
+        </div>
+        <div class="mark-box">
+          <div class="mark-label">${labels.available}</div>
+          <div class="mark-value">${faction.marquesDisponibles}</div>
+        </div>
+      </div>
+    </div>`;
+
 
     return `
 <!DOCTYPE html>
@@ -363,23 +459,8 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
     
     <div class="faction-name">${faction.nom}</div>
     
-    <div class="section">
-      <div class="section-title">${labels.destinyMarks}</div>
-      <div class="marks-grid">
-        <div class="mark-box">
-          <div class="mark-label">${labels.total}</div>
-          <div class="mark-value">${faction.marquesTotal}</div>
-        </div>
-        <div class="mark-box">
-          <div class="mark-label">${labels.spent}</div>
-          <div class="mark-value">${faction.marquesDepensees * 2}</div>
-        </div>
-        <div class="mark-box">
-          <div class="mark-label">${labels.available}</div>
-          <div class="mark-value">${faction.marquesDisponibles}</div>
-        </div>
-      </div>
-    </div>
+    ${marksSection}
+
     
     <div class="section">
       <div class="section-title">${labels.landProperty}</div>
@@ -399,20 +480,9 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
         : `<div class="empty">${labels.none}</div>`}
     </div>
     
-    <div class="section">
-      <div class="section-title">${labels.titlesCareers}</div>
-      ${titlesWithDetails.length > 0 
-        ? titlesWithDetails.map(titre => `
-            <div class="title-card">
-              <span class="title-name">${translateGameData(titre.nom, 'titre', language)}</span>
-              <div class="title-details">
-                ${titre.prerequis ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translateGameData(titre.prerequis, 'titrePrerequisit', language)}</div>` : ''}
-                ${titre.incompatible ? `<div class="title-incomp"><strong>${labels.incompatible}:</strong> ${titre.incompatible.split(', ').map(inc => translateGameData(inc.trim(), 'titre', language)).join(', ')}</div>` : ''}
-              </div>
-            </div>
-          `).join('')
-        : `<div class="empty">${labels.none}</div>`}
-    </div>
+    ${originesHtml}
+    ${titlesSection}
+
     
     <div class="section">
       <div class="section-title">${labels.shortDescription}</div>
@@ -484,19 +554,8 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
   );
 };
 
-export const openFactionSheet = (faction: {
-  nom: string;
-  marquesTotal: number;
-  marquesDepensees: number;
-  marquesDisponibles: number;
-  propriete: string;
-  batiment: { type: string; nom: string; avantages: string } | null;
-  titres: string[];
-  descriptionCourte: string;
-  background: string;
-  contactEmail: string;
-  dateCreation: string;
-}, language: 'fr' | 'en' | 'nl') => {
+export const openFactionSheet = (faction: FactionData, language: 'fr' | 'en' | 'nl') => {
+
   const labels = factionLabels(language);
 
   const batimentType = faction.batiment?.type === 'Bâtiment' 
@@ -670,8 +729,11 @@ export const openFactionSheet = (faction: {
     return titresCarrieres.find(t => t.nom === titreName);
   };
 
-  // Generate titles with details
-  const titlesWithDetails = faction.titres.map(titre => {
+  // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
+  const modeleOrigines = !!(faction.origines && faction.origines.length);
+  const originesHtml = originesSectionHtml(faction, labels);
+
+  const titlesWithDetails = (faction.titres || []).map(titre => {
     const titreData = getTitreDetailsLocal(titre);
     return {
       nom: titre,
@@ -679,6 +741,40 @@ export const openFactionSheet = (faction: {
       incompatible: titreData?.incompatible || ''
     };
   });
+
+  const titlesSection = modeleOrigines || titlesWithDetails.length === 0 ? '' : `
+    <div class="section">
+      <div class="section-title">${labels.titlesCareers}</div>
+      ${titlesWithDetails.map(titre => `
+            <div class="title-card">
+              <span class="title-name">${translateTitre(titre.nom)}</span>
+              <div class="title-details">
+                ${titre.prerequis ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translatePrereq(titre.prerequis)}</div>` : ''}
+                ${titre.incompatible ? `<div class="title-incomp"><strong>${labels.incompatible}:</strong> ${titre.incompatible.split(', ').map(inc => translateTitre(inc.trim())).join(', ')}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+    </div>`;
+
+  const marksSection = modeleOrigines ? '' : `
+    <div class="section">
+      <div class="section-title">${labels.destinyMarks}</div>
+      <div class="marks-grid">
+        <div class="mark-box">
+          <div class="mark-label">${labels.total}</div>
+          <div class="mark-value">${faction.marquesTotal}</div>
+        </div>
+        <div class="mark-box">
+          <div class="mark-label">${labels.spent}</div>
+          <div class="mark-value">${faction.marquesDepensees * 2}</div>
+        </div>
+        <div class="mark-box">
+          <div class="mark-label">${labels.available}</div>
+          <div class="mark-value">${faction.marquesDisponibles}</div>
+        </div>
+      </div>
+    </div>`;
+
 
   const html = `
 <!DOCTYPE html>
@@ -963,23 +1059,8 @@ export const openFactionSheet = (faction: {
     
     <div class="faction-name">${faction.nom}</div>
     
-    <div class="section">
-      <div class="section-title">${labels.destinyMarks}</div>
-      <div class="marks-grid">
-        <div class="mark-box">
-          <div class="mark-label">${labels.total}</div>
-          <div class="mark-value">${faction.marquesTotal}</div>
-        </div>
-        <div class="mark-box">
-          <div class="mark-label">${labels.spent}</div>
-          <div class="mark-value">${faction.marquesDepensees * 2}</div>
-        </div>
-        <div class="mark-box">
-          <div class="mark-label">${labels.available}</div>
-          <div class="mark-value">${faction.marquesDisponibles}</div>
-        </div>
-      </div>
-    </div>
+    ${marksSection}
+
     
     <div class="section">
       <div class="section-title">${labels.landProperty}</div>
@@ -999,20 +1080,9 @@ export const openFactionSheet = (faction: {
         : `<div class="empty">${labels.none}</div>`}
     </div>
     
-    <div class="section">
-      <div class="section-title">${labels.titlesCareers}</div>
-      ${titlesWithDetails.length > 0 
-        ? titlesWithDetails.map(titre => `
-            <div class="title-card">
-              <span class="title-name">${translateTitre(titre.nom)}</span>
-              <div class="title-details">
-                ${titre.prerequis ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translatePrereq(titre.prerequis)}</div>` : ''}
-                ${titre.incompatible ? `<div class="title-incomp"><strong>${labels.incompatible}:</strong> ${titre.incompatible.split(', ').map(inc => translateTitre(inc.trim())).join(', ')}</div>` : ''}
-              </div>
-            </div>
-          `).join('')
-        : `<div class="empty">${labels.none}</div>`}
-    </div>
+    ${originesHtml}
+    ${titlesSection}
+
     
     <div class="section">
       <div class="section-title">${labels.shortDescription}</div>
