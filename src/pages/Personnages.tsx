@@ -315,7 +315,7 @@ const Personnages = () => {
         genererRecapitulatif();
       }
     }
-  }, [formData.espece, formData.competences, formData.nbEvenements]);
+  }, [formData.espece, formData.competences, formData.nbEvenements, formData.glandeDraconique, formData.marqueIndividuelle, language]);
 
   const getInterditsFromFaction = (): string[] => {
     const faction = factions.find(f => f.nom === formData.faction);
