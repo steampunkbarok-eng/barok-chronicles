@@ -13,6 +13,10 @@ export const especeTexteEn2027: Record<string, string> = {
   "Ordre Chevaliers Suie (LAM)": "Order of the Coal Knights (L.A.M.)",
   "Endurance accrue": "Increased Endurance",
   "Armures moyennes et lourdes (si magie)": "Medium and heavy armours (if magic)",
+  "Armure niv.1": "Armour lvl.1",
+  "Armure niv.2": "Armour lvl.2",
+  "Armure niv.3": "Armour lvl.3",
+  "(aucun port d'armure réel : toute armure portée est purement décorative)": "(no real armour may be worn: any armour worn is purely decorative)",
   "Détection Magie": "Natural Magic Detection",
   "Résistance Flatterie": "Flattery Resistance",
   "Flatterie": "Flattery",
@@ -23,8 +27,8 @@ export const especeTexteEn2027: Record<string, string> = {
   // Particularités complètes
   "Enveloppe Planaire (1 PA naturel non cumulable avec armure portée) + Double Esprit (consultation 1×/jour via Argousin-e) + Désincarnation Éthérée (+2 Abîme à chaque désincarnation) + Signalétique rubans obligatoire selon l'école magique pratiquée":
     "Planar envelope (1 natural armour point on every location, not cumulative with worn armour) + Double spirit (one consultation per day through an Argousin) + Ethereal disembodiment (+2 Abyss at each disembodiment) + Mandatory Weaver signage according to the magic school practised",
-  "3 PV par localisation (au lieu de 2) + 2 PA naturels sur toutes les localisations (cumulables avec armure légère uniquement) + Glandes draconiques : 1 crachat élémentaire 1×/jour + 1 annonce spéciale 1×/jour selon la couleur choisie à la création + Chair magiquement réactive (résistance = sensibilité symétrique) + Vulnérabilité Enchanted (×2) + Vulnérabilité martiale (Abîme/Crush/Strike Down plein effet) + Pas de domiciliation, pas de foi divine + Lieu de culte corrompu = Semence du Néant. Background obligatoire validé par l'Orga + type de glandes à choisir.":
-    "Draconic robustness: 3 hit points per location (instead of 2) + Partial Scales: 2 natural armour points on every location + Draconic glands: one elemental spit per day with the call of the colour chosen at creation + Magically reactive flesh (resistance = symmetrical vulnerability) + Vulnerability to 'enchanted' (2 damage instead of 1) + 'abyss', 'crush' and 'strike down' cannot be resisted + Shifting domiciliation, no divine faith + Corrupted place of worship = Seed of Nothingness. Background validated by the organisation + gland type to be chosen.",
+  "3 PV par localisation (au lieu de 2) + 2 PA naturels sur toutes les localisations (aucun cumul possible : les Draconides ne peuvent porter aucune armure, tout port d'armure est purement décoratif et n'octroie aucun PA) + Glandes draconiques : 1 crachat élémentaire 1×/jour + 1 annonce spéciale 1×/jour selon la couleur choisie à la création + Chair magiquement réactive (résistance = sensibilité symétrique) + Vulnérabilité Enchanted (×2) + Vulnérabilité martiale (Abîme/Crush/Strike Down plein effet) + Pas de domiciliation, pas de foi divine + Lieu de culte corrompu = Semence du Néant. Background obligatoire validé par l'Orga + type de glandes à choisir.":
+    "Draconic robustness: 3 hit points per location (instead of 2) + Partial Scales: 2 natural armour points on every location (no armour may be worn: any armour is purely decorative and grants no armour point) + Draconic glands: one elemental spit per day with the call of the colour chosen at creation + Magically reactive flesh (resistance = symmetrical vulnerability) + Vulnerability to 'enchanted' (2 damage instead of 1) + 'abyss', 'crush' and 'strike down' cannot be resisted + Shifting domiciliation, no divine faith + Corrupted place of worship = Seed of Nothingness. Background validated by the organisation + gland type to be chosen.",
 
   // Glandes draconiques
   "Blanc": "White", "Bleu": "Blue", "Noir": "Black", "Rouge": "Red", "Vert": "Green",
@@ -74,6 +78,10 @@ export const especeTexteNl2027: Record<string, string> = {
   "Ordre Chevaliers Suie (LAM)": "Orde van de Steenkoolridders (L.A.M.)",
   "Endurance accrue": "Verhoogd uithoudingsvermogen",
   "Armures moyennes et lourdes (si magie)": "Middelzware en zware pantsers (bij magie)",
+  "Armure niv.1": "Pantser niv.1",
+  "Armure niv.2": "Pantser niv.2",
+  "Armure niv.3": "Pantser niv.3",
+  "(aucun port d'armure réel : toute armure portée est purement décorative)": "(geen echt pantser mogelijk: elk gedragen pantser is louter decoratief)",
   "Détection Magie": "Magiedetectie",
   "Résistance Flatterie": "Weerstand tegen Vleierij",
   "Flatterie": "Vleierij",
@@ -83,8 +91,8 @@ export const especeTexteNl2027: Record<string, string> = {
 
   "Enveloppe Planaire (1 PA naturel non cumulable avec armure portée) + Double Esprit (consultation 1×/jour via Argousin-e) + Désincarnation Éthérée (+2 Abîme à chaque désincarnation) + Signalétique rubans obligatoire selon l'école magique pratiquée":
     "Planair omhulsel (1 natuurlijk pantserpunt, niet cumuleerbaar met gedragen pantser) + Dubbele geest (één raadpleging per dag via een Argousin) + Etherische ontlichaming (+2 Abyss bij elke ontlichaming) + Verplichte lintkentekens volgens de beoefende magieschool",
-  "3 PV par localisation (au lieu de 2) + 2 PA naturels sur toutes les localisations (cumulables avec armure légère uniquement) + Glandes draconiques : 1 crachat élémentaire 1×/jour + 1 annonce spéciale 1×/jour selon la couleur choisie à la création + Chair magiquement réactive (résistance = sensibilité symétrique) + Vulnérabilité Enchanted (×2) + Vulnérabilité martiale (Abîme/Crush/Strike Down plein effet) + Pas de domiciliation, pas de foi divine + Lieu de culte corrompu = Semence du Néant. Background obligatoire validé par l'Orga + type de glandes à choisir.":
-    "3 hit points per locatie (in plaats van 2) + 2 natuurlijke pantserpunten op alle locaties (enkel cumuleerbaar met licht pantser) + Drakenklieren: 1 elementair spuwsel per dag + 1 bijzondere aankondiging per dag volgens de bij de creatie gekozen kleur + Magisch reactief vlees (weerstand = symmetrische gevoeligheid) + Kwetsbaarheid voor Enchanted (×2) + Martiale kwetsbaarheid (Abyss/Crush/Strike Down met volle werking) + Geen domiciliëring, geen goddelijk geloof + Verdorven cultusplaats = Zaad van de Nietsheid. Verplichte achtergrond goedgekeurd door de organisatie + kliertype te kiezen.",
+  "3 PV par localisation (au lieu de 2) + 2 PA naturels sur toutes les localisations (aucun cumul possible : les Draconides ne peuvent porter aucune armure, tout port d'armure est purement décoratif et n'octroie aucun PA) + Glandes draconiques : 1 crachat élémentaire 1×/jour + 1 annonce spéciale 1×/jour selon la couleur choisie à la création + Chair magiquement réactive (résistance = sensibilité symétrique) + Vulnérabilité Enchanted (×2) + Vulnérabilité martiale (Abîme/Crush/Strike Down plein effet) + Pas de domiciliation, pas de foi divine + Lieu de culte corrompu = Semence du Néant. Background obligatoire validé par l'Orga + type de glandes à choisir.":
+    "3 hit points per locatie (in plaats van 2) + 2 natuurlijke pantserpunten op alle locaties (geen enkel pantser mag gedragen worden: elk pantser is louter decoratief en geeft geen pantserpunt) + Drakenklieren: 1 elementair spuwsel per dag + 1 bijzondere aankondiging per dag volgens de bij de creatie gekozen kleur + Magisch reactief vlees (weerstand = symmetrische gevoeligheid) + Kwetsbaarheid voor Enchanted (×2) + Martiale kwetsbaarheid (Abyss/Crush/Strike Down met volle werking) + Geen domiciliëring, geen goddelijk geloof + Verdorven cultusplaats = Zaad van de Nietsheid. Verplichte achtergrond goedgekeurd door de organisatie + kliertype te kiezen.",
 
   "Blanc": "Wit", "Bleu": "Blauw", "Noir": "Zwart", "Rouge": "Rood", "Vert": "Groen",
   "Mauve": "Mauve", "Jaune": "Geel", "Violet": "Paars", "Orange": "Oranje", "Gris": "Grijs", "Rose": "Roze",
