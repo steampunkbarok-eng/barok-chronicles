@@ -15,6 +15,7 @@ import { originesCompatibles, marqueCollectiveCompatible } from "@/lib/reglesCre
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTri } from "@/i18n/tri";
+import { translateFactionText } from "@/i18n/factionTexts2027";
 import { translateGameData } from "@/i18n/gameData";
 import { openFactionSheet } from "@/components/FactionSheet";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -40,6 +41,7 @@ const MARQUE_SECRETE = "Marque secrète";
 const Factions = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
+  const TF = (txt?: string) => (txt ? translateFactionText(txt, language) : "");
   const navigate = useNavigate();
   const [factions, setFactions] = useState<Faction[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -393,14 +395,14 @@ const Factions = () => {
                   <SelectContent className="max-h-[400px]">
                     {categoriesOrigines.map((cat) => (
                       <SelectGroup key={cat}>
-                        <SelectLabel>{cat}</SelectLabel>
+                        <SelectLabel>{TF(cat)}</SelectLabel>
                         {toutesOrigines.filter((o) => o.categorie === cat).map((o) => (
                           <SelectItem key={o.nom} value={o.nom} disabled={origineDisabled(o.nom)}>
                             <div className="flex flex-col max-w-[520px]">
-                              <span className="font-medium">{o.nom}</span>
-                              <span className="text-xs text-muted-foreground line-clamp-2">{o.description}</span>
+                              <span className="font-medium">{TF(o.nom)}</span>
+                              <span className="text-xs text-muted-foreground line-clamp-2">{TF(o.description)}</span>
                               {o.especes && o.especes !== "-" && (
-                                <span className="text-xs text-amber-600 dark:text-amber-400">{L("Espèces", "Species", "Soorten")}: {o.especes}</span>
+                                <span className="text-xs text-amber-600 dark:text-amber-400">{L("Espèces", "Species", "Soorten")}: {TF(o.especes)}</span>
                               )}
                             </div>
                           </SelectItem>
@@ -417,13 +419,13 @@ const Factions = () => {
                       <div key={nom} className="bg-primary/5 border border-primary/20 rounded-lg p-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 space-y-1">
-                            <p className="font-semibold text-primary">{nom}</p>
-                            {o?.description && <p className="text-sm text-muted-foreground">{o.description}</p>}
+                            <p className="font-semibold text-primary">{TF(nom)}</p>
+                            {o?.description && <p className="text-sm text-muted-foreground">{TF(o.description)}</p>}
                             {o?.especes && o.especes !== "-" && (
-                              <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {o.especes}</p>
+                              <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {TF(o.especes)}</p>
                             )}
                             {o?.limitations && o.limitations !== "-" && (
-                              <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
+                              <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {TF(o.limitations)}</p>
                             )}
                             {origineIncompatibleAvec(nom).length > 0 && (
                               <p className="text-xs text-destructive">
@@ -432,7 +434,7 @@ const Factions = () => {
                               </p>
                             )}
                             {o?.prerequis && o.prerequis !== "-" && (
-                              <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
+                              <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {TF(o.prerequis)}</p>
                             )}
                             {o?.contactOrga && (
                               <p className="text-xs flex items-center gap-1 text-amber-600 dark:text-amber-400">
@@ -463,8 +465,8 @@ const Factions = () => {
                     {marquesCollectives.map((m) => (
                       <SelectItem key={m.nom} value={m.nom}>
                         <div className="flex flex-col max-w-[520px]">
-                          <span className="font-medium">{m.nom}</span>
-                          <span className="text-xs text-muted-foreground line-clamp-2">{m.pourQui}</span>
+                          <span className="font-medium">{TF(m.nom)}</span>
+                          <span className="text-xs text-muted-foreground line-clamp-2">{TF(m.pourQui)}</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -500,10 +502,10 @@ const Factions = () => {
                   if (!m) return null;
                   return (
                     <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 space-y-1">
-                      {m.citation && <p className="text-sm italic">« {m.citation} »</p>}
-                      <p className="text-xs"><strong>{L("Pour qui", "For whom", "Voor wie")} :</strong> {m.pourQui}</p>
-                      {m.signale && <p className="text-xs"><strong>{L("Signale", "Signals", "Signaleert")} :</strong> {m.signale}</p>}
-                      {m.interdits && <p className="text-xs text-destructive"><strong>{L("Nécessités et interdits", "Requirements and prohibitions", "Vereisten en verboden")} :</strong> {m.interdits}</p>}
+                      {m.citation && <p className="text-sm italic">« {TF(m.citation)} »</p>}
+                      <p className="text-xs"><strong>{L("Pour qui", "For whom", "Voor wie")} :</strong> {TF(m.pourQui)}</p>
+                      {m.signale && <p className="text-xs"><strong>{L("Signale", "Signals", "Signaleert")} :</strong> {TF(m.signale)}</p>}
+                      {m.interdits && <p className="text-xs text-destructive"><strong>{L("Nécessités et interdits", "Requirements and prohibitions", "Vereisten en verboden")} :</strong> {TF(m.interdits)}</p>}
                       <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
                         <AlertTriangle className="h-3 w-3" />
                         {L("Toute Marque est soumise à la validation de l'Orga, deux mois avant l'événement.", "Every Mark must be approved by the Orga, two months before the event.", "Elk Merk moet twee maanden voor het evenement door de Orga worden goedgekeurd.")}
