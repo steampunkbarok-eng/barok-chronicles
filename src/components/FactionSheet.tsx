@@ -77,6 +77,7 @@ const getTitreDetails = (titreName: string) => {
 const originesSectionHtml = (
   faction: FactionData,
   labels: ReturnType<typeof factionLabels>,
+  language: 'fr' | 'en' | 'nl',
 ) => {
   const noms = faction.origines || [];
   const marque = faction.marqueCollective ? getMarqueCollective(faction.marqueCollective) : null;
