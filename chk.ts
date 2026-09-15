@@ -1,11 +1,10 @@
-import { competencesDisponibles } from "./src/data/competences";
-import { translateGameData } from "./src/i18n/gameData";
-for (const lang of ["en","nl"] as const) {
-  const m = competencesDisponibles.flatMap(c => [
-    translateGameData(c.nom,'competence',lang)===c.nom ? `NOM ${c.nom}` : null,
-    translateGameData(c.effet,'effet',lang)===c.effet ? `EFF ${c.effet}` : null,
-    translateGameData(c.categorie,'categorie',lang)===c.categorie ? `CAT ${c.categorie}` : null,
-  ]).filter(Boolean);
-  console.log(`=== ${lang}: ${m.length} manquants`);
-  [...new Set(m)].slice(0,40).forEach(x=>console.log(x));
-}
+import { origines, categoriesOrigines } from "./src/data/origines";
+import * as M from "./src/data/marques";
+const set = new Set<string>();
+for (const o of origines) [o.nom,o.categorie,o.description,o.especes,o.limitations,o.prerequis].forEach(s=>s&&s!=="-"&&set.add(s));
+console.log("ORIGINES uniques:", set.size);
+const mset = new Set<string>();
+const all = [...(M.marquesCollectives||[]), ...((M as any).marquesIndividuelles||[])];
+for (const m of all as any[]) [m.nom,m.citation,m.pourQui,m.signale,m.interdits,m.attention,m.especesReservees,m.especesInterdites].forEach((s:any)=>typeof s==="string"&&s&&mset.add(s));
+console.log("MARQUES uniques:", mset.size, "objets:", all.length);
+console.log("exports marques:", Object.keys(M));
