@@ -16,6 +16,7 @@ import { getOrigine } from "@/data/origines";
 import { getMarqueCollective, getMarqueIndividuelle, marquesIndividuelles } from "@/data/marques";
 import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, obligationsCompetences, ContextePersonnage } from "@/lib/reglesCreation";
 import { useTri } from "@/i18n/tri";
+import { translateFactionText } from "@/i18n/factionTexts2027";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
@@ -72,6 +73,7 @@ const MARQUE_AUTRE = "Autre Marque personnelle de Destinée";
 const Personnages = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
+  const TF = (txt?: string | null) => (txt ? translateFactionText(txt, language) : "");
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
@@ -360,10 +362,10 @@ const Personnages = () => {
     if (originesFaction.length > 0 || marqueCollectiveFaction) {
       recap.push(`🏴 ${L("Faction", "Faction", "Factie")}: ${formData.faction}`);
       if (originesFaction.length > 0) {
-        recap.push(`   ${L("Origines", "Origins", "Oorsprongen")}: ${originesFaction.join(" + ")}`);
+        recap.push(`   ${L("Origines", "Origins", "Oorsprongen")}: ${originesFaction.map(TF).join(" + ")}`);
       }
       if (marqueCollectiveFaction) {
-        recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${marqueCollectiveFaction}`);
+        recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${TF(marqueCollectiveFaction)}`);
         if (marqueCollectiveDetailFaction) recap.push(`     "${marqueCollectiveDetailFaction}"`);
       }
       recap.push('');
@@ -1192,16 +1194,16 @@ const Personnages = () => {
                           const o = getOrigine(nom);
                           return (
                             <div key={nom} className="space-y-0.5">
-                              <p className="text-sm font-medium">{nom}</p>
-                              {o?.description && <p className="text-xs text-muted-foreground">{o.description}</p>}
+                              <p className="text-sm font-medium">{TF(nom)}</p>
+                              {o?.description && <p className="text-xs text-muted-foreground">{TF(o.description)}</p>}
                               {o?.especes && o.especes !== "-" && (
-                                <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {o.especes}</p>
+                                <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {TF(o.especes)}</p>
                               )}
                               {o?.limitations && o.limitations !== "-" && (
-                                <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
+                                <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {TF(o.limitations)}</p>
                               )}
                               {o?.prerequis && o.prerequis !== "-" && (
-                                <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
+                                <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {TF(o.prerequis)}</p>
                               )}
                             </div>
                           );
@@ -1211,10 +1213,10 @@ const Personnages = () => {
                           return (
                             <div className="space-y-0.5 border-t border-primary/20 pt-2">
                               <p className="text-sm font-medium">
-                                {L("Marque collective", "Collective Mark", "Collectief Merk")} : {marqueCollectiveFaction}
+                                {L("Marque collective", "Collective Mark", "Collectief Merk")} : {TF(marqueCollectiveFaction)}
                               </p>
-                              {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
-                              {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                              {m?.pourQui && <p className="text-xs text-muted-foreground">{TF(m.pourQui)}</p>}
+                              {m?.interdits && <p className="text-xs text-destructive">{TF(m.interdits)}</p>}
                             </div>
                           );
                         })()}
@@ -1306,14 +1308,14 @@ const Personnages = () => {
                       {marqueForcee ? (
                         <div className="space-y-1">
                           <p className="text-sm font-medium">
-                            {marqueForcee} — {L("imposée par votre espèce", "imposed by your species", "opgelegd door uw soort")}
+                            {TF(marqueForcee)} — {L("imposée par votre espèce", "imposed by your species", "opgelegd door uw soort")}
                           </p>
                           {(() => {
                             const m = getMarqueIndividuelle(marqueForcee);
                             return (
                               <>
-                                {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
-                                {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                                {m?.pourQui && <p className="text-xs text-muted-foreground">{TF(m.pourQui)}</p>}
+                                {m?.interdits && <p className="text-xs text-destructive">{TF(m.interdits)}</p>}
                               </>
                             );
                           })()}
@@ -1336,8 +1338,8 @@ const Personnages = () => {
                                 .map(({ marque, verdict }) => (
                                   <SelectItem key={marque.nom} value={marque.nom} disabled={!verdict.ok}>
                                     <div className="flex flex-col max-w-[520px]">
-                                      <span className="font-medium">{marque.nom}</span>
-                                      <span className="text-xs text-muted-foreground line-clamp-2">{marque.pourQui}</span>
+                                      <span className="font-medium">{TF(marque.nom)}</span>
+                                      <span className="text-xs text-muted-foreground line-clamp-2">{TF(marque.pourQui)}</span>
                                       {!verdict.ok && <span className="text-xs text-destructive">{verdict.raison}</span>}
                                     </div>
                                   </SelectItem>
@@ -1349,9 +1351,9 @@ const Personnages = () => {
                             if (!m) return null;
                             return (
                               <div className="space-y-1 pt-1">
-                                {m.citation && <p className="text-sm italic">« {m.citation} »</p>}
-                                <p className="text-xs">{m.pourQui}</p>
-                                {m.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                                {m.citation && <p className="text-sm italic">« {TF(m.citation)} »</p>}
+                                <p className="text-xs">{TF(m.pourQui)}</p>
+                                {m.interdits && <p className="text-xs text-destructive">{TF(m.interdits)}</p>}
                               </div>
                             );
                            })()}
