@@ -1286,7 +1286,14 @@ const Personnages = () => {
                         onValueChange={(value) => setFormData({ ...formData, glandeDraconique: value })}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder={L("Choisir la couleur de vos glandes…", "Choose the colour of your glands…", "Kies de kleur van uw klieren…")} />
+                          <SelectValue placeholder={L("Choisir la couleur de vos glandes…", "Choose the colour of your glands…", "Kies de kleur van uw klieren…")}>
+                            {formData.glandeDraconique
+                              ? (() => {
+                                  const g = getGlande(formData.glandeDraconique);
+                                  return g ? `${glandeTexte(g, language).couleur} — « ${g.annonce} »` : formData.glandeDraconique;
+                                })()
+                              : undefined}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="max-h-[400px]">
                           {glandesDraconiques.map((g) => (
