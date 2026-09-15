@@ -5,6 +5,7 @@ import { Printer, Download } from "lucide-react";
 import { titresCarrieres } from "@/data/titres";
 import { getOrigine } from "@/data/origines";
 import { getMarqueCollective } from "@/data/marques";
+import { translateFactionText } from "@/i18n/factionTexts2027";
 
 interface FactionData {
   nom: string;
@@ -76,6 +77,7 @@ const getTitreDetails = (titreName: string) => {
 const originesSectionHtml = (
   faction: FactionData,
   labels: ReturnType<typeof factionLabels>,
+  language: 'fr' | 'en' | 'nl',
 ) => {
   const noms = faction.origines || [];
   const marque = faction.marqueCollective ? getMarqueCollective(faction.marqueCollective) : null;
@@ -85,12 +87,12 @@ const originesSectionHtml = (
     const o = getOrigine(nom);
     return `
       <div class="title-card">
-        <span class="title-name">${nom}</span>
+        <span class="title-name">${translateFactionText(nom, language)}</span>
         <div class="title-details">
-          ${o?.description ? `<div class="title-prereq">${o.description}</div>` : ''}
-          ${o?.especes && o.especes !== '-' ? `<div class="title-prereq"><strong>${labels.speciesRule}:</strong> ${o.especes}</div>` : ''}
-          ${o?.limitations && o.limitations !== '-' ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${o.limitations}</div>` : ''}
-          ${o?.prerequis && o.prerequis !== '-' ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${o.prerequis}</div>` : ''}
+          ${o?.description ? `<div class="title-prereq">${translateFactionText(o.description, language)}</div>` : ''}
+          ${o?.especes && o.especes !== '-' ? `<div class="title-prereq"><strong>${labels.speciesRule}:</strong> ${translateFactionText(o.especes, language)}</div>` : ''}
+          ${o?.limitations && o.limitations !== '-' ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${translateFactionText(o.limitations, language)}</div>` : ''}
+          ${o?.prerequis && o.prerequis !== '-' ? `<div class="title-prereq"><strong>${labels.prerequisites}:</strong> ${translateFactionText(o.prerequis, language)}</div>` : ''}
           ${o?.contactOrga ? `<div class="title-incomp"><strong>${labels.orgaContact}</strong></div>` : ''}
         </div>
       </div>`;
@@ -100,11 +102,11 @@ const originesSectionHtml = (
     ? `<div class="section">
       <div class="section-title">${labels.collectiveMark}</div>
       <div class="title-card">
-        <span class="title-name">${marque.nom}</span>
+        <span class="title-name">${translateFactionText(marque.nom, language)}</span>
         <div class="title-details">
-          ${marque.pourQui ? `<div class="title-prereq">${marque.pourQui}</div>` : ''}
+          ${marque.pourQui ? `<div class="title-prereq">${translateFactionText(marque.pourQui, language)}</div>` : ''}
           ${faction.marqueCollectiveDetail ? `<div class="title-prereq"><strong>${labels.collectiveMark}:</strong> ${faction.marqueCollectiveDetail}</div>` : ''}
-          ${marque.interdits ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${marque.interdits}</div>` : ''}
+          ${marque.interdits ? `<div class="title-incomp"><strong>${labels.limitations}:</strong> ${translateFactionText(marque.interdits, language)}</div>` : ''}
         </div>
       </div>
     </div>`
@@ -133,7 +135,7 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
 
     // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
     const modeleOrigines = !!(faction.origines && faction.origines.length);
-    const originesHtml = originesSectionHtml(faction, labels);
+    const originesHtml = originesSectionHtml(faction, labels, language);
 
     const titlesWithDetails = (faction.titres || []).map(titre => {
       const titreData = getTitreDetails(titre);
@@ -733,7 +735,7 @@ export const openFactionSheet = (faction: FactionData, language: 'fr' | 'en' | '
 
   // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
   const modeleOrigines = !!(faction.origines && faction.origines.length);
-  const originesHtml = originesSectionHtml(faction, labels);
+  const originesHtml = originesSectionHtml(faction, labels, language);
 
   const titlesWithDetails = (faction.titres || []).map(titre => {
     const titreData = getTitreDetailsLocal(titre);

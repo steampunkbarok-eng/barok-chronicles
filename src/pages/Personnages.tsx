@@ -10,12 +10,14 @@ import { ArrowLeft, Scroll, Plus, X, Save, AlertCircle, Info } from "lucide-reac
 import { toast } from "sonner";
 import { especes } from "@/data/especes";
 import { glandesDraconiques } from "@/data/glandesDraconiques";
+import { translateEspeceText } from "@/i18n/especes2027";
 import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { getOrigine } from "@/data/origines";
 import { getMarqueCollective, getMarqueIndividuelle, marquesIndividuelles } from "@/data/marques";
 import { competenceAutorisee, marqueImposee, marquesIndividuellesFiltrees, obligationsCompetences, ContextePersonnage } from "@/lib/reglesCreation";
 import { useTri } from "@/i18n/tri";
+import { translateFactionText } from "@/i18n/factionTexts2027";
 import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
@@ -72,6 +74,8 @@ const MARQUE_AUTRE = "Autre Marque personnelle de Destinée";
 const Personnages = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
+  const TE = (txt?: string) => (txt ? translateEspeceText(txt, language) : "");
+  const TF = (txt?: string | null) => (txt ? translateFactionText(txt, language) : "");
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [recapitulatif, setRecapitulatif] = useState<string[]>([]);
@@ -360,10 +364,10 @@ const Personnages = () => {
     if (originesFaction.length > 0 || marqueCollectiveFaction) {
       recap.push(`🏴 ${L("Faction", "Faction", "Factie")}: ${formData.faction}`);
       if (originesFaction.length > 0) {
-        recap.push(`   ${L("Origines", "Origins", "Oorsprongen")}: ${originesFaction.join(" + ")}`);
+        recap.push(`   ${L("Origines", "Origins", "Oorsprongen")}: ${originesFaction.map(TF).join(" + ")}`);
       }
       if (marqueCollectiveFaction) {
-        recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${marqueCollectiveFaction}`);
+        recap.push(`   ${L("Marque collective", "Collective Mark", "Collectief Merk")}: ${TF(marqueCollectiveFaction)}`);
         if (marqueCollectiveDetailFaction) recap.push(`     "${marqueCollectiveDetailFaction}"`);
       }
       recap.push('');
@@ -371,7 +375,7 @@ const Personnages = () => {
     const marqueRecap = marqueForcee || formData.marqueIndividuelle;
     const marqueIndividuelleDetail = marqueRecap === MARQUE_AUTRE ? (formData.marqueIndividuelleDetail || "").trim() : "";
     if (marqueRecap) {
-      recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${marqueRecap}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
+      recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${TF(marqueRecap)}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
       if (marqueIndividuelleDetail) recap.push(`   "${marqueIndividuelleDetail}"`);
       recap.push(`   ⚠️ ${L("Validation Orga requise 2 mois avant l'événement", "Orga approval required 2 months before the event", "Orga-goedkeuring vereist 2 maanden voor het evenement")}`);
       recap.push('');
@@ -1192,16 +1196,16 @@ const Personnages = () => {
                           const o = getOrigine(nom);
                           return (
                             <div key={nom} className="space-y-0.5">
-                              <p className="text-sm font-medium">{nom}</p>
-                              {o?.description && <p className="text-xs text-muted-foreground">{o.description}</p>}
+                              <p className="text-sm font-medium">{TF(nom)}</p>
+                              {o?.description && <p className="text-xs text-muted-foreground">{TF(o.description)}</p>}
                               {o?.especes && o.especes !== "-" && (
-                                <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {o.especes}</p>
+                                <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {TF(o.especes)}</p>
                               )}
                               {o?.limitations && o.limitations !== "-" && (
-                                <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {o.limitations}</p>
+                                <p className="text-xs text-destructive"><strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {TF(o.limitations)}</p>
                               )}
                               {o?.prerequis && o.prerequis !== "-" && (
-                                <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {o.prerequis}</p>
+                                <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {TF(o.prerequis)}</p>
                               )}
                             </div>
                           );
@@ -1211,10 +1215,10 @@ const Personnages = () => {
                           return (
                             <div className="space-y-0.5 border-t border-primary/20 pt-2">
                               <p className="text-sm font-medium">
-                                {L("Marque collective", "Collective Mark", "Collectief Merk")} : {marqueCollectiveFaction}
+                                {L("Marque collective", "Collective Mark", "Collectief Merk")} : {TF(marqueCollectiveFaction)}
                               </p>
-                              {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
-                              {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                              {m?.pourQui && <p className="text-xs text-muted-foreground">{TF(m.pourQui)}</p>}
+                              {m?.interdits && <p className="text-xs text-destructive">{TF(m.interdits)}</p>}
                             </div>
                           );
                         })()}
@@ -1261,22 +1265,22 @@ const Personnages = () => {
                   {formData.espece === "Draconide" && (
                     <div className="space-y-2 p-3 border-2 border-primary/40 rounded-md bg-primary/5">
                       <Label htmlFor="glande" className="font-bold text-primary">
-                        Type de glandes draconiques (obligatoire)
+                        {L("Type de glandes draconiques (obligatoire)", "Draconic gland type (required)", "Type drakenklieren (verplicht)")}
                       </Label>
                       <Select
                         value={formData.glandeDraconique || ""}
                         onValueChange={(value) => setFormData({ ...formData, glandeDraconique: value })}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Choisir la couleur de vos glandes…" />
+                          <SelectValue placeholder={L("Choisir la couleur de vos glandes…", "Choose the colour of your glands…", "Kies de kleur van uw klieren…")} />
                         </SelectTrigger>
                         <SelectContent className="max-h-[400px]">
                           {glandesDraconiques.map((g) => (
                             <SelectItem key={g.couleur} value={g.couleur}>
                               <div className="flex flex-col">
-                                <span className="font-medium">{g.couleur} — {g.crachat} ({g.annonce})</span>
-                                <span className="text-xs text-muted-foreground">Résistance : {g.resistance}</span>
-                                <span className="text-xs text-destructive">Sensibilité ×2 : {g.sensibilite}</span>
+                                <span className="font-medium">{TE(g.couleur)} — {TE(g.crachat)} ({g.annonce})</span>
+                                <span className="text-xs text-muted-foreground">{L("Résistance", "Resistance", "Weerstand")} : {TE(g.resistance)}</span>
+                                <span className="text-xs text-destructive">{L("Sensibilité", "Sensitivity", "Gevoeligheid")} ×2 : {TE(g.sensibilite)}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -1287,12 +1291,12 @@ const Personnages = () => {
                         return g?.note ? (
                           <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
                             <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
-                            {g.note}
+                            {TE(g.note)}
                           </p>
                         ) : null;
                       })()}
                       <p className="text-xs text-muted-foreground italic">
-                        Choix définitif à la création. Background à envoyer 2 mois avant le GN à steampunk.barok@gmail.com.
+                        {L("Choix définitif à la création. Background à envoyer 2 mois avant le GN à steampunk.barok@gmail.com.", "Final choice at creation. Background to be sent two months before the event to steampunk.barok@gmail.com.", "Definitieve keuze bij de creatie. Achtergrond twee maanden voor het evenement te sturen naar steampunk.barok@gmail.com.")}
                       </p>
                     </div>
                   )}
@@ -1306,14 +1310,14 @@ const Personnages = () => {
                       {marqueForcee ? (
                         <div className="space-y-1">
                           <p className="text-sm font-medium">
-                            {marqueForcee} — {L("imposée par votre espèce", "imposed by your species", "opgelegd door uw soort")}
+                            {TF(marqueForcee)} — {L("imposée par votre espèce", "imposed by your species", "opgelegd door uw soort")}
                           </p>
                           {(() => {
                             const m = getMarqueIndividuelle(marqueForcee);
                             return (
                               <>
-                                {m?.pourQui && <p className="text-xs text-muted-foreground">{m.pourQui}</p>}
-                                {m?.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                                {m?.pourQui && <p className="text-xs text-muted-foreground">{TF(m.pourQui)}</p>}
+                                {m?.interdits && <p className="text-xs text-destructive">{TF(m.interdits)}</p>}
                               </>
                             );
                           })()}
@@ -1336,8 +1340,8 @@ const Personnages = () => {
                                 .map(({ marque, verdict }) => (
                                   <SelectItem key={marque.nom} value={marque.nom} disabled={!verdict.ok}>
                                     <div className="flex flex-col max-w-[520px]">
-                                      <span className="font-medium">{marque.nom}</span>
-                                      <span className="text-xs text-muted-foreground line-clamp-2">{marque.pourQui}</span>
+                                      <span className="font-medium">{TF(marque.nom)}</span>
+                                      <span className="text-xs text-muted-foreground line-clamp-2">{TF(marque.pourQui)}</span>
                                       {!verdict.ok && <span className="text-xs text-destructive">{verdict.raison}</span>}
                                     </div>
                                   </SelectItem>
@@ -1349,9 +1353,9 @@ const Personnages = () => {
                             if (!m) return null;
                             return (
                               <div className="space-y-1 pt-1">
-                                {m.citation && <p className="text-sm italic">« {m.citation} »</p>}
-                                <p className="text-xs">{m.pourQui}</p>
-                                {m.interdits && <p className="text-xs text-destructive">{m.interdits}</p>}
+                                {m.citation && <p className="text-sm italic">« {TF(m.citation)} »</p>}
+                                <p className="text-xs">{TF(m.pourQui)}</p>
+                                {m.interdits && <p className="text-xs text-destructive">{TF(m.interdits)}</p>}
                               </div>
                             );
                            })()}
