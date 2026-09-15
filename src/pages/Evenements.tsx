@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CalendarDays, MapPin, Sparkles } from "lucide-react";
 import { useTri } from "@/i18n/tri";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface Evenement {
   id: string;
@@ -114,6 +115,7 @@ const Evenements = () => {
           </Link>
           <CalendarDays className="w-6 h-6 text-primary" />
           <h1 className="font-serif text-2xl">{L("Événements", "Events", "Evenementen")}</h1>
+          <LanguageSwitcher className="ml-auto" />
         </div>
       </header>
 

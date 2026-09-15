@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { translateGameData } from "@/i18n/gameData";
 import { generateCharacterSheetPdfBase64 } from "@/utils/characterSheetPdf";
 import { generateCharacterSheetHTML } from "@/utils/characterSheetHTML";
@@ -1036,7 +1037,8 @@ const Personnages = () => {
                 </span>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              <LanguageSwitcher />
               <BlankCharacterSheet />
               {!showForm && !editId && (
                 <Button onClick={() => setShowForm(true)} className="gap-2">

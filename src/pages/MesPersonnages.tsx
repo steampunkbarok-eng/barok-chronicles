@@ -23,6 +23,7 @@ import {
   xpEnAttente,
 } from "@/data/xpAchats";
 import { useTri } from "@/i18n/tri";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
@@ -189,6 +190,7 @@ const MesPersonnages = () => {
             <h1 className="font-serif text-2xl">{L("Mes Personnages", "My Characters", "Mijn Personages")}</h1>
           </div>
           <div className="flex items-center gap-3 text-sm">
+            <LanguageSwitcher />
             <span className="text-muted-foreground hidden sm:inline">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="w-4 h-4 mr-1" /> {L("Déconnexion", "Sign out", "Afmelden")}

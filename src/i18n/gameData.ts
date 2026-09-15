@@ -1,4 +1,12 @@
 import {
+  competenceNamesEn2027,
+  competenceNamesNl2027,
+  competenceEffectsEn2027,
+  competenceEffectsNl2027,
+  categorieEn2027,
+  categorieNl2027,
+} from "./gameData2027";
+import {
   competenceTranslationsNl,
   competenceEffectTranslationsNl,
   titreTranslationsNl,
@@ -674,6 +682,16 @@ export const translateGameData = (
   language: 'fr' | 'en' | 'nl'
 ): string => {
   if (language === 'fr') return text;
+
+  // Le lexique officiel 2027 a priorité sur les anciennes tables.
+  const lexique = language === 'nl'
+    ? (type === 'competence' ? competenceNamesNl2027 :
+       type === 'effet' ? competenceEffectsNl2027 :
+       type === 'categorie' ? categorieNl2027 : undefined)
+    : (type === 'competence' ? competenceNamesEn2027 :
+       type === 'effet' ? competenceEffectsEn2027 :
+       type === 'categorie' ? categorieEn2027 : undefined);
+  if (lexique && lexique[text]) return lexique[text];
 
   if (language === 'nl') {
     const nlMapping = type === 'competence' ? competenceTranslationsNl :
