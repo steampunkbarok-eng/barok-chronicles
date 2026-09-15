@@ -1,10 +1,4 @@
-import { origines, categoriesOrigines } from "./src/data/origines";
-import * as M from "./src/data/marques";
+import { origines } from "./src/data/origines";
 const set = new Set<string>();
 for (const o of origines) [o.nom,o.categorie,o.description,o.especes,o.limitations,o.prerequis].forEach(s=>s&&s!=="-"&&set.add(s));
-console.log("ORIGINES uniques:", set.size);
-const mset = new Set<string>();
-const all = [...(M.marquesCollectives||[]), ...((M as any).marquesIndividuelles||[])];
-for (const m of all as any[]) [m.nom,m.citation,m.pourQui,m.signale,m.interdits,m.attention,m.especesReservees,m.especesInterdites].forEach((s:any)=>typeof s==="string"&&s&&mset.add(s));
-console.log("MARQUES uniques:", mset.size, "objets:", all.length);
-console.log("exports marques:", Object.keys(M));
+[...set].forEach(s=>console.log(JSON.stringify(s)+","));
