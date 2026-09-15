@@ -3,28 +3,28 @@
 
 export const especeTexteEn2027: Record<string, string> = {
   // Espèces
-  "Draconide": "Draconid",
-  "Vorélannes": "Vorelans",
+  "Draconide": "Dragonfolk",
+  "Vorélannes": "Vorélan-nes",
 
   // Aptitudes gratuites / interdits (segments séparés par « + »)
-  "Immunité Frayeur": "Fear Immunity",
-  "Immunité Assommement": "Knockout Immunity",
-  "École du Mécanarcanum": "School of the Mecanarcanum",
-  "Ordre Chevaliers Suie (LAM)": "Order of the Soot Knights (L.A.M.)",
+  "Immunité Frayeur": "Immunity to Fear",
+  "Immunité Assommement": "Immunity to Knockout",
+  "École du Mécanarcanum": "School of the Mécanarcanum",
+  "Ordre Chevaliers Suie (LAM)": "Order of the Coal Knights (L.A.M.)",
   "Endurance accrue": "Increased Endurance",
   "Armures moyennes et lourdes (si magie)": "Medium and heavy armours (if magic)",
-  "Détection Magie": "Magic Detection",
+  "Détection Magie": "Natural Magic Detection",
   "Résistance Flatterie": "Flattery Resistance",
   "Flatterie": "Flattery",
   "Nécromancie": "Necromancy",
   "Ténèbres": "Darkness",
-  "Téphromanie": "Tephromancy",
+  "Téphromanie": "Tephramancy",
 
   // Particularités complètes
   "Enveloppe Planaire (1 PA naturel non cumulable avec armure portée) + Double Esprit (consultation 1×/jour via Argousin-e) + Désincarnation Éthérée (+2 Abîme à chaque désincarnation) + Signalétique rubans obligatoire selon l'école magique pratiquée":
-    "Planar Envelope (1 natural AP, not cumulative with worn armour) + Double Spirit (one consultation per day through an Argousin) + Ethereal Disembodiment (+2 Abyss at each disembodiment) + Mandatory ribbon markings according to the magic school practised",
+    "Planar envelope (1 natural armour point on every location, not cumulative with worn armour) + Double spirit (one consultation per day through an Argousin) + Ethereal disembodiment (+2 Abyss at each disembodiment) + Mandatory Weaver signage according to the magic school practised",
   "3 PV par localisation (au lieu de 2) + 2 PA naturels sur toutes les localisations (cumulables avec armure légère uniquement) + Glandes draconiques : 1 crachat élémentaire 1×/jour + 1 annonce spéciale 1×/jour selon la couleur choisie à la création + Chair magiquement réactive (résistance = sensibilité symétrique) + Vulnérabilité Enchanted (×2) + Vulnérabilité martiale (Abîme/Crush/Strike Down plein effet) + Pas de domiciliation, pas de foi divine + Lieu de culte corrompu = Semence du Néant. Background obligatoire validé par l'Orga + type de glandes à choisir.":
-    "3 HP per location (instead of 2) + 2 natural AP on all locations (cumulative with light armour only) + Draconic glands: 1 elemental spit once a day + 1 special call once a day according to the colour chosen at creation + Magically reactive flesh (resistance = symmetrical sensitivity) + Enchanted vulnerability (×2) + Martial vulnerability (Abyss/Crush/Strike Down at full effect) + No domiciliation, no divine faith + Corrupted place of worship = Seed of the Void. Background must be approved by the Orga + gland type to be chosen.",
+    "Draconic robustness: 3 hit points per location (instead of 2) + Partial Scales: 2 natural armour points on every location + Draconic glands: one elemental spit per day with the call of the colour chosen at creation + Magically reactive flesh (resistance = symmetrical vulnerability) + Vulnerability to 'enchanted' (2 damage instead of 1) + 'abyss', 'crush' and 'strike down' cannot be resisted + Shifting domiciliation, no divine faith + Corrupted place of worship = Seed of Nothingness. Background validated by the organisation + gland type to be chosen.",
 
   // Glandes draconiques
   "Blanc": "White", "Bleu": "Blue", "Noir": "Black", "Rouge": "Red", "Vert": "Green",
@@ -43,7 +43,7 @@ export const especeTexteEn2027: Record<string, string> = {
   "Psychique — Abyss et Fear sans effet": "Psychic — Abyss and Fear have no effect",
   "Vitale — non affecté par Galvanisé (2 dégâts)": "Vital — unaffected by Galvanised (2 damage)",
   "Alchimie — résiste à la Transmutation": "Alchemy — resists Transmutation",
-  "Griffes permanentes en latex (sans homologation BWAT)": "Permanent latex claws (no BWAT approval)",
+  "Griffes permanentes en latex (sans homologation BWAT)": "Permanent natural claws in foam and latex (BWAT approval mandatory)",
   "Paralysie / immobilisation": "Paralysis / immobilisation",
   "Silver": "Silver", "Mercure et Rust": "Mercury and Rust", "Froid (Ice)": "Cold (Ice)",
   "Soins inversés : tout soin ou sort de soin inflige d'office -2 PV par localisation soignée. Sensibilité ×2 à Shock + Blessed et Sleep infligent 2 points de dégâts.":
@@ -65,8 +65,8 @@ export const especeTexteEn2027: Record<string, string> = {
 };
 
 export const especeTexteNl2027: Record<string, string> = {
-  "Draconide": "Draconide",
-  "Vorélannes": "Vorelanen",
+  "Draconide": "Drakenvolk",
+  "Vorélannes": "Vorélans",
 
   "Immunité Frayeur": "Immuniteit voor Schrik",
   "Immunité Assommement": "Immuniteit voor Bewusteloosheid",
