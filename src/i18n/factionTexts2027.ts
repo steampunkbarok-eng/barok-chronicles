@@ -450,3 +450,88 @@ export const translateFactionText = (text: string, language: "fr" | "en" | "nl")
   const marques = language === "nl" ? marqueTextsNl : marqueTextsEn;
   return map[text] || marques[text] || text;
 };
+
+/* ────────────────────────────────────────────────────────────────
+   Terminologie officielle anglaise (Barok Faction and Character
+   Creation Book EN 2027). Prioritaire sur les tables précédentes.
+   ──────────────────────────────────────────────────────────────── */
+export const officialEn2027: Record<string, string> = {
+  // Catégories d'origines
+  "Foi, savoir et occulte": "Faith, learning and the occult",
+  "Gens de mer": "People of the sea",
+  "Nomades et voyageur-euses": "Nomads and travellers",
+  "Marges et survie": "Margins and survival",
+  "Pègre et ombres": "The Crime Syndicate and the shadows",
+  "Négoce et protection": "Trade and protection",
+  "Fer et vapeur": "Iron and steam",
+  "Deuil et macabre": "Mourning and the macabre",
+  "Chasse et jeu": "Hunting and game",
+  "Assemblées de Tisseur-euses": "Last Gatherings of Weavers",
+  "Origines liées à l'espèce": "Origins tied to species",
+
+  // Origines
+  "Adepte – Fidèle": "Adherent - Faithful",
+  "Sectaire ésotérico-magique": "Esoteric-Magical Sectarian",
+  "Archiviste des Secrets": "Archivist of Secrets",
+  "Érudite": "Scholar",
+  "Capitaine (Mer ou Air)": "Captain (Sea or Air)",
+  "Corsaire elfique": "Elven Privateer",
+  "Pirate": "Pirate",
+  "Épervier": "Sparrowhawk",
+  "Agente d'une ONG": "NGO Agent",
+  "Club de Gentlemen et Gentlewomen explorateur-rices": "Gentlemen and Gentlewomen Explorers' Club",
+  "Nomades Marins": "Sea Nomads",
+  "Nomades Terrestres": "Land Nomads",
+  "Caravane des Brèches": "Caravan of the Rifts (interplanar traders)",
+  "Échoué-es d'un autre monde": "Stranded from another world",
+  "Exilé-es d'un monde perdu": "Exiled from a lost world",
+  "Composé d'Ancien-nes Esclaves": "Company of Former Slaves",
+  "Compagnie artistique": "Artistic Company",
+  "Bande organisée": "Organised Gang",
+  "Contrebandier-ère": "Smuggler",
+  "Déchu-e": "Fallen",
+  "Initié-e de la Guilde des Murmures": "Initiate of the Guild of Whispers",
+  "Antiquaire": "Antiquarian",
+  "Gestionnaire de Dépôt": "Depot Manager",
+  "Garde du Corps": "Bodyguard",
+  "Gros Bras": "Enforcer",
+  "Caravane marchande": "Merchant Caravan (travelling traders)",
+  "Colporteur-euses d'élixirs": "Elixir Pedlars",
+  "Organisation sanitaire privée des Flottes et Voyageurs": "Private Sanitary Organisation of the Fleets and Travellers",
+  "Compagnie de Lémurie": "Company of Lemuria",
+  "Chasseur-euses nordiques de Glace": "Northern Ice Hunters",
+  "Chasseur-euses de Chair": "Flesh Hunters",
+  "Guilde des Bricoleur-euses": "Guild of Tinkerers",
+  "Récupérateur-rices d'épave": "Wreck Salvagers",
+  "Cartographes du Vide": "Cartographers of the Void",
+  "Chasseur-euses de Courants Porteurs": "Hunters of Carrying Currents",
+  "Confrérie des Croque-morts et Médecins de peste": "Brotherhood of Undertakers and Plague Doctors",
+  "Compagnie d'Assurances et de Golems serviles": "Insurance Company and Servile Golems",
+  "Guilde des Traqueur-euses": "Guild of Trackers",
+  "Club ambulant de Golbang": "Travelling Golbang Club",
+  "Une Corona de l'Université de Rammstein": "A Corona of the University of Rammstein",
+  "Mercenaire Peau-olive": "Olive-skin Mercenary",
+  "Porteur-euse de Rune": "Rune-bearer",
+
+  // Marques collectives
+  "Cirque macabre": "Macabre Circus",
+  "Consanguinité": "Consanguinity",
+  "Contact avec les Tréfonds Obscurs": "Contact with the Underworld",
+  "Malédiction de l'Œil Rouge": "Curse of the Red Eye",
+  "Marque secrète": "Secret Mark",
+  "Membre de la L.A.M. (Ordre des Chevaliers de Suie)": "Member of the L.A.M. (Order of the Coal Knights)",
+  "Morts-vivant-es de Ghuradok": "Undead of Ghuradok",
+  "Quête de vengeance ou d'honneur": "Quest of Vengeance or Honour",
+  "Vaisseau du Fanum": "Vessel of the Fanum",
+
+  // Marques individuelles
+  "Autre Marque personnelle de Destinée": "Other Personal Mark of Destiny",
+  "Béni-e de Fées": "Fae-blessed",
+  "Graine des Ténèbres": "Seed of Darkness",
+  "Métaphysique sacrificiel héroïque": "Metaphysics of Heroic Sacrifice",
+  "Nécromancie": "Necromancy",
+  "Planaire": "Planar",
+  "Recherché-e": "Wanted",
+  "Semence de Dragon": "Dragon Seed",
+  "Téphromancie": "Tephramancy",
+};
