@@ -373,7 +373,7 @@ const Personnages = () => {
     const marqueRecap = marqueForcee || formData.marqueIndividuelle;
     const marqueIndividuelleDetail = marqueRecap === MARQUE_AUTRE ? (formData.marqueIndividuelleDetail || "").trim() : "";
     if (marqueRecap) {
-      recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${marqueRecap}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
+      recap.push(`✶ ${L("Marque individuelle", "Individual Mark", "Individueel Merk")}: ${TF(marqueRecap)}${marqueForcee ? ` (${L("imposée par l'espèce", "imposed by species", "opgelegd door soort")})` : ''}`);
       if (marqueIndividuelleDetail) recap.push(`   "${marqueIndividuelleDetail}"`);
       recap.push(`   ⚠️ ${L("Validation Orga requise 2 mois avant l'événement", "Orga approval required 2 months before the event", "Orga-goedkeuring vereist 2 maanden voor het evenement")}`);
       recap.push('');
