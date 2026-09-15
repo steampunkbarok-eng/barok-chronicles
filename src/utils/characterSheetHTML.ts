@@ -1,4 +1,5 @@
 import { translateGameData } from "@/i18n/gameData";
+import { getGlande, glandeTexte } from '@/data/glandesDraconiques';
 import { translateFactionText } from "@/i18n/factionTexts2027";
 
 interface SheetCharacter {
@@ -22,6 +23,7 @@ interface SheetCharacter {
   marqueCollectiveDetail?: string;
   marqueIndividuelle?: string;
   marqueIndividuelleDetail?: string;
+  glandeDraconique?: string;
   sorts?: { niv1: number; niv2: number; niv3: number; niv4: number };
   afficherSortilleges?: boolean;
 }
@@ -379,6 +381,25 @@ export function generateCharacterSheetHTML(
       ${character.marqueIndividuelle ? `<div style="font-size: 8pt; font-weight: bold;">${language === 'en' ? 'Individual Mark' : language === 'nl' ? 'Individueel Merk' : 'Marque individuelle'} : ${translateFactionText(character.marqueIndividuelle, language)}${character.marqueIndividuelleDetail ? ` — <em>${character.marqueIndividuelleDetail}</em>` : ''}</div>` : ''}
     </div>
     ` : ''}
+
+    ${(() => {
+      const g = getGlande(character.glandeDraconique);
+      if (!g) return '';
+      const tx = glandeTexte(g, language);
+      const lbl = language === 'en'
+        ? { t: 'Draconic glands', s: 'Spit', r: 'Resistance and particularity', v: 'Vulnerability', d: 'day' }
+        : language === 'nl'
+        ? { t: 'Drakenklieren', s: 'Spuwsel', r: 'Weerstand en eigenheid', v: 'Gevoeligheid', d: 'dag' }
+        : { t: 'Glandes draconiques', s: 'Crachat', r: 'Résistance et particularité', v: 'Sensibilité', d: 'jour' };
+      return `
+    <div style="border: 1px solid #000; padding: 0.3cm; margin: 0.3cm 0; page-break-inside: avoid;">
+      <div style="font-weight: bold; font-size: 9pt; margin-bottom: 0.1cm;">${lbl.t} : ${tx.couleur}</div>
+      <div style="font-size: 8pt;"><strong>${lbl.s}</strong> : ${tx.crachat} (« ${g.annonce} », 1×/${lbl.d})</div>
+      <div style="font-size: 8pt;"><strong>${lbl.r}</strong> : ${tx.resistance}</div>
+      <div style="font-size: 8pt;"><strong>${lbl.v}</strong> : ${tx.sensibilite}</div>
+      ${tx.note ? `<div style="font-size: 8pt;"><em>${tx.note}</em></div>` : ''}
+    </div>`;
+    })()}
 
 
     <h2>${t('sheet.learnedSkills')}</h2>
