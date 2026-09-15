@@ -1,3 +1,5 @@
+import { marqueTextsEn, marqueTextsNl } from "./marqueTexts2027";
+
 // Traductions des textes de faction 2027 (origines, catégories, restrictions).
 // Clé = texte français exact utilisé dans src/data/origines.ts et src/data/marques.ts.
 
@@ -445,5 +447,6 @@ export const factionTextsNl: Record<string, string> = {
 export const translateFactionText = (text: string, language: "fr" | "en" | "nl"): string => {
   if (!text || language === "fr") return text;
   const map = language === "nl" ? factionTextsNl : factionTextsEn;
-  return map[text] || text;
+  const marques = language === "nl" ? marqueTextsNl : marqueTextsEn;
+  return map[text] || marques[text] || text;
 };
