@@ -1,15 +1,11 @@
 import { competencesDisponibles } from "./src/data/competences";
-import { competenceTranslations, competenceEffectTranslations, categorieTranslations } from "./src/i18n/gameData";
-import { competenceTranslationsNl, competenceEffectTranslationsNl, categorieTranslationsNl } from "./src/i18n/gameDataNl";
-const miss = (label:string, arr:string[], m:Record<string,string>) => {
-  const x = arr.filter(a=>!m[a]); console.log(`--- ${label}: ${x.length}/${arr.length}`); x.forEach(s=>console.log(JSON.stringify(s)));
-};
-const noms = competencesDisponibles.map(c=>c.nom);
-const eff = competencesDisponibles.map(c=>c.effet);
-const cats = [...new Set(competencesDisponibles.map(c=>c.categorie))];
-miss("NOM EN", noms, competenceTranslations);
-miss("NOM NL", noms, competenceTranslationsNl);
-miss("CAT EN", cats, categorieTranslations);
-miss("CAT NL", cats, categorieTranslationsNl);
-miss("EFF EN", eff, competenceEffectTranslations);
-miss("EFF NL", eff, competenceEffectTranslationsNl);
+import { translateGameData } from "./src/i18n/gameData";
+for (const lang of ["en","nl"] as const) {
+  const m = competencesDisponibles.flatMap(c => [
+    translateGameData(c.nom,'competence',lang)===c.nom ? `NOM ${c.nom}` : null,
+    translateGameData(c.effet,'effet',lang)===c.effet ? `EFF ${c.effet}` : null,
+    translateGameData(c.categorie,'categorie',lang)===c.categorie ? `CAT ${c.categorie}` : null,
+  ]).filter(Boolean);
+  console.log(`=== ${lang}: ${m.length} manquants`);
+  [...new Set(m)].slice(0,40).forEach(x=>console.log(x));
+}
