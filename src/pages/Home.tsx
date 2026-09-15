@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Home = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">

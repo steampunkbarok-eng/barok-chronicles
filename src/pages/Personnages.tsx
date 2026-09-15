@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { translateGameData } from "@/i18n/gameData";
 import { generateCharacterSheetPdfBase64 } from "@/utils/characterSheetPdf";
 import { generateCharacterSheetHTML } from "@/utils/characterSheetHTML";
