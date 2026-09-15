@@ -277,8 +277,10 @@ const Personnages = () => {
         // Calculer les bonus d'armure et d'endurance
         let bonusPA = 0;
         let bonusPV = 0;
+        // Les Draconides ne peuvent porter aucune armure : tout port est décoratif (0 PA)
+        const armurePossible = especeData.nom !== "Draconide";
         formData.competences.forEach(comp => {
-          if (comp.nom === "Armure niv.1" || comp.nom === "Armure niv.2" || comp.nom === "Armure niv.3") {
+          if (armurePossible && (comp.nom === "Armure niv.1" || comp.nom === "Armure niv.2" || comp.nom === "Armure niv.3")) {
             bonusPA += 1;
           }
           if (comp.nom === "Endurance accrue") {
