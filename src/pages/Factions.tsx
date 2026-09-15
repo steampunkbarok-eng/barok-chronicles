@@ -17,6 +17,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTri } from "@/i18n/tri";
 import { translateGameData } from "@/i18n/gameData";
 import { openFactionSheet } from "@/components/FactionSheet";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface Faction {
   id: string;
@@ -252,6 +253,7 @@ const Factions = () => {
               </Link>
               <Shield className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold text-primary">{t('factions.title')}</h1>
+              <LanguageSwitcher />
             </div>
             {!showForm && sessionEmail && (
               <Button onClick={() => setShowForm(true)} className="gap-2">

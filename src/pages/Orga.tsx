@@ -24,6 +24,7 @@ import {
 } from "@/data/xpAchats";
 import EvenementsManager from "@/components/orga/EvenementsManager";
 import FactionsManager from "@/components/orga/FactionsManager";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
@@ -366,6 +367,7 @@ const Orga = () => {
             <h1 className="font-serif text-2xl">Gestion Orga</h1>
           </div>
           <div className="flex items-center gap-3 text-sm">
+            <LanguageSwitcher />
             <span className="text-muted-foreground hidden sm:inline">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="w-4 h-4 mr-1" /> Déconnexion

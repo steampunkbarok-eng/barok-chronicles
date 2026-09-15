@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Castle } from "lucide-react";
 import { useTri } from "@/i18n/tri";
 import FactionEditor, { FactionRow } from "@/components/FactionEditor";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const MesFactions = () => {
   const { L } = useTri();
@@ -50,6 +51,7 @@ const MesFactions = () => {
           <h1 className="text-2xl font-bold text-primary font-serif">
             {L("Mes factions", "My factions", "Mijn facties")}
           </h1>
+          <LanguageSwitcher className="ml-auto" />
         </div>
       </header>
 
