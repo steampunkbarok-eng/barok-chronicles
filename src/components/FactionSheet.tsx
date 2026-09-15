@@ -135,7 +135,7 @@ export const FactionSheet = ({ faction }: FactionSheetProps) => {
 
     // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
     const modeleOrigines = !!(faction.origines && faction.origines.length);
-    const originesHtml = originesSectionHtml(faction, labels);
+    const originesHtml = originesSectionHtml(faction, labels, language);
 
     const titlesWithDetails = (faction.titres || []).map(titre => {
       const titreData = getTitreDetails(titre);
@@ -735,7 +735,7 @@ export const openFactionSheet = (faction: FactionData, language: 'fr' | 'en' | '
 
   // Origines 2026-2027 (nouveau modèle) ou anciens Titres/Carrières
   const modeleOrigines = !!(faction.origines && faction.origines.length);
-  const originesHtml = originesSectionHtml(faction, labels);
+  const originesHtml = originesSectionHtml(faction, labels, language);
 
   const titlesWithDetails = (faction.titres || []).map(titre => {
     const titreData = getTitreDetailsLocal(titre);
