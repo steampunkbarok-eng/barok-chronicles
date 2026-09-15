@@ -1036,7 +1036,8 @@ const Personnages = () => {
                 </span>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              <LanguageSwitcher />
               <BlankCharacterSheet />
               {!showForm && !editId && (
                 <Button onClick={() => setShowForm(true)} className="gap-2">
