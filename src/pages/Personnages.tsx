@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ArrowLeft, Scroll, Plus, X, Save, AlertCircle, Info } from "lucide-react";
 import { toast } from "sonner";
 import { especes } from "@/data/especes";
-import { glandesDraconiques } from "@/data/glandesDraconiques";
+import { glandesDraconiques, glandeTexte, getGlande } from "@/data/glandesDraconiques";
 import { translateEspeceText } from "@/i18n/especes2027";
 import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
@@ -952,6 +952,7 @@ const Personnages = () => {
       marqueCollectiveDetail: factionData?.marque_collective_detail || undefined,
       marqueIndividuelle: nouveauPersonnage.marqueIndividuelle || undefined,
       marqueIndividuelleDetail: nouveauPersonnage.marqueIndividuelleDetail || undefined,
+      glandeDraconique: nouveauPersonnage.glandeDraconique || undefined,
       sorts: nouveauPersonnage.sorts,
       afficherSortilleges: nouveauPersonnage.afficherSortilleges,
     }, language, t);
@@ -1291,22 +1292,43 @@ const Personnages = () => {
                           {glandesDraconiques.map((g) => (
                             <SelectItem key={g.couleur} value={g.couleur}>
                               <div className="flex flex-col">
-                                <span className="font-medium">{TE(g.couleur)} — {TE(g.crachat)} ({g.annonce})</span>
-                                <span className="text-xs text-muted-foreground">{L("Résistance", "Resistance", "Weerstand")} : {TE(g.resistance)}</span>
-                                <span className="text-xs text-destructive">{L("Sensibilité", "Sensitivity", "Gevoeligheid")} ×2 : {TE(g.sensibilite)}</span>
+                                <span className="font-medium">{glandeTexte(g, language).couleur} — {glandeTexte(g, language).crachat} (« {g.annonce} »)</span>
+                                <span className="text-xs text-muted-foreground line-clamp-2">{L("Résistance", "Resistance", "Weerstand")} : {glandeTexte(g, language).resistance}</span>
+                                <span className="text-xs text-destructive line-clamp-2">{L("Sensibilité", "Vulnerability", "Gevoeligheid")} : {glandeTexte(g, language).sensibilite}</span>
                               </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       {formData.glandeDraconique && (() => {
-                        const g = glandesDraconiques.find(x => x.couleur === formData.glandeDraconique);
-                        return g?.note ? (
-                          <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
-                            <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
-                            {TE(g.note)}
-                          </p>
-                        ) : null;
+                        const g = getGlande(formData.glandeDraconique);
+                        if (!g) return null;
+                        const tx = glandeTexte(g, language);
+                        return (
+                          <div className="rounded-md border bg-background/70 p-3 space-y-1 text-xs">
+                            <p className="font-bold text-primary text-sm">
+                              {tx.couleur} — {L("ce que cela fait en jeu", "what it does in play", "wat dit in het spel doet")}
+                            </p>
+                            <p>
+                              <span className="font-semibold">{L("Crachat", "Spit", "Spuwsel")} :</span>{" "}
+                              {tx.crachat} (« {g.annonce} », 1×/{L("jour", "day", "dag")})
+                            </p>
+                            <p>
+                              <span className="font-semibold">{L("Résistance et particularité", "Resistance and particularity", "Weerstand en eigenheid")} :</span>{" "}
+                              {tx.resistance}
+                            </p>
+                            <p className="text-destructive">
+                              <span className="font-semibold">{L("Sensibilité (malus symétrique)", "Vulnerability (symmetrical penalty)", "Gevoeligheid (symmetrische malus)")} :</span>{" "}
+                              {tx.sensibilite}
+                            </p>
+                            {tx.note && (
+                              <p className="text-amber-600 dark:text-amber-400 flex items-start gap-1">
+                                <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
+                                {tx.note}
+                              </p>
+                            )}
+                          </div>
+                        );
                       })()}
                       <p className="text-xs text-muted-foreground italic">
                         {L("Choix définitif à la création. Background à envoyer 2 mois avant le GN à steampunk.barok@gmail.com.", "Final choice at creation. Background to be sent two months before the event to steampunk.barok@gmail.com.", "Definitieve keuze bij de creatie. Achtergrond twee maanden voor het evenement te sturen naar steampunk.barok@gmail.com.")}
