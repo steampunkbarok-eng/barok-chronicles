@@ -446,6 +446,8 @@ export const factionTextsNl: Record<string, string> = {
 /** Traduit un texte d'origine / de marque ; renvoie le français si aucune traduction n'existe. */
 export const translateFactionText = (text: string, language: "fr" | "en" | "nl"): string => {
   if (!text || language === "fr") return text;
+  // La terminologie officielle du livret anglais 2027 prime.
+  if (language === "en" && officialEn2027[text]) return officialEn2027[text];
   const map = language === "nl" ? factionTextsNl : factionTextsEn;
   const marques = language === "nl" ? marqueTextsNl : marqueTextsEn;
   return map[text] || marques[text] || text;
