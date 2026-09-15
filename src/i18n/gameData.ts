@@ -1,4 +1,12 @@
 import {
+  competenceNamesEn2027,
+  competenceNamesNl2027,
+  competenceEffectsEn2027,
+  competenceEffectsNl2027,
+  categorieEn2027,
+  categorieNl2027,
+} from "./gameData2027";
+import {
   competenceTranslationsNl,
   competenceEffectTranslationsNl,
   titreTranslationsNl,
