@@ -402,6 +402,19 @@ const Personnages = () => {
         if (especeData.effetsPV !== 0) recap.push(`   PV: ${especeData.effetsPV > 0 ? '+' : ''}${especeData.effetsPV}${t('summary.perLocation')}`);
         if (especeData.effetsPA !== 0) recap.push(`   PA: ${especeData.effetsPA > 0 ? '+' : ''}${especeData.effetsPA}`);
       }
+      // Glandes draconiques : détail complet du choix
+      if (formData.espece === "Draconide" && formData.glandeDraconique) {
+        const g = getGlande(formData.glandeDraconique);
+        if (g) {
+          const tx = glandeTexte(g, language);
+          recap.push('');
+          recap.push(`🐉 ${L("Glandes draconiques", "Draconic glands", "Drakenklieren")}: ${tx.couleur}`);
+          recap.push(`   ${L("Crachat", "Spit", "Spuwsel")}: ${tx.crachat} (« ${g.annonce} », 1×/${L("jour", "day", "dag")})`);
+          recap.push(`   ${L("Résistance et particularité", "Resistance and particularity", "Weerstand en eigenheid")}: ${tx.resistance}`);
+          recap.push(`   ${L("Sensibilité (malus symétrique)", "Vulnerability (symmetrical penalty)", "Gevoeligheid (symmetrische malus)")}: ${tx.sensibilite}`);
+          if (tx.note) recap.push(`   ⚠️ ${tx.note}`);
+        }
+      }
     }
 
     if (formData.competences.length > 0) {
