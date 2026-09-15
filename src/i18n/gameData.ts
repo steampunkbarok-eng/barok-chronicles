@@ -676,6 +676,8 @@ export const batimentConditionTranslations: Record<string, string> = {
 };
 
 // Fonction helper pour obtenir une traduction
+import { translateEspeceText, especeTexteEn2027, especeTexteNl2027 } from "./especes2027";
+
 export const translateGameData = (
   text: string, 
   type: 'competence' | 'titre' | 'espece' | 'effet' | 'categorie' | 'batiment' | 'batimentAvantage' | 'batimentCondition' | 'origine' | 'especeSpecial' | 'titrePrerequisit',
@@ -692,6 +694,12 @@ export const translateGameData = (
        type === 'effet' ? competenceEffectsEn2027 :
        type === 'categorie' ? categorieEn2027 : undefined);
   if (lexique && lexique[text]) return lexique[text];
+
+  // Données Draconides / Vorélan-nes 2027
+  if (type === 'espece' || type === 'especeSpecial') {
+    const esp = language === 'nl' ? especeTexteNl2027 : especeTexteEn2027;
+    if (esp[text]) return esp[text];
+  }
 
   if (language === 'nl') {
     const nlMapping = type === 'competence' ? competenceTranslationsNl :

@@ -10,6 +10,7 @@ import { ArrowLeft, Scroll, Plus, X, Save, AlertCircle, Info } from "lucide-reac
 import { toast } from "sonner";
 import { especes } from "@/data/especes";
 import { glandesDraconiques } from "@/data/glandesDraconiques";
+import { translateEspeceText } from "@/i18n/especes2027";
 import { competencesDisponibles } from "@/data/competences";
 import { titresCarrieres } from "@/data/titres";
 import { getOrigine } from "@/data/origines";
@@ -73,6 +74,7 @@ const MARQUE_AUTRE = "Autre Marque personnelle de Destinée";
 const Personnages = () => {
   const { t, language } = useLanguage();
   const { L } = useTri();
+  const TE = (txt?: string) => (txt ? translateEspeceText(txt, language) : "");
   const TF = (txt?: string | null) => (txt ? translateFactionText(txt, language) : "");
   const [personnages, setPersonnages] = useState<Personnage[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -1263,22 +1265,22 @@ const Personnages = () => {
                   {formData.espece === "Draconide" && (
                     <div className="space-y-2 p-3 border-2 border-primary/40 rounded-md bg-primary/5">
                       <Label htmlFor="glande" className="font-bold text-primary">
-                        Type de glandes draconiques (obligatoire)
+                        {L("Type de glandes draconiques (obligatoire)", "Draconic gland type (required)", "Type drakenklieren (verplicht)")}
                       </Label>
                       <Select
                         value={formData.glandeDraconique || ""}
                         onValueChange={(value) => setFormData({ ...formData, glandeDraconique: value })}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Choisir la couleur de vos glandes…" />
+                          <SelectValue placeholder={L("Choisir la couleur de vos glandes…", "Choose the colour of your glands…", "Kies de kleur van uw klieren…")} />
                         </SelectTrigger>
                         <SelectContent className="max-h-[400px]">
                           {glandesDraconiques.map((g) => (
                             <SelectItem key={g.couleur} value={g.couleur}>
                               <div className="flex flex-col">
-                                <span className="font-medium">{g.couleur} — {g.crachat} ({g.annonce})</span>
-                                <span className="text-xs text-muted-foreground">Résistance : {g.resistance}</span>
-                                <span className="text-xs text-destructive">Sensibilité ×2 : {g.sensibilite}</span>
+                                <span className="font-medium">{TE(g.couleur)} — {TE(g.crachat)} ({g.annonce})</span>
+                                <span className="text-xs text-muted-foreground">{L("Résistance", "Resistance", "Weerstand")} : {TE(g.resistance)}</span>
+                                <span className="text-xs text-destructive">{L("Sensibilité", "Sensitivity", "Gevoeligheid")} ×2 : {TE(g.sensibilite)}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -1289,12 +1291,12 @@ const Personnages = () => {
                         return g?.note ? (
                           <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
                             <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
-                            {g.note}
+                            {TE(g.note)}
                           </p>
                         ) : null;
                       })()}
                       <p className="text-xs text-muted-foreground italic">
-                        Choix définitif à la création. Background à envoyer 2 mois avant le GN à steampunk.barok@gmail.com.
+                        {L("Choix définitif à la création. Background à envoyer 2 mois avant le GN à steampunk.barok@gmail.com.", "Final choice at creation. Background to be sent two months before the event to steampunk.barok@gmail.com.", "Definitieve keuze bij de creatie. Achtergrond twee maanden voor het evenement te sturen naar steampunk.barok@gmail.com.")}
                       </p>
                     </div>
                   )}
