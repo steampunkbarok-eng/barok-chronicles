@@ -1,0 +1,96 @@
+import { Link } from "react-router-dom";
+import { ArrowLeft, BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTri } from "@/i18n/tri";
+
+type Text = [string, string, string];
+const steps: { title: Text; paragraphs: Text[]; href?: string; action?: Text }[] = [
+  {
+    title: ["1. Créer son compte", "1. Create your account", "1. Maak je account aan"],
+    paragraphs: [["Créez un compte avec votre adresse email et confirmez-le en suivant le message reçu. Connectez-vous ensuite. Pour reprendre une faction existante, utilisez l'adresse de contact indiquée sur sa fiche. Vos fiches et leur gestion ne sont pas publiques.", "Create an account with your email address and confirm it using the email you receive. Then sign in. To manage an existing faction, use the contact email on its sheet. Your sheets and their management are not public.", "Maak een account aan met je e-mailadres en bevestig het via de ontvangen e-mail. Meld je daarna aan. Gebruik voor een bestaande factie het contact-e-mailadres op het factieblad. Je bladen en het beheer ervan zijn niet openbaar."]],
+    href: "/auth", action: ["Créer un compte / Se connecter", "Create an account / Sign in", "Account aanmaken / Aanmelden"],
+  },
+  {
+    title: ["2. Créer sa faction", "2. Create your faction", "2. Maak je factie aan"],
+    paragraphs: [
+      ["Renseignez le nom, la propriété terrienne, un bâtiment spécial ou un navire, une description et le background de votre groupe. L'adresse de contact associe la faction à votre compte.", "Enter the name, land property, a special building or ship, a description and your group's background. The contact address links the faction to your account.", "Vul de naam, het grondbezit, een speciaal gebouw of schip, een beschrijving en de achtergrond van je groep in. Het contactadres koppelt de factie aan je account."],
+      ["Choisissez exactement deux origines différentes : elles donnent une identité et des possibilités de jeu à votre groupe, mais aussi des prérequis, restrictions d'espèces et incompatibilités. Lisez leurs descriptions avant de les combiner. Vous pouvez choisir une seule Marque collective, optionnelle et soumise à l'accord de l'Orga. Pour une Marque secrète, décrivez votre idée ou indiquez que vous contacterez l'Orga.", "Choose exactly two different origins: they give your group an identity and opportunities in play, but also prerequisites, species restrictions and incompatibilities. Read the descriptions before combining them. You may choose one optional Collective Mark, subject to Orga approval. For a Secret Mark, describe your idea or state that you will contact the Orga.", "Kies precies twee verschillende oorsprongen: ze geven je groep een identiteit en spelmogelijkheden, maar ook vereisten, beperkingen voor soorten en onverenigbaarheden. Lees de beschrijvingen voordat je ze combineert. Je mag één optioneel collectief Merk kiezen, onder voorbehoud van goedkeuring door de Orga. Beschrijf bij een geheim Merk je idee of vermeld dat je contact opneemt met de Orga."]
+    ], href: "/factions", action: ["Créer une faction", "Create a faction", "Een factie maken"],
+  },
+  {
+    title: ["3. Créer son personnage et choisir sa faction", "3. Create your character and choose a faction", "3. Maak je personage en kies een factie"],
+    paragraphs: [["Ouvrez la création de personnage, renseignez votre nom hors jeu et le nom du personnage en jeu, puis choisissez votre faction. Ses origines et sa Marque collective déterminent certaines possibilités et obligations de votre fiche. Pour découvrir le système, utilisez l'option spéciale sans faction : faites vos essais sans y associer votre groupe. Un essai ne remplace pas une fiche rattachée à votre faction et validée pour jouer.", "Open character creation, enter your out-of-game name and your character's in-game name, then choose your faction. Its origins and Collective Mark determine some options and requirements on your sheet. To explore the system, use the special option without a faction: try choices without linking your group. A test does not replace a sheet linked to your faction and approved for play.", "Open de personagecreatie, vul je naam buiten het spel en de naam van je personage in het spel in en kies je factie. De oorsprongen en het collectieve Merk bepalen sommige mogelijkheden en verplichtingen op je blad. Gebruik de speciale optie zonder factie om het systeem te verkennen: probeer keuzes uit zonder je groep te koppelen. Een test vervangt geen blad dat aan je factie gekoppeld en voor het spel goedgekeurd is."]],
+    href: "/personnages", action: ["Créer un personnage", "Create a character", "Een personage maken"],
+  },
+  {
+    title: ["4. Événements et apprentissages", "4. Events and learning", "4. Evenementen en leren"],
+    paragraphs: [["Cochez uniquement les épisodes auxquels ce personnage a réellement participé. Le nombre d'événements et les apprentissages disponibles sont calculés automatiquement. Un épisode à venir ne compte pas comme déjà joué. Lors d'une évolution, ouvrez votre fiche existante, ajoutez les nouveaux événements disponibles et soumettez les changements pour validation.", "Tick only the episodes this character actually attended. The event count and available learning are calculated automatically. An upcoming episode does not count as already played. When evolving your character, open the existing sheet, add newly available events and submit the changes for validation.", "Vink alleen de episodes aan waaraan dit personage daadwerkelijk deelnam. Het aantal evenementen en de beschikbare leermogelijkheden worden automatisch berekend. Een toekomstig evenement telt niet als gespeeld. Open bij een evolutie je bestaande blad, voeg de nieuwe beschikbare evenementen toe en dien de wijzigingen ter goedkeuring in."]],
+  },
+  {
+    title: ["5. Espèce et particularités", "5. Species and special traits", "5. Soort en bijzonderheden"],
+    paragraphs: [
+      ["Votre espèce fixe des aptitudes gratuites, des avantages, des interdits et des malus. Les compétences gratuites et leurs prérequis sont ajoutés automatiquement. Changer d'espèce remet les choix de compétences à zéro et ajoute les gratuités de la nouvelle espèce. Certaines espèces nécessitent l'accord de l'Orga.", "Your species determines free abilities, benefits, prohibitions and penalties. Free skills and their prerequisites are added automatically. Changing species clears your skill choices and adds the new species' free abilities. Some species require Orga approval.", "Je soort bepaalt gratis vaardigheden, voordelen, verboden en nadelen. Gratis vaardigheden en hun vereisten worden automatisch toegevoegd. Een andere soort kiezen wist je vaardigheidskeuzes en voegt de gratis vaardigheden van de nieuwe soort toe. Sommige soorten vereisen toestemming van de Orga."],
+      ["Pour un Draconide, choisissez aussi une glande draconique et lisez son crachat, son annonce, sa résistance, sa sensibilité et ses limites. Les Draconides ont 2 PA naturels et ne peuvent porter aucune armure effective : toute armure portée est décorative. Les Vorélan-nes et Draconides ont une Marque individuelle imposée ; leurs restrictions particulières restent applicables.", "For Dragonfolk, also choose a draconic gland and read its spit, call, resistance, sensitivity and limits. Dragonfolk have 2 natural armour points and cannot wear effective armour: any armour worn is decorative. Vorélan-nes and Dragonfolk have a compulsory Individual Mark; their special restrictions still apply.", "Kies voor een Draconide ook een drakenklier en lees het speeksel, de spelroep, de weerstand, de gevoeligheid en de beperkingen. Draconiden hebben 2 natuurlijke pantserpunten en mogen geen werkend pantser dragen: gedragen pantser is uitsluitend decoratief. Vorélan-nes en Draconiden hebben een verplicht individueel Merk; hun bijzondere beperkingen blijven gelden."]
+    ],
+  },
+  {
+    title: ["6. Origines et Marque individuelle", "6. Origins and Individual Mark", "6. Oorsprongen en individueel Merk"],
+    paragraphs: [["Lisez les origines héritées de la faction avant de choisir vos compétences. Certaines imposent une compétence ou interdisent une voie. La Marque individuelle, lorsqu'elle est facultative, ouvre des possibilités particulières mais peut ajouter des contraintes. Si vous choisissez « Autre marque personnelle de destinée », décrivez votre projet ou indiquez que vous contacterez l'Orga. Les Marques demandent une validation préalable ; contactez l'Orga deux mois avant l'événement.", "Read the origins inherited from your faction before choosing skills. Some require a skill or prohibit a path. Where optional, an Individual Mark opens special possibilities but can add constraints. If you choose the other personal destiny Mark option, describe your idea or state that you will contact the Orga. Marks require prior approval; contact the Orga two months before the event.", "Lees de oorsprongen van je factie voordat je vaardigheden kiest. Sommige verplichten een vaardigheid of verbieden een pad. Een optioneel individueel Merk opent bijzondere mogelijkheden, maar kan extra beperkingen opleggen. Beschrijf bij de optie voor een ander persoonlijk lotsmerk je idee of vermeld dat je contact opneemt met de Orga. Merken vereisen voorafgaande goedkeuring; neem twee maanden voor het evenement contact op met de Orga."]],
+  },
+  {
+    title: ["7. Compétences, prérequis et points", "7. Skills, prerequisites and points", "7. Vaardigheden, vereisten en punten"],
+    paragraphs: [["Parcourez les catégories et cochez les compétences qui correspondent à votre projet : combat, protection, savoirs, métiers, filouterie ou autres voies disponibles. Chaque compétence indique son effet, son coût et ses prérequis. Prenez les niveaux et compétences nécessaires avant les choix avancés. Les choix interdits ou incompatibles ne deviennent pas accessibles simplement parce qu'il reste des points. Surveillez le total disponible et le récapitulatif à droite : ces choix donnent accès à des actions, des possibilités de jeu et parfois des pouvoirs spéciaux.", "Browse the categories and tick the skills that suit your concept: combat, protection, knowledge, professions, trickery or other available paths. Each skill shows its effect, cost and prerequisites. Take the required levels and skills before advanced choices. Forbidden or incompatible choices do not become available simply because you have points left. Check the available total and the summary on the right: these choices unlock actions, opportunities in play and sometimes special powers.", "Bekijk de categorieën en vink vaardigheden aan die bij je concept passen: gevecht, bescherming, kennis, beroepen, sluwheid of andere beschikbare paden. Elke vaardigheid vermeldt het effect, de kost en de vereisten. Kies de nodige niveaus en vaardigheden vóór gevorderde keuzes. Verboden of onverenigbare keuzes worden niet beschikbaar omdat je nog punten over hebt. Controleer je beschikbare totaal en het overzicht rechts: je keuzes geven toegang tot handelingen, spelmogelijkheden en soms bijzondere krachten."]],
+  },
+  {
+    title: ["8. Magie, sorts et ressources", "8. Magic, spells and resources", "8. Magie, spreuken en middelen"],
+    paragraphs: [["Si votre voie et vos compétences donnent accès à la magie, choisissez les sorts ou rituels proposés. Les sorts consomment des points ; la sélection est limitée à quatre sorts par niveau, du niveau 1 au niveau 4. Vérifiez les ressources et les conséquences de vos choix dans le récapitulatif : PV, armure, Pierres de Vie ou Obsidiennes de la Mort pour la Téphromancie. Une possibilité acquise plus tard en jeu ne signifie pas qu'elle est autorisée dès la création.", "If your path and skills grant access to magic, choose the available spells or rituals. Spells cost points; selection is limited to four spells per level, from level 1 to level 4. Check your resources and the consequences of your choices in the summary: life points, armour, Life Stones or Death Obsidians for Tephromancy. An option gained later in play is not necessarily allowed at creation.", "Als je pad en vaardigheden toegang geven tot magie, kies je de beschikbare spreuken of rituelen. Spreuken kosten punten; je mag maximaal vier spreuken per niveau kiezen, van niveau 1 tot en met 4. Controleer je middelen en de gevolgen van je keuzes in het overzicht: levenspunten, pantser, Levensstenen of Obsidianen van de Dood bij Tefromantie. Een mogelijkheid die later in het spel verworven wordt, is niet automatisch toegestaan bij de creatie."]],
+  },
+  {
+    title: ["9. Vérifier, sauvegarder et envoyer les PDF", "9. Review, save and send your PDFs", "9. Controleer, bewaar en verstuur je pdf's"],
+    paragraphs: [
+      ["Relisez le récapitulatif, les restrictions, les détails de vos Marques et de votre glande éventuelle. Corrigez les noms et votre email, puis enregistrez et soumettez la fiche. Une soumission n'est pas encore une validation. Retrouvez vos fiches dans « Mes personnages » et votre faction dans « Mes factions » ; les gestionnaires et l'Orga peuvent contrôler et corriger les fiches liées.", "Review the summary, restrictions, Mark details and any chosen gland. Check names and your email, then save and submit the sheet. Submission is not approval. Find your sheets in My characters and your faction in My factions; faction managers and the Orga can review and correct linked sheets.", "Lees het overzicht, de beperkingen, de details van je Merken en je eventuele klier na. Controleer de namen en je e-mailadres, bewaar het blad en dien het in. Indienen is nog geen goedkeuring. Je vindt je bladen bij Mijn personages en je factie bij Mijn facties; factiebeheerders en de Orga kunnen gekoppelde bladen controleren en corrigeren."],
+      ["Essentiel : conservez une copie du PDF de faction et du PDF de personnage, et envoyez-les au responsable de l'Organisation à l'adresse ci-dessous. Gardez une version à jour et imprimable pour le jeu, même si un envoi automatique a été annoncé.", "Essential: keep a copy of your faction PDF and character PDF, and send them to the Organisation's coordinator at the address below. Keep an up-to-date printable version for play, even if an automatic email was reported.", "Essentieel: bewaar een kopie van je factie-pdf en je personage-pdf en stuur ze naar de verantwoordelijke van de Organisatie op het onderstaande adres. Bewaar een actuele, afdrukbare versie voor het spel, ook wanneer een automatische verzending gemeld werd."]
+    ],
+  },
+  {
+    title: ["10. Check-in et gestion du fief", "10. Check-in and fief management", "10. Check-in en beheer van je leengoed"],
+    paragraphs: [["Les ressources produites par votre bâtiment spécial se récupèrent à chaque événement, au check-in en jeu. Consultez les productions indiquées sur votre fiche de faction. Bientôt, les gestionnaires de faction (ROG) disposeront aussi d'un fichier en ligne pour gérer leur fief : cette possibilité est à venir et n'est pas encore disponible.", "Collect the resources produced by your special building at each event's in-game check-in. Check the production listed on your faction sheet. An online fief-management file for faction managers (ROG) is coming soon: this option is forthcoming and is not available yet.", "Haal de middelen die je speciale gebouw produceert op bij de check-in in het spel van elk evenement. Bekijk de productie op je factieblad. Binnenkort komt er ook een online beheersbestand voor het leengoed van factiebeheerders (ROG): deze mogelijkheid is aangekondigd maar nog niet beschikbaar."]],
+  },
+];
+
+const Guide = () => {
+  const { L } = useTri();
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-card">
+        <div className="container mx-auto flex flex-wrap items-center gap-3 px-4 py-4">
+          <Button variant="ghost" size="icon" asChild><Link to="/" aria-label={L("Accueil", "Home", "Startpagina")}><ArrowLeft className="h-5 w-5" /></Link></Button>
+          <BookOpen className="h-6 w-6 text-primary" aria-hidden="true" />
+          <h1 className="font-serif text-2xl text-primary">guide</h1>
+          <LanguageSwitcher className="ml-auto" />
+        </div>
+      </header>
+      <main className="container mx-auto max-w-4xl px-4 py-8">
+        <p className="font-serif text-2xl text-primary mb-6">Barok GN</p>
+        <nav aria-label={L("Étapes du guide", "Guide steps", "Stappen van de gids")} className="border-y border-border py-4 mb-8 grid gap-2 sm:grid-cols-2">
+          {steps.map((step, i) => <a key={i} href={`#step-${i + 1}`} className="text-sm text-primary hover:underline">{L(...step.title)}</a>)}
+        </nav>
+        {steps.map((step, i) => (
+          <section key={i} id={`step-${i + 1}`} className="scroll-mt-32 border-b border-border py-6 space-y-3">
+            <h2 className="font-serif text-xl text-primary">{L(...step.title)}</h2>
+            {step.paragraphs.map((text, j) => <p key={j} className="text-foreground leading-relaxed">{L(...text)}</p>)}
+            {i === 8 && <a href="mailto:steampunk.barok@gmail.com" className="inline-block text-primary underline break-all">steampunk.barok@gmail.com</a>}
+            {step.href && step.action && <Button variant="outline" asChild><Link to={step.href}>{L(...step.action)}</Link></Button>}
+          </section>
+        ))}
+        <section className="py-8 space-y-3">
+          <h2 className="font-serif text-xl text-primary">{L("Merci à toustes", "Thank you, everyone", "Bedankt, iedereen")}</h2>
+          <p className="leading-relaxed">{L("Merci à tous les PJ, PNJ, PPJ, Monstres et Orgas de Barok GN : sans elleux, rien de tout cela ne serait possible. Chaque personne contribue à faire vivre notre monde et nos aventures.", "Thank you to all Barok GN players (PJ), NPCs (PNJ), PPJ, Monsters and Orgas: none of this would be possible without them. Everyone helps bring our world and adventures to life.", "Dank aan alle spelers (PJ), NPC's (PNJ), PPJ, Monsters en Orga's van Barok GN: zonder hen zou dit allemaal niet mogelijk zijn. Iedereen helpt onze wereld en avonturen tot leven te brengen.")}</p>
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export default Guide;
