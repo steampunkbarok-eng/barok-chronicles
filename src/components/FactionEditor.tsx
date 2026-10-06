@@ -23,6 +23,7 @@ import { originesCompatibles, marqueCollectiveCompatible } from "@/lib/reglesCre
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTri } from "@/i18n/tri";
 import { translateGameData } from "@/i18n/gameData";
+import { translateFactionText } from "@/i18n/factionTexts2027";
 import { openFactionSheet } from "@/components/FactionSheet";
 
 export interface FactionRow {
@@ -79,6 +80,13 @@ interface Props {
 const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
   const { language } = useLanguage();
   const { L } = useTri();
+  const TF = (text: string) => translateFactionText(text, language);
+  const statusLabel = (value: string) => ({
+    soumis: L("En attente de validation", "Awaiting validation", "Wacht op goedkeuring"),
+    valide: L("Validé", "Validated", "Goedgekeurd"),
+    archive: L("Archivé", "Archived", "Gearchiveerd"),
+    brouillon: L("Brouillon", "Draft", "Ontwerp"),
+  })[value] || value;
 
   const [nom, setNom] = useState(faction.nom);
   const [propriete, setPropriete] = useState(faction.propriete_terrienne || "");
@@ -144,12 +152,12 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
     }
     for (const deja of origines) {
       const v = originesCompatibles(deja, o);
-      if (!v.ok) return toast.error(v.raison!);
+      if (!v.ok) return toast.error(L(`${TF(deja)} est incompatible avec ${TF(o)}.`, `${TF(deja)} is incompatible with ${TF(o)}.`, `${TF(deja)} is onverenigbaar met ${TF(o)}.`));
     }
     const nouvelles = [...origines, o];
     if (marque) {
       const v = marqueCollectiveCompatible(marque, nouvelles);
-      if (!v.ok) return toast.error(v.raison!);
+      if (!v.ok) return toast.error(L("Cette Marque est incompatible avec les origines choisies.", "This Mark is incompatible with the selected origins.", "Dit Merk is onverenigbaar met de gekozen oorsprongen."));
     }
     setOrigines(nouvelles);
   };
@@ -161,7 +169,7 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
       return;
     }
     const v = marqueCollectiveCompatible(valeur, origines);
-    if (!v.ok) return toast.error(v.raison!);
+    if (!v.ok) return toast.error(L("Cette Marque est incompatible avec les origines choisies.", "This Mark is incompatible with the selected origins.", "Dit Merk is onverenigbaar met de gekozen oorsprongen."));
     setMarque(valeur);
     if (valeur !== MARQUE_SECRETE) setMarqueDetail("");
   };
@@ -249,7 +257,7 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
                 {translateGameData(batiment.avantages, "batimentAvantage", language)}
               </p>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setBatiment(null)}>
+            <Button variant="ghost" size="icon" onClick={() => setBatiment(null)} aria-label={L("Retirer le bâtiment", "Remove building", "Gebouw verwijderen")}>
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -304,7 +312,7 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
           <SelectContent className="max-h-[400px]">
             {categoriesOrigines.map((cat) => (
               <SelectGroup key={cat}>
-                <SelectLabel>{cat}</SelectLabel>
+                <SelectLabel>{TF(cat)}</SelectLabel>
                 {toutesOrigines
                   .filter((o) => o.categorie === cat)
                   .map((o) => (
@@ -314,8 +322,8 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
                       disabled={origines.includes(o.nom) || origines.some((x) => !originesCompatibles(x, o.nom).ok)}
                     >
                       <div className="flex flex-col max-w-[520px]">
-                        <span className="font-medium">{o.nom}</span>
-                        <span className="text-xs text-muted-foreground line-clamp-2">{o.description}</span>
+                        <span className="font-medium">{TF(o.nom)}</span>
+                        <span className="text-xs text-muted-foreground line-clamp-2">{TF(o.description)}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -331,23 +339,26 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
               <div key={o} className="bg-primary/5 border border-primary/20 rounded-lg p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 space-y-1">
-                    <p className="font-semibold text-primary">{o}</p>
-                    {data?.description && <p className="text-sm text-muted-foreground">{data.description}</p>}
+                    <p className="font-semibold text-primary">{TF(o)}</p>
+                    {data?.description && <p className="text-sm text-muted-foreground">{TF(data.description)}</p>}
+                    {data?.especes && data.especes !== "-" && <p className="text-xs"><strong>{L("Espèces", "Species", "Soorten")} :</strong> {TF(data.especes)}</p>}
+                    {data?.prerequis && data.prerequis !== "-" && <p className="text-xs"><strong>{L("Prérequis", "Prerequisites", "Vereisten")} :</strong> {TF(data.prerequis)}</p>}
+                    {data?.contactOrga && <p className="text-xs text-primary">{L("Contact préalable avec l'Orga requis", "Prior contact with the Orga required", "Voorafgaand contact met de Orga vereist")}</p>}
                     {data?.limitations && data.limitations !== "-" && (
                       <p className="text-xs text-destructive">
-                        <strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {data.limitations}
+                        <strong>{L("Limitations", "Limitations", "Beperkingen")} :</strong> {TF(data.limitations)}
                       </p>
                     )}
                     {origineIncompatibleAvec(o).length > 0 && (
                       <p className="text-xs text-destructive">
                         <strong>{L("Incompatible avec", "Incompatible with", "Onverenigbaar met")} :</strong>{" "}
-                        {origineIncompatibleAvec(o).join(", ")}
+                        {origineIncompatibleAvec(o).map(TF).join(", ")}
                       </p>
                     )}
                   </div>
-                  <button onClick={() => setOrigines(origines.filter((x) => x !== o))} className="hover:text-destructive">
+                  <Button variant="ghost" size="icon" onClick={() => setOrigines(origines.filter((x) => x !== o))} aria-label={L("Retirer l'origine", "Remove origin", "Oorsprong verwijderen")}>
                     <X className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             );
@@ -366,7 +377,7 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
             <SelectItem value={AUCUNE}>{L("Aucune Marque collective", "No collective Mark", "Geen collectief Merk")}</SelectItem>
             {marquesCollectives.map((m) => (
               <SelectItem key={m.nom} value={m.nom}>
-                {m.nom}
+                {TF(m.nom)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -388,10 +399,12 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
           if (!m) return null;
           return (
             <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 space-y-1">
-              <p className="text-xs"><strong>{L("Pour qui", "For whom", "Voor wie")} :</strong> {m.pourQui}</p>
+              {m.citation && <p className="text-sm italic">{TF(m.citation)}</p>}
+              <p className="text-xs"><strong>{L("Pour qui", "For whom", "Voor wie")} :</strong> {TF(m.pourQui)}</p>
+              {m.signale && <p className="text-xs"><strong>{L("Signale", "Signals", "Signaleert")} :</strong> {TF(m.signale)}</p>}
               {m.interdits && (
                 <p className="text-xs text-destructive">
-                  <strong>{L("Nécessités et interdits", "Requirements and prohibitions", "Vereisten en verboden")} :</strong> {m.interdits}
+                  <strong>{L("Nécessités et interdits", "Requirements and prohibitions", "Vereisten en verboden")} :</strong> {TF(m.interdits)}
                 </p>
               )}
               <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
@@ -431,8 +444,8 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
             {persos.map((p) => (
               <div key={p.id} className="flex flex-wrap items-center gap-2 border border-border rounded p-2 text-sm">
                 <span className="font-medium">{p.prenom} {p.nom}</span>
-                <span className="text-muted-foreground">{p.espece}</span>
-                <Badge variant="outline">{p.statut}</Badge>
+                <span className="text-muted-foreground">{translateGameData(p.espece, "espece", language)}</span>
+                <Badge variant="outline">{statusLabel(p.statut)}</Badge>
                 <span className="text-muted-foreground">{p.xp} XP</span>
                 <span className="text-xs text-muted-foreground">{p.email}</span>
                 <div className="flex items-center gap-1 ml-auto">
