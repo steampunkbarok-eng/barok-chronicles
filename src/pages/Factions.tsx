@@ -19,6 +19,7 @@ import { translateFactionText } from "@/i18n/factionTexts2027";
 import { translateGameData } from "@/i18n/gameData";
 import { openFactionSheet } from "@/components/FactionSheet";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GuideButton } from "@/components/GuideButton";
 
 interface Faction {
   id: string;
@@ -89,7 +90,7 @@ const Factions = () => {
     for (const deja of formData.origines) {
       const verdict = originesCompatibles(deja, nom);
       if (!verdict.ok) {
-        toast.error(verdict.raison!);
+        toast.error(L(`${TF(deja)} est incompatible avec ${TF(nom)}.`, `${TF(deja)} is incompatible with ${TF(nom)}.`, `${TF(deja)} is onverenigbaar met ${TF(nom)}.`));
         return;
       }
     }
@@ -97,7 +98,7 @@ const Factions = () => {
     if (formData.marqueCollective) {
       const v = marqueCollectiveCompatible(formData.marqueCollective, nouvelles);
       if (!v.ok) {
-        toast.error(v.raison!);
+        toast.error(L("Cette Marque est incompatible avec les origines choisies.", "This Mark is incompatible with the selected origins.", "Dit Merk is onverenigbaar met de gekozen oorsprongen."));
         return;
       }
     }
@@ -114,7 +115,7 @@ const Factions = () => {
     }
     const v = marqueCollectiveCompatible(valeur, formData.origines);
     if (!v.ok) {
-      toast.error(v.raison!);
+      toast.error(L("Cette Marque est incompatible avec les origines choisies.", "This Mark is incompatible with the selected origins.", "Dit Merk is onverenigbaar met de gekozen oorsprongen."));
       return;
     }
     setFormData({
@@ -246,8 +247,8 @@ const Factions = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex flex-wrap items-center gap-3">
               <Link to="/">
                 <Button variant="ghost" size="icon">
                   <ArrowLeft className="h-5 w-5" />
@@ -257,12 +258,15 @@ const Factions = () => {
               <h1 className="text-3xl font-bold text-primary">{t('factions.title')}</h1>
               <LanguageSwitcher />
             </div>
+            <div className="flex flex-wrap items-center gap-2 ml-auto">
             {!showForm && sessionEmail && (
               <Button onClick={() => setShowForm(true)} className="gap-2">
                 <Plus className="h-5 w-5" />
                 {t('factions.create')}
               </Button>
             )}
+            <GuideButton />
+            </div>
           </div>
         </div>
       </header>
@@ -430,7 +434,7 @@ const Factions = () => {
                             {origineIncompatibleAvec(nom).length > 0 && (
                               <p className="text-xs text-destructive">
                                 <strong>{L("Origines incompatibles", "Incompatible origins", "Onverenigbare oorsprongen")} :</strong>{" "}
-                                {origineIncompatibleAvec(nom).join(", ")}
+                                {origineIncompatibleAvec(nom).map(TF).join(", ")}
                               </p>
                             )}
                             {o?.prerequis && o.prerequis !== "-" && (
@@ -592,7 +596,7 @@ const Factions = () => {
                         <span className={`text-xs px-2 py-1 rounded ${
                           faction.statut === "active" ? "bg-green-500/20 text-green-700" : "bg-gray-500/20 text-gray-700"
                         }`}>
-                          {faction.statut}
+                          {faction.statut === "active" ? L("Active", "Active", "Actief") : L("Inactive", "Inactive", "Inactief")}
                         </span>
                       </CardTitle>
                       <CardDescription>
@@ -608,9 +612,9 @@ const Factions = () => {
                       )}
                       {faction.batiment && (
                         <div className="space-y-1">
-                          <p className="text-sm font-medium text-primary">{faction.batiment.nom}</p>
-                          <p className="text-xs text-muted-foreground">{faction.batiment.type}</p>
-                          <p className="text-xs bg-muted/50 p-2 rounded">{faction.batiment.avantages}</p>
+                          <p className="text-sm font-medium text-primary">{translateGameData(faction.batiment.nom, "batiment", language)}</p>
+                          <p className="text-xs text-muted-foreground">{faction.batiment.type === "Navire" ? L("Navire", "Ship", "Schip") : L("Bâtiment", "Building", "Gebouw")}</p>
+                          <p className="text-xs bg-muted/50 p-2 rounded">{translateGameData(faction.batiment.avantages, "batimentAvantage", language)}</p>
                         </div>
                       )}
                       {faction.origines.length > 0 && (
@@ -618,7 +622,7 @@ const Factions = () => {
                           <p className="text-sm font-medium mb-1">{L("Origines", "Origins", "Oorsprongen")}</p>
                           <div className="flex flex-wrap gap-1">
                             {faction.origines.map((o) => (
-                              <span key={o} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">{o}</span>
+                              <span key={o} className="text-xs bg-primary/10 px-2 py-1 rounded font-medium">{TF(o)}</span>
                             ))}
                           </div>
                         </div>
@@ -626,7 +630,7 @@ const Factions = () => {
                       {faction.marqueCollective && (
                         <div>
                           <p className="text-sm font-medium mb-1">{L("Marque collective", "Collective Mark", "Collectief Merk")}</p>
-                          <span className="text-xs bg-secondary/20 px-2 py-1 rounded">{faction.marqueCollective}</span>
+                          <span className="text-xs bg-secondary/20 px-2 py-1 rounded">{TF(faction.marqueCollective)}</span>
                         </div>
                       )}
                       {faction.descriptionCourte && (

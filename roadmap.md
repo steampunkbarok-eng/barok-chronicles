@@ -5,3 +5,8 @@
 - [x] Tables de traduction des origines et marques (FR/EN/NL)
 - [x] Brancher ces traductions sur les écrans Faction / Personnage / PDF
 - [x] Intégrer le livret NL Draconides & Vorélan-nes (aptitudes, interdits, glandes, marque individuelle)
+
+## Gestion multilingue et guide
+- [x] Compléter les textes NL de gestion des factions et les règles EN de création
+- [x] Ajouter « guide » à droite des bandeaux et le contenu FR/EN/NL
+- [x] Vérifier les traductions et la navigation du guide

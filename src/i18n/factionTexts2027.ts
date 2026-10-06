@@ -446,6 +446,11 @@ export const factionTextsNl: Record<string, string> = {
 /** Traduit un texte d'origine / de marque ; renvoie le français si aucune traduction n'existe. */
 export const translateFactionText = (text: string, language: "fr" | "en" | "nl"): string => {
   if (!text || language === "fr") return text;
+  if (text === "Marque Planaire, Porteur-euse de Rune, Pirate, Agente d'une ONG, Garde du Corps, Archiviste des Secrets") {
+    return language === "en"
+      ? "Planar Mark, Rune-bearer, Pirate, NGO Agent, Bodyguard, Archivist of Secrets"
+      : "Planair Merk, Runendrager, Piraat, Agent van een ngo, Lijfwacht, Archivaris van de Geheimen";
+  }
   // La terminologie officielle du livret anglais 2027 prime.
   if (language === "en" && officialEn2027[text]) return officialEn2027[text];
   const map = language === "nl" ? factionTextsNl : factionTextsEn;
