@@ -7,6 +7,6 @@
 - [x] Intégrer le livret NL Draconides & Vorélan-nes (aptitudes, interdits, glandes, marque individuelle)
 
 ## Gestion multilingue et guide
-- [ ] Compléter les textes NL de gestion des factions et les règles EN de création
-- [ ] Ajouter « guide » à droite des bandeaux et le contenu FR/EN/NL
-- [ ] Vérifier les traductions et la navigation du guide
+- [x] Compléter les textes NL de gestion des factions et les règles EN de création
+- [x] Ajouter « guide » à droite des bandeaux et le contenu FR/EN/NL
+- [x] Vérifier les traductions et la navigation du guide
