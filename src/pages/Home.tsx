@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, Users, FileText, Scroll, LogIn, CalendarDays } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GuideButton } from "@/components/GuideButton";
 
 const Home = () => {
   const { t } = useLanguage();
@@ -13,13 +14,13 @@ const Home = () => {
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex flex-wrap items-center gap-3">
               <Shield className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold text-primary">Barok GN</h1>
               <LanguageSwitcher />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm text-muted-foreground hidden lg:block mr-2">
                 {t('header.subtitle')}
               </p>
@@ -47,6 +48,7 @@ const Home = () => {
                   {t('nav.signIn')}
                 </Button>
               </Link>
+              <GuideButton />
             </div>
           </div>
         </div>

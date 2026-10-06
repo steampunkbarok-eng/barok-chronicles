@@ -7,11 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { ArrowLeft, Castle } from "lucide-react";
 import { useTri } from "@/i18n/tri";
+import { translateFactionText } from "@/i18n/factionTexts2027";
 import FactionEditor, { FactionRow } from "@/components/FactionEditor";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GuideButton } from "@/components/GuideButton";
 
 const MesFactions = () => {
-  const { L } = useTri();
+  const { L, language } = useTri();
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,7 +43,7 @@ const MesFactions = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center gap-3">
+        <div className="container mx-auto px-4 py-4 flex flex-wrap items-center gap-3">
           <Link to="/">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-5 w-5" />
@@ -52,6 +54,7 @@ const MesFactions = () => {
             {L("Mes factions", "My factions", "Mijn facties")}
           </h1>
           <LanguageSwitcher className="ml-auto" />
+          <GuideButton />
         </div>
       </header>
 
@@ -96,9 +99,9 @@ const MesFactions = () => {
             <CardHeader className="cursor-pointer" onClick={() => setOpenId(openId === f.id ? null : f.id)}>
               <CardTitle className="font-serif flex items-center gap-2 flex-wrap">
                 {f.nom}
-                <Badge variant="outline">{f.statut || "active"}</Badge>
+                <Badge variant="outline">{(f.statut || "active") === "active" ? L("Active", "Active", "Actief") : L("Inactive", "Inactive", "Inactief")}</Badge>
                 {(f.origines || []).map((o) => (
-                  <span key={o} className="text-xs bg-primary/10 px-2 py-1 rounded font-normal">{o}</span>
+                  <span key={o} className="text-xs bg-primary/10 px-2 py-1 rounded font-normal">{translateFactionText(o, language)}</span>
                 ))}
               </CardTitle>
               <CardDescription>

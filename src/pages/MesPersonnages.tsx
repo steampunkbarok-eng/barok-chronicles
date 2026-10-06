@@ -24,6 +24,7 @@ import {
 } from "@/data/xpAchats";
 import { useTri } from "@/i18n/tri";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GuideButton } from "@/components/GuideButton";
 
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
@@ -181,20 +182,21 @@ const MesPersonnages = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-primary/20 bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="container mx-auto px-4 py-4 flex flex-wrap gap-3 items-center justify-between">
+          <div className="flex flex-wrap items-center gap-3">
             <Link to="/" className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <ScrollText className="w-6 h-6 text-primary" />
             <h1 className="font-serif text-2xl">{L("Mes Personnages", "My Characters", "Mijn Personages")}</h1>
           </div>
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
             <LanguageSwitcher />
             <span className="text-muted-foreground hidden sm:inline">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="w-4 h-4 mr-1" /> {L("Déconnexion", "Sign out", "Afmelden")}
             </Button>
+            <GuideButton />
           </div>
         </div>
       </header>

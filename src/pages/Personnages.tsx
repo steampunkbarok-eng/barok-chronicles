@@ -23,6 +23,7 @@ import { CharacterSheet } from "@/components/CharacterSheet";
 import { BlankCharacterSheet } from "@/components/BlankCharacterSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GuideButton } from "@/components/GuideButton";
 import { translateGameData } from "@/i18n/gameData";
 import { generateCharacterSheetPdfBase64 } from "@/utils/characterSheetPdf";
 import { generateCharacterSheetHTML } from "@/utils/characterSheetHTML";
@@ -1037,8 +1038,8 @@ const Personnages = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex flex-wrap items-center gap-3">
               <Link to="/">
                 <Button variant="ghost" size="icon">
                   <ArrowLeft className="h-5 w-5" />
@@ -1057,7 +1058,7 @@ const Personnages = () => {
                 </span>
               )}
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center">
               <LanguageSwitcher />
               <BlankCharacterSheet />
               {!showForm && !editId && (
@@ -1066,6 +1067,7 @@ const Personnages = () => {
                   {t('characters.create')}
                 </Button>
               )}
+              <GuideButton />
             </div>
           </div>
         </div>
@@ -1184,13 +1186,14 @@ const Personnages = () => {
                   <div className="space-y-2">
                     <Label htmlFor="faction">{t('characters.faction')}</Label>
                     <Select
-                      value={formData.faction}
-                      onValueChange={(value) => setFormData({ ...formData, faction: value })}
+                      value={formData.faction || "__test__"}
+                      onValueChange={(value) => setFormData({ ...formData, faction: value === "__test__" ? "" : value })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder={t('characters.factionNone')} />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="__test__">{L("Spécial — essai sans faction", "Special — test without a faction", "Speciaal — testen zonder factie")}</SelectItem>
                         {factions.map((faction) => (
                           <SelectItem key={faction.nom} value={faction.nom}>
                             {faction.nom}
