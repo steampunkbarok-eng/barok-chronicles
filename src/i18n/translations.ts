@@ -19,8 +19,8 @@ export const translations = {
     
     // Features
     'features.factions.title': 'Factions',
-    'features.factions.description': 'Créez votre faction, choisissez vos propriétés et gérez vos Marques de destinée',
-    'features.factions.point1': '4 Marques de destinée initiales',
+    'features.factions.description': 'Créez votre faction autour de deux origines, avec leurs avantages, prérequis et incompatibilités.',
+    'features.factions.point1': 'Deux origines différentes à choisir',
     'features.factions.point2': 'Propriétés terriennes personnalisables',
     'features.factions.point3': 'Bâtiments et navires uniques',
     
@@ -31,10 +31,10 @@ export const translations = {
     'features.characters.point3': 'Calculs automatiques (PV, PA, Abîme)',
     
     'features.sheets.title': 'Fiches A4',
-    'features.sheets.description': 'Générez et téléchargez vos fiches de faction et personnage au format PDF',
+    'features.sheets.description': 'Conservez toujours vos fiches de faction et de personnage en PDF et imprimez-les vous-même pour le jeu.',
     'features.sheets.point1': 'Format A4 prêt à imprimer',
-    'features.sheets.point2': 'Design professionnel',
-    'features.sheets.point3': 'Export PDF instantané',
+    'features.sheets.point2': 'Sauvegardez toujours une copie à jour du PDF',
+    'features.sheets.point3': 'Imprimez vous-même vos fiches avant chaque événement',
     
     // Footer
     'footer.copyright': '© 2024 Barok GN. Tous droits réservés.',
@@ -374,8 +374,8 @@ export const translations = {
     
     // Features
     'features.factions.title': 'Factions',
-    'features.factions.description': 'Create your faction, choose your properties and manage your Destiny Marks',
-    'features.factions.point1': '4 initial Destiny Marks',
+    'features.factions.description': 'Create your faction around two origins, with their benefits, prerequisites and incompatibilities.',
+    'features.factions.point1': 'Choose two different origins',
     'features.factions.point2': 'Customizable land properties',
     'features.factions.point3': 'Unique buildings and ships',
     
@@ -386,10 +386,10 @@ export const translations = {
     'features.characters.point3': 'Automatic calculations (HP, AP, Abyss)',
     
     'features.sheets.title': 'A4 Sheets',
-    'features.sheets.description': 'Generate and download your faction and character sheets in PDF format',
+    'features.sheets.description': 'Always save your faction and character sheets as PDFs and print them yourself for play.',
     'features.sheets.point1': 'Print-ready A4 format',
-    'features.sheets.point2': 'Professional design',
-    'features.sheets.point3': 'Instant PDF export',
+    'features.sheets.point2': 'Always save an up-to-date copy of each PDF',
+    'features.sheets.point3': 'Print your own sheets before each event',
     
     // Footer
     'footer.copyright': '© 2024 Barok GN. All rights reserved.',
@@ -644,8 +644,8 @@ export const translations = {
 
     // Features
     'features.factions.title': 'Facties',
-    'features.factions.description': 'Creëer je factie, kies je eigendommen en beheer je Lotsmerken',
-    'features.factions.point1': '4 initiële Lotsmerken',
+    'features.factions.description': 'Creëer je factie rond twee oorsprongen, met hun voordelen, vereisten en onverenigbaarheden.',
+    'features.factions.point1': 'Kies twee verschillende oorsprongen',
     'features.factions.point2': 'Aanpasbare landeigendommen',
     'features.factions.point3': 'Unieke gebouwen en schepen',
 
@@ -656,10 +656,10 @@ export const translations = {
     'features.characters.point3': 'Automatische berekeningen (LP, PP, Afgrond)',
 
     'features.sheets.title': 'A4-bladen',
-    'features.sheets.description': 'Genereer en download je factie- en personagebladen in PDF-formaat',
+    'features.sheets.description': 'Bewaar je factie- en personagebladen altijd als pdf en druk ze zelf af voor het spel.',
     'features.sheets.point1': 'Printklaar A4-formaat',
-    'features.sheets.point2': 'Professioneel ontwerp',
-    'features.sheets.point3': 'Directe PDF-export',
+    'features.sheets.point2': 'Bewaar altijd een actuele kopie van elke pdf',
+    'features.sheets.point3': 'Druk je bladen zelf af vóór elk evenement',
 
     // Footer
     'footer.copyright': '© 2024 Barok GN. Alle rechten voorbehouden.',

@@ -128,16 +128,16 @@ const Home = () => {
               <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
                 <FileText className="h-6 w-6 text-accent" />
               </div>
-              <CardTitle>Fiches A4</CardTitle>
+              <CardTitle>{t('features.sheets.title')}</CardTitle>
               <CardDescription>
-                Exportez vos fiches complètes prêtes pour le terrain de jeu
+                {t('features.sheets.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Format A4 imprimable</li>
-                <li>• Toutes les infos essentielles</li>
-                <li>• Cases vierges pour le jeu</li>
+                <li>• {t('features.sheets.point1')}</li>
+                <li>• {t('features.sheets.point2')}</li>
+                <li>• {t('features.sheets.point3')}</li>
               </ul>
             </CardContent>
           </Card>
