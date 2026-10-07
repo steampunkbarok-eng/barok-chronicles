@@ -8,7 +8,7 @@
 
 ## Gestion multilingue et guide
 - [x] Compléter les textes NL de gestion des factions et les règles EN de création
-- [x] Ajouter « guide » à droite des bandeaux et le contenu FR/EN/NL
+- [x] Ajouter « guide » aux bandeaux (juste avant la connexion lorsqu’elle est présente) et le contenu FR/EN/NL
 - [x] Vérifier les traductions et la navigation du guide
 
 ## Accueil et vérification finale
@@ -18,5 +18,5 @@
 
 ## Corrections du guide
 - [x] Placer « guide » immédiatement avant la connexion
-- [ ] Expliquer les coûts XP des sorts, les paliers et le stock initial de Pierres de Vie en FR/EN/NL
-- [ ] Vérifier les termes de l’univers et le guide dans les trois langues
+- [x] Expliquer les coûts XP des sorts, les paliers et le stock initial de Pierres de Vie en FR/EN/NL
+- [x] Vérifier les termes de l’univers et le guide dans les trois langues (position, coûts, exemple à 14 pierres et renvoi au livre de règles)
