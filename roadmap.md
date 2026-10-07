@@ -10,3 +10,8 @@
 - [x] Compléter les textes NL de gestion des factions et les règles EN de création
 - [x] Ajouter « guide » à droite des bandeaux et le contenu FR/EN/NL
 - [x] Vérifier les traductions et la navigation du guide
+
+## Accueil et vérification finale
+- [x] Remplacer l’ancien budget de Marques de destinée par les deux origines sur l’accueil FR/EN/NL
+- [x] Traduire la rubrique A4 et rappeler de toujours sauvegarder les PDF et imprimer soi-même
+- [x] Vérifier l’accueil FR/EN/NL, les dix étapes du guide et l’ouverture des écrans de création dans chaque langue (aucune erreur détectée)
