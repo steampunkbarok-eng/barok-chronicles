@@ -42,13 +42,13 @@ const Home = () => {
                   <span className="hidden sm:inline">{t('nav.myFactions')}</span>
                 </Button>
               </Link>
+              <GuideButton />
               <Link to="/auth">
                 <Button variant="outline" size="sm" className="gap-2">
                   <LogIn className="h-4 w-4" />
                   {t('nav.signIn')}
                 </Button>
               </Link>
-              <GuideButton />
             </div>
           </div>
         </div>
