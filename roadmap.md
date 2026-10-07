@@ -14,4 +14,4 @@
 ## Accueil et vérification finale
 - [x] Remplacer l’ancien budget de Marques de destinée par les deux origines sur l’accueil FR/EN/NL
 - [x] Traduire la rubrique A4 et rappeler de toujours sauvegarder les PDF et imprimer soi-même
-- [ ] Vérifier l’accueil, le guide et les traductions de création EN/NL dans le site
+- [x] Vérifier l’accueil FR/EN/NL, les dix étapes du guide et l’ouverture des écrans de création dans chaque langue (aucune erreur détectée)
