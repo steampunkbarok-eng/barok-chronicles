@@ -20,3 +20,8 @@
 - [x] Placer « guide » immédiatement avant la connexion
 - [x] Expliquer les coûts XP des sorts, les paliers et le stock initial de Pierres de Vie en FR/EN/NL
 - [x] Vérifier les termes de l’univers et le guide dans les trois langues (position, coûts, exemple à 14 pierres et renvoi au livre de règles)
+
+## Orga multilingue, sécurité, tests
+- [ ] Espace Organisation en EN/NL
+- [ ] Sécurité : linter + scan, corrections sans bloquer l'administration
+- [ ] Testing complet pas à pas
