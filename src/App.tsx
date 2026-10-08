@@ -15,6 +15,7 @@ import MesPersonnages from "./pages/MesPersonnages";
 import MesFactions from "./pages/MesFactions";
 import Evenements from "./pages/Evenements";
 import NotFound from "./pages/NotFound";
+import ParcoursTest from "./pages/ParcoursTest";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/mes-factions" element={<MesFactions />} />
             <Route path="/evenements" element={<Evenements />} />
             <Route path="/orga" element={<Orga />} />
+            <Route path="/parcours-test" element={<ParcoursTest />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -368,6 +368,7 @@ const Orga = () => {
             <h1 className="font-serif text-2xl">Gestion Orga</h1>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-sm">
+            <Link to="/parcours-test" className="text-sm underline text-primary mr-2">Parcours de test</Link>
             <LanguageSwitcher />
             <span className="text-muted-foreground hidden sm:inline">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={logout}>
