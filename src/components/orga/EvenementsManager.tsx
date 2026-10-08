@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { CalendarDays, Plus, Trash2, Sparkles, Save } from "lucide-react";
+import { useTri } from "@/i18n/tri";
 
 type StatutEvt = "a_venir" | "en_cours" | "termine" | "annule";
 
@@ -43,11 +44,16 @@ export interface PersoLite {
   xp: number;
 }
 
-const statutLabels: Record<StatutEvt, string> = {
-  a_venir: "À venir",
-  en_cours: "En cours",
-  termine: "Terminé",
-  annule: "Annulé",
+const statutLabelsByLang: Record<"fr" | "en" | "nl", Record<StatutEvt, string>> = {
+  fr: { a_venir: "À venir", en_cours: "En cours", termine: "Terminé", annule: "Annulé" },
+  en: { a_venir: "Upcoming", en_cours: "Ongoing", termine: "Finished", annule: "Cancelled" },
+  nl: { a_venir: "Aankomend", en_cours: "Bezig", termine: "Afgelopen", annule: "Geannuleerd" },
+};
+
+const dateLocale: Record<"fr" | "en" | "nl", string> = {
+  fr: "fr-FR",
+  en: "en-US",
+  nl: "nl-NL",
 };
 
 const emptyForm = {
@@ -69,6 +75,9 @@ interface Props {
 }
 
 const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
+  const { L, language } = useTri();
+  const statutLabels = statutLabelsByLang[language];
+  const locale = dateLocale[language];
   const [evenements, setEvenements] = useState<Evenement[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
@@ -130,10 +139,10 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
   });
 
   const createEvent = async () => {
-    if (!form.nom.trim() || !form.date_debut) return toast.error("Nom et date de début obligatoires");
+    if (!form.nom.trim() || !form.date_debut) return toast.error(L("Nom et date de début obligatoires", "Name and start date required", "Naam en startdatum verplicht"));
     const { error } = await supabase.from("evenements").insert(payload());
     if (error) return toast.error(error.message);
-    toast.success("Événement créé");
+    toast.success(L("Événement créé", "Event created", "Evenement aangemaakt"));
     setCreating(false);
     setForm({ ...emptyForm });
     load();
@@ -143,15 +152,15 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
     if (!openId) return;
     const { error } = await supabase.from("evenements").update(payload()).eq("id", openId);
     if (error) return toast.error(error.message);
-    toast.success("Événement mis à jour");
+    toast.success(L("Événement mis à jour", "Event updated", "Evenement bijgewerkt"));
     load();
   };
 
   const deleteEvent = async (id: string) => {
-    if (!confirm("Supprimer cet événement et ses présences ?")) return;
+    if (!confirm(L("Supprimer cet événement et ses présences ?", "Delete this event and its attendance records?", "Dit evenement en de aanwezigheden verwijderen?"))) return;
     const { error } = await supabase.from("evenements").delete().eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Événement supprimé");
+    toast.success(L("Événement supprimé", "Event deleted", "Evenement verwijderd"));
     setOpenId(null);
     load();
   };
@@ -178,9 +187,9 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
     if (!openId) return;
     const evenement = evenements.find((e) => e.id === openId);
     const xp = Number(form.xp_attribuee) || 0;
-    if (!evenement || xp <= 0) return toast.error("Renseigne d'abord l'XP de l'événement");
+    if (!evenement || xp <= 0) return toast.error(L("Renseigne d'abord l'XP de l'événement", "Set the event's XP first", "Stel eerst de XP van het evenement in"));
     const cibles = participations.filter((p) => p.present && !p.xp_attribuee);
-    if (cibles.length === 0) return toast.info("Aucun présent en attente d'XP");
+    if (cibles.length === 0) return toast.info(L("Aucun présent en attente d'XP", "No attendee pending XP", "Geen aanwezige in afwachting van XP"));
 
     for (const part of cibles) {
       const perso = persos.find((p) => p.id === part.personnage_id);
@@ -214,7 +223,7 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
         }
       }
     }
-    toast.success(`${cibles.length} personnage(s) crédité(s) de ${xp} XP`);
+    toast.success(`${cibles.length} ${L("personnage(s) crédité(s) de", "character(s) credited with", "personage(s) gecrediteerd met")} ${xp} XP`);
     loadParticipations(openId);
     onXpChanged?.();
   };
