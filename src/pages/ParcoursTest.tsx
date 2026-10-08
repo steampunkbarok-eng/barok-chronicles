@@ -55,7 +55,7 @@ const etapes: { title: Text; href: string; checks: Text[] }[] = [
 const KEY = "barok-parcours-test";
 
 export default function ParcoursTest() {
-  const tri = useTri();
+  const { L: tri } = useTri();
   const [done, setDone] = useState<Record<string, boolean>>(() => {
     try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; }
   });
@@ -70,7 +70,7 @@ export default function ParcoursTest() {
         <LanguageSwitcher />
       </header>
       <main className="max-w-3xl mx-auto p-6 space-y-6">
-        <h1 className="font-cinzel text-3xl text-primary flex items-center gap-3"><ClipboardCheck />{tri("Parcours de test", "Test walkthrough", "Testparcours")}</h1>
+        <h1 className="font-display text-3xl text-primary flex items-center gap-3"><ClipboardCheck />{tri("Parcours de test", "Test walkthrough", "Testparcours")}</h1>
         <p className="text-muted-foreground">{tri("Suivez chaque étape avant d'annoncer le site aux joueurs et joueuses. Votre progression est retenue sur cet appareil.", "Follow each step before announcing the site to players. Progress is saved on this device.", "Volg elke stap voordat je de site aan spelers aankondigt. Je voortgang wordt op dit toestel bewaard.")}</p>
         <div className="flex items-center gap-4">
           <div className="flex-1 h-2 bg-muted rounded"><div className="h-2 bg-primary rounded" style={{ width: `${(count / total) * 100}%` }} /></div>
@@ -80,7 +80,7 @@ export default function ParcoursTest() {
         {etapes.map((e, i) => (
           <section key={i} className="border border-border rounded-lg p-4 bg-card space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="font-cinzel text-xl text-primary">{tri(...e.title)}</h2>
+              <h2 className="font-display text-xl text-primary">{tri(e.title[0], e.title[1], e.title[2])}</h2>
               <Button asChild size="sm" variant="secondary"><a href={e.href} target="_blank" rel="noreferrer">{tri("Ouvrir", "Open", "Openen")}</a></Button>
             </div>
             {e.checks.map((c, j) => {
@@ -88,7 +88,7 @@ export default function ParcoursTest() {
               return (
                 <label key={id} className="flex items-start gap-3 cursor-pointer">
                   <Checkbox checked={!!done[id]} onCheckedChange={(v) => setDone((d) => ({ ...d, [id]: !!v }))} />
-                  <span className={done[id] ? "line-through text-muted-foreground" : ""}>{tri(...c)}</span>
+                  <span className={done[id] ? "line-through text-muted-foreground" : ""}>{tri(c[0], c[1], c[2])}</span>
                 </label>
               );
             })}
