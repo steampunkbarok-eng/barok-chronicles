@@ -26,6 +26,8 @@ import EvenementsManager from "@/components/orga/EvenementsManager";
 import FactionsManager from "@/components/orga/FactionsManager";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { GuideButton } from "@/components/GuideButton";
+import { useTri } from "@/i18n/tri";
+import { translateGameData } from "@/i18n/gameData";
 
 type Statut = "brouillon" | "soumis" | "valide" | "archive";
 
@@ -54,6 +56,18 @@ interface Evolution {
   created_at: string;
 }
 
+const dateLocale: Record<"fr" | "en" | "nl", string> = {
+  fr: "fr-FR",
+  en: "en-US",
+  nl: "nl-NL",
+};
+
+const statutLabelsByLang: Record<"fr" | "en" | "nl", Record<Statut, string>> = {
+  fr: { brouillon: "Brouillon", soumis: "Soumis", valide: "Validé", archive: "Archivé" },
+  en: { brouillon: "Draft", soumis: "Submitted", valide: "Validated", archive: "Archived" },
+  nl: { brouillon: "Klad", soumis: "Ingediend", valide: "Gevalideerd", archive: "Gearchiveerd" },
+};
+
 const statutColors: Record<Statut, string> = {
   brouillon: "bg-muted text-muted-foreground",
   soumis: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
@@ -62,6 +76,9 @@ const statutColors: Record<Statut, string> = {
 };
 
 const Orga = () => {
+  const { L, language } = useTri();
+  const statutLabels = statutLabelsByLang[language];
+  const locale = dateLocale[language];
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
   const [authorized, setAuthorized] = useState(false);
