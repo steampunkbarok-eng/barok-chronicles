@@ -232,23 +232,23 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
     <div className="space-y-3 border-t border-border pt-4 mt-4">
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <Label>Nom de l'événement</Label>
+          <Label>{L("Nom de l'événement", "Event name", "Naam van het evenement")}</Label>
           <Input value={form.nom} onChange={(e) => setForm({ ...form, nom: e.target.value })} />
         </div>
         <div>
-          <Label>Lieu</Label>
+          <Label>{L("Lieu", "Location", "Locatie")}</Label>
           <Input value={form.lieu} onChange={(e) => setForm({ ...form, lieu: e.target.value })} />
         </div>
         <div>
-          <Label>Date de début</Label>
+          <Label>{L("Date de début", "Start date", "Startdatum")}</Label>
           <Input type="date" value={form.date_debut} onChange={(e) => setForm({ ...form, date_debut: e.target.value })} />
         </div>
         <div>
-          <Label>Date de fin</Label>
+          <Label>{L("Date de fin", "End date", "Einddatum")}</Label>
           <Input type="date" value={form.date_fin} onChange={(e) => setForm({ ...form, date_fin: e.target.value })} />
         </div>
         <div>
-          <Label>XP attribuée aux présents</Label>
+          <Label>{L("XP attribuée aux présents", "XP granted to attendees", "XP toegekend aan aanwezigen")}</Label>
           <Input
             type="number"
             min={0}
@@ -257,7 +257,7 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
           />
         </div>
         <div>
-          <Label>Statut</Label>
+          <Label>{L("Statut", "Status", "Status")}</Label>
           <Select value={form.statut} onValueChange={(v) => setForm({ ...form, statut: v as StatutEvt })}>
             <SelectTrigger>
               <SelectValue />
@@ -273,29 +273,29 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
         </div>
       </div>
       <div>
-        <Label>Description (publique)</Label>
+        <Label>{L("Description (publique)", "Description (public)", "Omschrijving (publiek)")}</Label>
         <Textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
       </div>
       <div>
-        <Label>Compte-rendu (public, après l'événement)</Label>
+        <Label>{L("Compte-rendu (public, après l'événement)", "Report (public, after the event)", "Verslag (publiek, na het evenement)")}</Label>
         <Textarea rows={4} value={form.compte_rendu} onChange={(e) => setForm({ ...form, compte_rendu: e.target.value })} />
       </div>
       <div>
-        <Label>Notes internes d'orga</Label>
+        <Label>{L("Notes internes d'orga", "Internal orga notes", "Interne orga-notities")}</Label>
         <Textarea rows={3} value={form.notes_orga} onChange={(e) => setForm({ ...form, notes_orga: e.target.value })} />
       </div>
       {mode === "create" ? (
         <div className="flex gap-2">
           <Button onClick={createEvent}>
-            <Plus className="w-4 h-4 mr-1" /> Créer l'événement
+            <Plus className="w-4 h-4 mr-1" /> {L("Créer l'événement", "Create event", "Evenement aanmaken")}
           </Button>
           <Button variant="ghost" onClick={() => setCreating(false)}>
-            Annuler
+            {L("Annuler", "Cancel", "Annuleren")}
           </Button>
         </div>
       ) : (
         <Button onClick={saveEvent}>
-          <Save className="w-4 h-4 mr-1" /> Enregistrer
+          <Save className="w-4 h-4 mr-1" /> {L("Enregistrer", "Save", "Opslaan")}
         </Button>
       )}
     </div>
@@ -307,9 +307,9 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
             <CardTitle className="font-serif flex items-center gap-2">
-              <CalendarDays className="w-5 h-5 text-primary" /> Événements ({evenements.length})
+              <CalendarDays className="w-5 h-5 text-primary" /> {L("Événements", "Events", "Evenementen")} ({evenements.length})
             </CardTitle>
-            <CardDescription>Sessions de jeu, présences et attribution automatique d'XP.</CardDescription>
+            <CardDescription>{L("Sessions de jeu, présences et attribution automatique d'XP.", "Game sessions, attendance and automatic XP granting.", "Spelsessies, aanwezigheden en automatische XP-toekenning.")}</CardDescription>
           </div>
           <Button
             size="sm"
@@ -319,7 +319,7 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
               setForm({ ...emptyForm });
             }}
           >
-            <Plus className="w-4 h-4 mr-1" /> Nouvel événement
+            <Plus className="w-4 h-4 mr-1" /> {L("Nouvel événement", "New event", "Nieuw evenement")}
           </Button>
         </div>
       </CardHeader>
@@ -327,7 +327,7 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
         {creating && renderForm("create")}
 
         {evenements.length === 0 && !creating && (
-          <p className="text-sm text-muted-foreground">Aucun événement pour le moment.</p>
+          <p className="text-sm text-muted-foreground">{L("Aucun événement pour le moment.", "No events yet.", "Nog geen evenementen.")}</p>
         )}
 
         {evenements.map((e) => (
@@ -336,8 +336,8 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
               <span className="font-medium">{e.nom}</span>
               <Badge variant="outline">{statutLabels[e.statut]}</Badge>
               <span className="text-sm text-muted-foreground">
-                {new Date(e.date_debut).toLocaleDateString()}
-                {e.date_fin && e.date_fin !== e.date_debut ? ` → ${new Date(e.date_fin).toLocaleDateString()}` : ""}
+                {new Date(e.date_debut).toLocaleDateString(locale)}
+                {e.date_fin && e.date_fin !== e.date_debut ? ` → ${new Date(e.date_fin).toLocaleDateString(locale)}` : ""}
               </span>
               {e.lieu && <span className="text-sm text-muted-foreground">· {e.lieu}</span>}
               <span className="text-sm text-muted-foreground">· {e.xp_attribuee} XP</span>
@@ -360,12 +360,12 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
 
                 <div className="border-t border-border pt-4 mt-4 space-y-2">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <h4 className="font-serif text-lg">Présences</h4>
+                    <h4 className="font-serif text-lg">{L("Présences", "Attendance", "Aanwezigheden")}</h4>
                     <Button size="sm" variant="secondary" onClick={attribuerXp}>
-                      <Sparkles className="w-4 h-4 mr-1" /> Attribuer l'XP aux présents
+                      <Sparkles className="w-4 h-4 mr-1" /> {L("Attribuer l'XP aux présents", "Grant XP to attendees", "XP toekennen aan aanwezigen")}
                     </Button>
                   </div>
-                  {persos.length === 0 && <p className="text-sm text-muted-foreground">Aucun personnage en base.</p>}
+                  {persos.length === 0 && <p className="text-sm text-muted-foreground">{L("Aucun personnage en base.", "No characters on file.", "Geen personages aanwezig.")}</p>}
                   <div className="grid sm:grid-cols-2 gap-1">
                     {persos.map((p) => {
                       const part = participations.find((x) => x.personnage_id === p.id);
@@ -381,7 +381,7 @@ const EvenementsManager = ({ persos, userEmail, onXpChanged }: Props) => {
                           {p.faction && <span className="text-muted-foreground text-xs">· {p.faction}</span>}
                           {part?.xp_attribuee && (
                             <Badge variant="outline" className="ml-auto text-xs">
-                              XP versée
+                              {L("XP versée", "XP granted", "XP toegekend")}
                             </Badge>
                           )}
                         </label>
