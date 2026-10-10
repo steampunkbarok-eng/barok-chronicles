@@ -22,6 +22,6 @@
 - [x] Vérifier les termes de l’univers et le guide dans les trois langues (position, coûts, exemple à 14 pierres et renvoi au livre de règles)
 
 ## Orga multilingue, sécurité, tests
-- [ ] Espace Organisation en EN/NL
-- [ ] Sécurité : linter + scan, corrections sans bloquer l'administration
-- [ ] Testing complet pas à pas
+- [x] Espace Organisation en EN/NL
+- [x] Sécurité : linter + scan, corrections sans bloquer l'administration
+- [x] Testing complet pas à pas
