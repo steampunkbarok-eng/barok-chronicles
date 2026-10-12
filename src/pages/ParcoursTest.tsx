@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -56,12 +57,26 @@ const KEY = "barok-parcours-test";
 
 export default function ParcoursTest() {
   const { L: tri } = useTri();
+  const navigate = useNavigate();
+  const [allowed, setAllowed] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      const uid = data.session?.user.id;
+      if (!uid) { navigate("/auth?next=/parcours-test", { replace: true }); return; }
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+      if ((roles || []).some((r) => r.role === "orga" || r.role === "admin")) setAllowed(true);
+      else navigate("/", { replace: true });
+    })();
+  }, [navigate]);
   const [done, setDone] = useState<Record<string, boolean>>(() => {
     try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; }
   });
   useEffect(() => { localStorage.setItem(KEY, JSON.stringify(done)); }, [done]);
   const total = etapes.reduce((n, e) => n + e.checks.length, 0);
   const count = Object.values(done).filter(Boolean).length;
+  if (!allowed) return null;
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
