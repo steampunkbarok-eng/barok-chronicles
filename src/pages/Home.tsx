@@ -62,12 +62,27 @@ const Home = () => {
                 </Button>
               </Link>
               <GuideButton />
-              <Link to="/auth">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <LogIn className="h-4 w-4" />
-                  {t('nav.signIn')}
-                </Button>
-              </Link>
+              {email ? (
+                <>
+                  {isOrga && (
+                    <Link to="/orga">
+                      <Button variant="ghost" size="sm">{L("Organisation", "Organisation", "Organisatie")}</Button>
+                    </Link>
+                  )}
+                  <span className="hidden md:inline text-xs text-muted-foreground">{email}</span>
+                  <Button variant="outline" size="sm" className="gap-2" onClick={() => supabase.auth.signOut()}>
+                    <LogOut className="h-4 w-4" />
+                    {L("Déconnexion", "Sign out", "Afmelden")}
+                  </Button>
+                </>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <LogIn className="h-4 w-4" />
+                    {t('nav.signIn')}
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
