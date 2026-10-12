@@ -26,9 +26,8 @@ const Auth = () => {
         navigate(next);
         return;
       }
-      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", userId);
-      const isOrga = (roles || []).some((r) => r.role === "orga" || r.role === "admin");
-      navigate(isOrga ? "/orga" : "/mes-factions");
+      void userId;
+      navigate("/");
     },
     [navigate, next],
   );

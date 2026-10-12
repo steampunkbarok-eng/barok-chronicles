@@ -1,13 +1,32 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, FileText, Scroll, LogIn, CalendarDays } from "lucide-react";
+import { Shield, Users, FileText, Scroll, LogIn, LogOut, CalendarDays } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { GuideButton } from "@/components/GuideButton";
+import { supabase } from "@/integrations/supabase/client";
+import { useTri } from "@/i18n/tri";
 
 const Home = () => {
   const { t } = useLanguage();
+  const { L } = useTri();
+  const [email, setEmail] = useState<string | null>(null);
+  const [isOrga, setIsOrga] = useState(false);
+  useEffect(() => {
+    const load = async (uid?: string, mail?: string | null) => {
+      setEmail(mail ?? null);
+      if (!uid) { setIsOrga(false); return; }
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+      setIsOrga((data || []).some((r) => r.role === "orga" || r.role === "admin"));
+    };
+    supabase.auth.getSession().then(({ data }) => load(data.session?.user.id, data.session?.user.email));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setTimeout(() => load(s?.user.id, s?.user.email), 0);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
