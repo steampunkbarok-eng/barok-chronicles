@@ -1024,9 +1024,19 @@ const Personnages = () => {
 
       if (emailError) {
         console.error("Erreur d'envoi d'email personnage:", emailError);
+        toast.error(L(
+          "Fiche enregistrée, mais l'email de notification n'a pas pu être envoyé. Préviens l'organisation.",
+          "Sheet saved, but the notification email could not be sent. Please inform the organisers.",
+          "Blad opgeslagen, maar de meldingsmail kon niet worden verzonden. Verwittig de organisatie."
+        ));
       }
     } catch (emailErr) {
       console.error("Erreur d'envoi d'email personnage:", emailErr);
+      toast.error(L(
+        "Fiche enregistrée, mais l'email de notification n'a pas pu être envoyé. Préviens l'organisation.",
+        "Sheet saved, but the notification email could not be sent. Please inform the organisers.",
+        "Blad opgeslagen, maar de meldingsmail kon niet worden verzonden. Verwittig de organisatie."
+      ));
       // Ne pas bloquer - le personnage est déjà sauvegardé
     }
   };
