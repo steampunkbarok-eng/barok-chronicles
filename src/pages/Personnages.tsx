@@ -44,7 +44,7 @@ interface Personnage {
   foi: number;
   pointsCreation: number;
   pointsDepenses: number;
-  competences: { nom: string; cout: number }[];
+  competences: { nom: string; cout: number; gratuite?: boolean }[];
   sorts: { niv1: number; niv2: number; niv3: number; niv4: number };
   pierresDeVie: number;
   materielTO: string[];
@@ -696,7 +696,7 @@ const Personnages = () => {
 
     setFormData({
       ...formData,
-      competences: [...formData.competences, { nom: competence.nom, cout: competence.cout }],
+      competences: [...formData.competences, { nom: competence.nom, cout: competence.cout, gratuite: utiliseCompetenceGratuite }],
       pointsDepenses: utiliseCompetenceGratuite ? formData.pointsDepenses : formData.pointsDepenses + competence.cout,
       competencesGratuitesUtilisees: utiliseCompetenceGratuite ? formData.competencesGratuitesUtilisees + 1 : formData.competencesGratuitesUtilisees,
       pierresDeVie: nouveauxPierres
@@ -715,7 +715,9 @@ const Personnages = () => {
     
     // Déterminer si cette compétence a été payée avec des points ou une compétence gratuite
     // On retire d'abord les compétences gratuites (LIFO)
-    const competencePayeeAvecGratuite = index >= formData.competences.length - formData.competencesGratuitesUtilisees;
+    // Chaque compétence mémorise son mode de paiement (gratuite d'événement ou points).
+    // Les compétences gratuites d'espèce ont un coût stocké de 0 et ne rendent aucun point.
+    const competencePayeeAvecGratuite = comp.gratuite ?? (index >= formData.competences.length - formData.competencesGratuitesUtilisees);
     
     let nouveauxPierres = formData.pierresDeVie;
     if (competence) {
@@ -746,7 +748,7 @@ const Personnages = () => {
     setFormData({
       ...formData,
       competences: formData.competences.filter((_, i) => i !== index),
-      pointsDepenses: competencePayeeAvecGratuite ? formData.pointsDepenses : formData.pointsDepenses - (competence?.cout || 0),
+      pointsDepenses: competencePayeeAvecGratuite ? formData.pointsDepenses : Math.max(0, formData.pointsDepenses - (comp.cout || 0)),
       competencesGratuitesUtilisees: competencePayeeAvecGratuite ? Math.max(0, formData.competencesGratuitesUtilisees - 1) : formData.competencesGratuitesUtilisees,
       pierresDeVie: nouveauxPierres
     });
@@ -1129,6 +1131,17 @@ const Personnages = () => {
                                 const next = ev.target.checked
                                   ? [...evenementsParticipes, e.id]
                                   : evenementsParticipes.filter(id => id !== e.id);
+                                if (!ev.target.checked) {
+                                  const dispo = next.length * 2;
+                                  if (formData.competencesGratuitesUtilisees > dispo || formData.niveauxSortsGratuitsUtilises > dispo) {
+                                    toast.error(L(
+                                      "Retire d'abord des compétences ou sorts gratuits : cet événement les finance.",
+                                      "First remove free skills or spells: this event pays for them.",
+                                      "Verwijder eerst gratis vaardigheden of spreuken: dit evenement betaalt ze."
+                                    ));
+                                    return;
+                                  }
+                                }
                                 setEvenementsParticipes(next);
                                 setFormData(fd => ({ ...fd, nbEvenements: next.length }));
                               }}
