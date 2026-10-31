@@ -186,6 +186,60 @@ const Personnages = () => {
     }
   }, [showForm, editId]);
 
+  const [ficheRemiseANiveau, setFicheRemiseANiveau] = useState(false);
+
+  /** Remise à niveau des fiches enregistrées avant le suivi du mode de paiement de chaque compétence. */
+  const normaliserFiche = (d: Record<string, any>, espece: string, id: string) => {
+    const brutes: { nom: string; cout: number; gratuite?: boolean }[] = Array.isArray(d.competences) ? d.competences : [];
+    const gratuitesEspece = calculerCompetencesGratuitesEspece(espece);
+    const nomsEspece = new Set(gratuitesEspece.map(c => c.nom));
+    const nbEv = Number(d.nbEvenements) || 0;
+    let change = false;
+
+    // Compétences hors espèce, coût réel du catalogue
+    const autres = brutes
+      .filter(c => !nomsEspece.has(c.nom))
+      .filter(c => {
+        const ok = competencesDisponibles.some(x => x.nom === c.nom);
+        if (!ok) change = true; // compétence erronée retirée
+        return ok;
+      })
+      .map(c => ({ ...c, cout: competencesDisponibles.find(x => x.nom === c.nom)!.cout }));
+    if (brutes.some(c => nomsEspece.has(c.nom) && c.cout !== 0)) change = true;
+    if (gratuitesEspece.some(g => !brutes.some(c => c.nom === g.nom))) change = true;
+
+    // Marquer les gratuites d'événement des anciennes fiches (les dernières ajoutées)
+    const sansMarque = autres.some(c => c.gratuite === undefined);
+    if (sansMarque) {
+      const nbGrat = Math.min(Number(d.competencesGratuitesUtilisees) || 0, nbEv * 2, autres.length);
+      autres.forEach((c, i) => {
+        if (c.gratuite === undefined) c.gratuite = i >= autres.length - nbGrat;
+      });
+    }
+    let nbGratuites = autres.filter(c => c.gratuite).length;
+    // Ne pas dépasser les gratuités disponibles
+    for (let i = autres.length - 1; i >= 0 && nbGratuites > nbEv * 2; i--) {
+      if (autres[i].gratuite) { autres[i].gratuite = false; nbGratuites--; change = true; }
+    }
+    const pointsDepenses = autres.filter(c => !c.gratuite).reduce((s, c) => s + c.cout, 0);
+    if (pointsDepenses !== (Number(d.pointsDepenses) || 0)) change = true;
+    if (nbGratuites !== (Number(d.competencesGratuitesUtilisees) || 0)) change = true;
+
+    const cle = `fiche_remise_niveau_vue_${id}`;
+    if (change && !localStorage.getItem(cle)) setFicheRemiseANiveau(true);
+
+    return {
+      competences: [...gratuitesEspece, ...autres],
+      pointsDepenses,
+      competencesGratuitesUtilisees: nbGratuites,
+    };
+  };
+
+  const fermerAvisRemiseANiveau = () => {
+    if (editId) localStorage.setItem(`fiche_remise_niveau_vue_${editId}`, "1");
+    setFicheRemiseANiveau(false);
+  };
+
   // Chargement d'une fiche existante (édition / évolution)
   useEffect(() => {
     if (!editId) return;
@@ -217,9 +271,9 @@ const Personnages = () => {
         faction: d.faction ?? data.faction ?? "",
         espece: d.espece ?? data.espece ?? "",
         email: d.email ?? data.email ?? "",
-        competences: Array.isArray(d.competences) ? d.competences : [],
         sorts: d.sorts ?? { niv1: 0, niv2: 0, niv3: 0, niv4: 0 },
         materielTO: Array.isArray(d.materielTO) ? d.materielTO : [],
+        ...normaliserFiche(d, d.espece ?? data.espece ?? "", data.id),
       }));
       setEvenementsParticipes(Array.isArray(d.evenementsParticipes) ? d.evenementsParticipes : []);
       setShowForm(true);
@@ -1088,6 +1142,23 @@ const Personnages = () => {
       <div className="container mx-auto px-4 py-8">
         {chargementFiche && (
           <p className="text-muted-foreground mb-4">{L("Chargement de la fiche…", "Loading the sheet…", "Blad laden…")}</p>
+        )}
+        {editId && ficheRemiseANiveau && (
+          <div role="alert" className="relative mb-6 rounded-lg border-2 border-destructive bg-white p-4 pr-10 text-sm font-medium text-destructive">
+            <button
+              type="button"
+              onClick={fermerAvisRemiseANiveau}
+              aria-label={L("Fermer", "Close", "Sluiten")}
+              className="absolute right-2 top-2 rounded p-1 hover:bg-destructive/10"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            {L(
+              "Suite à une mise à jour, votre fiche a peut-être été remise à niveau. Cela peut signifier qu'une compétence gratuite a été ajoutée et/ou qu'une compétence erronée a été retirée. Les points de compétence liés à toute annulation sont bien entendu remboursés dans votre décompte. Dans ce cas, la gestion de votre fiche de personnage vous permet de reprendre une ou plusieurs nouvelles compétences. Merci de votre compréhension, l'équipe Orga.",
+              "Following an update, your sheet may have been brought up to date. This may mean that a free skill has been added and/or that an incorrect skill has been removed. The skill points linked to any cancellation are, of course, refunded in your count. In that case, your character sheet management lets you take one or more new skills. Thank you for your understanding, the Orga team.",
+              "Na een update is je blad mogelijk bijgewerkt. Dit kan betekenen dat een gratis vaardigheid werd toegevoegd en/of dat een foutieve vaardigheid werd verwijderd. De vaardigheidspunten van elke geannuleerde keuze worden uiteraard terugbetaald in je telling. In dat geval kun je via het beheer van je personageblad één of meer nieuwe vaardigheden kiezen. Bedankt voor je begrip, het Orga-team.",
+            )}
+          </div>
         )}
         {editId && !chargementFiche && showForm && (
           <div className="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm">
