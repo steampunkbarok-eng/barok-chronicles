@@ -456,6 +456,7 @@ const Personnages = () => {
         recap.push(`   ${t('summary.free')}: ${especeData.gratuit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}`);
         recap.push(`   ${t('summary.forbidden')}: ${especeData.interdit.split(' + ').map(s => translateGameData(s.trim(), 'especeSpecial', language)).join(' + ')}`);
         recap.push(`   ${t('summary.special')}: ${translateGameData(especeData.special, 'especeSpecial', language)}`);
+        if (especeData.nom === "Sautais") recap.push(`!!${L("⛔ Espèce réservée uniquement aux enfants jusqu'à 16 ans.", "⛔ Species reserved exclusively for children up to 16 years old.", "⛔ Soort uitsluitend voorbehouden aan kinderen tot 16 jaar.")}`);
         if (especeData.effetsPV !== 0) recap.push(`   PV: ${especeData.effetsPV > 0 ? '+' : ''}${especeData.effetsPV}${t('summary.perLocation')}`);
         if (especeData.effetsPA !== 0) recap.push(`   PA: ${especeData.effetsPA > 0 ? '+' : ''}${especeData.effetsPA}`);
       }
@@ -1885,7 +1886,7 @@ const Personnages = () => {
                   {recapitulatif.length > 0 ? (
                     <div className="bg-muted/30 p-4 rounded-lg font-mono text-xs space-y-1 whitespace-pre-wrap">
                       {recapitulatif.map((ligne, idx) => (
-                        <div key={idx}>{ligne}</div>
+                        ligne.startsWith('!!') ? <div key={idx} className="font-bold text-destructive">{ligne.slice(2)}</div> : <div key={idx}>{ligne}</div>
                       ))}
                     </div>
                   ) : (
