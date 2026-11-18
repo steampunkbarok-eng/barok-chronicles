@@ -15,6 +15,13 @@
       "when": 1795039561445,
       "tag": "0001_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795039935831,
+      "tag": "0002_orga_only_email_faction_change",
+      "breakpoints": true
     }
   ]
 }
