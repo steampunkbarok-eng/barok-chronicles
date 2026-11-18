@@ -8,6 +8,13 @@
       "when": 1791443308076,
       "tag": "0000_harden_security",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795039561445,
+      "tag": "0001_migration",
+      "breakpoints": true
     }
   ]
 }
