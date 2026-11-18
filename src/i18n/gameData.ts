@@ -289,11 +289,11 @@ export const especeTranslations: Record<string, string> = {
   "Orques": "Orcs",
   "Gobelins": "Goblins",
   "Trolls": "Trolls",
-  "Sautais": "Sautais",
+  "Sautais": "Kabouters",
   "Artolls": "Artolls",
   "Warolls": "Warolls",
   "Korrigans": "Korrigans",
-  "Gnomes": "Gnomes",
+  "Gnomes": "Alvermen",
   "Vorélannes": "Vorelans",
   "Draconide": "Draconid",
   "Êtres Mécaniques": "Mechanicals beings",
@@ -529,7 +529,7 @@ export const titrePrerequisTranslations: Record<string, string> = {
   "Haine magie + Compétence technologie/mécanique/forgeron": "Magic hatred + Technology/mechanics/blacksmith skill",
   "Background + Code Piraterie": "Background + Piracy Code",
   "Background extraplanaire": "Extraplanar background",
-  "Nains/Gnomes/Sautaises + Forgeron": "Dwarves/Gnomes/Sautais + Blacksmith",
+  "Nains/Gnomes/Sautaises + Forgeron": "Dwarves/Alvermen/Kabouters + Blacksmith",
   "Mystique": "Mystic",
   "Filouterie + deux compétences Martiales": "Shady + two Martial skills"
 };

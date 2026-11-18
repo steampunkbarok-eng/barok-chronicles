@@ -721,7 +721,7 @@ export const openFactionSheet = (faction: FactionData, language: 'fr' | 'en' | '
       "Haine magie + Compétence technologie/mécanique/forgeron": "Magic hatred + Technology/mechanics/blacksmith skill",
       "Background + Code Piraterie": "Background + Piracy Code",
       "Background extraplanaire": "Extraplanar background",
-      "Nains/Gnomes/Sautaises + Forgeron": "Dwarves/Gnomes/Sautais + Blacksmith",
+      "Nains/Gnomes/Sautaises + Forgeron": "Dwarves/Alvermen/Kabouters + Blacksmith",
       "Mystique": "Mystic",
       "Filouterie + deux compétences Martiales": "Shady + two Martial skills"
     };

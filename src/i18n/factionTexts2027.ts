@@ -217,7 +217,7 @@ export const factionTextsEn: Record<string, string> = {
   "Orques, Gobelins, Trolls": "Orcs, Goblins, Trolls",
   "Pratiques interdites : nécromancie, trafic de cadavres, esclavagisme. Marques L.A.M., Semence de Dragon et Planaire ; Corsaire elfique, Pirate, Épervier, Bande organisée, Garde du Corps, Porteur-euse de Rune, Chasseur-euses de Chair ; charges publiques et d'Ombre":
     "Forbidden practices: necromancy, corpse trafficking, slavery. L.A.M., Dragon Seed and Planar Marks; Elven Privateer, Pirate, Sparrowhawk, Organised Gang, Bodyguard, Rune Bearer, Flesh Hunters; public and Shadow offices",
-  "Nains, Gnomes, Sautais": "Dwarves, Gnomes, Sautais",
+  "Nains, Gnomes, Sautais": "Dwarves, Alvermen, Kabouters",
   "Marques Planaire et Semence de Dragon, Capitaine (Mer ou Air), Pirate, Mercenaire Peau-olive, Agente d'une ONG, Bande organisée":
     "Planar and Dragon Seed Marks, Captain (Sea or Air), Pirate, Olive-skin Mercenary, NGO Agent, Organised Gang",
   "Serment (trahison → Déchu-e)": "Oath (betrayal → Fallen)",
@@ -437,7 +437,7 @@ export const factionTextsNl: Record<string, string> = {
   "Orques, Gobelins, Trolls": "Orks, Goblins, Trollen",
   "Pratiques interdites : nécromancie, trafic de cadavres, esclavagisme. Marques L.A.M., Semence de Dragon et Planaire ; Corsaire elfique, Pirate, Épervier, Bande organisée, Garde du Corps, Porteur-euse de Rune, Chasseur-euses de Chair ; charges publiques et d'Ombre":
     "Verboden praktijken: necromantie, lijkenhandel, slavernij. Merktekens A.M.L., Drakenzaad en Planair; Elfse kaper, Piraat, Sperwer, Georganiseerde bende, Lijfwacht, Runendrager, Vleesjagers; openbare ambten en Schaduwambten",
-  "Nains, Gnomes, Sautais": "Dwergen, Gnomen, Sautais",
+  "Nains, Gnomes, Sautais": "Dwergen, Alvermenen, Kabouters",
   "Marques Planaire et Semence de Dragon, Capitaine (Mer ou Air), Pirate, Mercenaire Peau-olive, Agente d'une ONG, Bande organisée":
     "Planair Merkteken en Merkteken Drakenzaad, Kapitein (Zee of Lucht), Piraat, Olijfhuidige huurling, Agent van een ngo, Georganiseerde bende",
   "Serment (trahison → Déchu-e)": "Eed (verraad → Gevallene)",
