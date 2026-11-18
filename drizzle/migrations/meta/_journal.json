@@ -29,6 +29,27 @@
       "when": 1795040056397,
       "tag": "0003_corbeille_fiche_rpc",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795040251174,
+      "tag": "0004_anon_sheet_without_faction_only",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795040333193,
+      "tag": "0005_fix_anon_test_sheet_insert",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795040356318,
+      "tag": "0006_allow_anon_role_check",
+      "breakpoints": true
     }
   ]
 }

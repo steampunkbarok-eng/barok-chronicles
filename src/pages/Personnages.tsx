@@ -87,10 +87,12 @@ const Personnages = () => {
   const [chargementFiche, setChargementFiche] = useState(false);
   const [ficheMeta, setFicheMeta] = useState<{ statut: string; xp: number } | null>(null);
   const [estOrga, setEstOrga] = useState(false);
+  const [estConnecte, setEstConnecte] = useState<boolean | null>(null);
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getSession();
       const uid = data.session?.user.id;
+      setEstConnecte(!!uid);
       if (!uid) return;
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
       setEstOrga((roles || []).some((r) => r.role === "orga" || r.role === "admin"));
@@ -1302,14 +1304,24 @@ const Personnages = () => {
                         <SelectValue placeholder={t('characters.factionNone')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="__test__">{L("Spécial — essai sans faction", "Special — test without a faction", "Speciaal — testen zonder factie")}</SelectItem>
+                        <SelectItem value="__test__">{L("Spécial – essai sans faction", "Special – test without a faction", "Speciaal – testen zonder factie")}</SelectItem>
                         {factions.map((faction) => (
-                          <SelectItem key={faction.nom} value={faction.nom}>
+                          <SelectItem key={faction.nom} value={faction.nom} disabled={estConnecte === false}>
                             {faction.nom}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {estConnecte === false && (
+                      <p className="text-sm text-destructive">
+                        {L(
+                          "Sans compte, seul « Spécial – essai sans faction » est possible. Pour rejoindre une faction et créer votre vrai personnage, créez votre compte, validez-le via l'email reçu, puis connectez-vous.",
+                          "Without an account, only “Special – test without a faction” is available. To join a faction and create your real character, create your account, confirm it via the email you receive, then sign in.",
+                          "Zonder account is enkel “Speciaal – testen zonder factie” mogelijk. Om je bij een factie aan te sluiten en je echte personage te maken, maak je een account aan, bevestig je het via de ontvangen e-mail en meld je je aan.",
+                        )}{" "}
+                        <Link to="/auth?next=/personnages" className="underline font-semibold">{L("Créer mon compte / me connecter", "Create my account / sign in", "Account aanmaken / aanmelden")}</Link>
+                      </p>
+                    )}
                     {formData.faction && originesFaction.length === 0 && (factionCourante?.titres?.length || 0) > 0 && (
                       <p className="text-xs text-muted-foreground">
                         {L("Titres de cette faction", "Titles of this faction", "Titels van deze factie")} : {factionCourante?.titres?.join(", ")}

@@ -69,6 +69,12 @@ serve(async (req) => {
     add("visiteur", "Consulter une fiche", false, await canRead(visiteur, "personnages", p.id));
     add("visiteur", "Consulter une faction", false, await canRead(visiteur, "factions", fac.id));
 
+    const nbVis = async () => (await admin.from("personnages").select("id").eq("email", mail("visiteur"))).data?.length || 0;
+    await visiteur.from("personnages").insert({ nom: "V", prenom: tag, faction: factionNames[0], espece: "Humains", email: mail("visiteur"), data: {} });
+    add("visiteur", "Créer une fiche dans une faction", false, (await nbVis()) > 0);
+    await visiteur.from("personnages").insert({ nom: "V", prenom: tag, faction: null, espece: "Humains", email: mail("visiteur"), data: {} });
+    add("visiteur", "Créer une fiche « essai sans faction »", true, (await nbVis()) > 0);
+
     // Joueur
     add("joueur", "Consulter sa propre fiche", true, await canRead(joueur, "personnages", p.id));
     add("joueur", "Consulter la fiche d'une autre faction", false, await canRead(joueur, "personnages", pAutre.id));

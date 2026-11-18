@@ -17,6 +17,8 @@ const ROLES: Record<string, [string, string, string]> = {
 };
 const ACTIONS: Record<string, [string, string]> = {
   "Consulter une fiche": ["View a sheet", "Een blad bekijken"],
+  "Créer une fiche dans une faction": ["Create a sheet in a faction", "Een blad in een factie aanmaken"],
+  "Créer une fiche « essai sans faction »": ["Create a “test without a faction” sheet", "Een blad “testen zonder factie” aanmaken"],
   "Consulter une faction": ["View a faction", "Een factie bekijken"],
   "Consulter sa propre fiche": ["View own sheet", "Eigen blad bekijken"],
   "Consulter la fiche d'une autre faction": ["View a sheet of another faction", "Blad van een andere factie bekijken"],

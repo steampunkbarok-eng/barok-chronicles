@@ -181,6 +181,14 @@ const Home = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm mt-16">
         <div className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
+          <div className="text-left max-w-xl mb-6 text-xs leading-relaxed border-l-2 border-primary/60 pl-3">
+            <p className="font-semibold text-foreground mb-1">{L("Protection des données (RGPD)", "Data protection (GDPR)", "Gegevensbescherming (AVG)")}</p>
+            <p>{L(
+              "Conformément au Règlement général sur la protection des données (RGPD – UE 2016/679), les données que vous encodez (adresse email, compte, fiches de faction et de personnage) sont traitées par Barok GN, association aux activités ludiques et sans but lucratif, uniquement pour l'organisation de ses jeux et événements. Elles ne sont ni vendues, ni cédées, ni utilisées à des fins commerciales. Elles sont conservées le temps nécessaire à ces activités. Vous pouvez à tout moment demander l'accès, la rectification ou l'effacement de vos données en écrivant à",
+              "In accordance with the General Data Protection Regulation (GDPR – EU 2016/679), the data you enter (email address, account, faction and character sheets) is processed by Barok Larp, a non-profit organisation running recreational activities, solely to organise its games and events. It is never sold, transferred or used for commercial purposes, and is kept only as long as these activities require. You may request access to, correction or deletion of your data at any time by writing to",
+              "Overeenkomstig de Algemene Verordening Gegevensbescherming (AVG – EU 2016/679) worden de gegevens die je invoert (e-mailadres, account, factie- en personagebladen) door Barok Larp, een vereniging zonder winstoogmerk met recreatieve activiteiten, uitsluitend verwerkt voor de organisatie van haar spellen en evenementen. Ze worden nooit verkocht, doorgegeven of voor commerciële doeleinden gebruikt en worden niet langer bewaard dan nodig voor deze activiteiten. Je kunt op elk moment inzage, verbetering of verwijdering van je gegevens vragen door te schrijven naar",
+            )}{" "}<a href="mailto:steampunk.barok@gmail.com" className="text-primary hover:underline">steampunk.barok@gmail.com</a>.</p>
+          </div>
           <p>{t('footer.copyright')}</p>
           <p className="mt-2">
             {t('footer.visit')}{" "}
