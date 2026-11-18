@@ -86,6 +86,18 @@ const Personnages = () => {
   const { id: editId } = useParams();
   const [chargementFiche, setChargementFiche] = useState(false);
   const [ficheMeta, setFicheMeta] = useState<{ statut: string; xp: number } | null>(null);
+  const [estOrga, setEstOrga] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      const uid = data.session?.user.id;
+      if (!uid) return;
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+      setEstOrga((roles || []).some((r) => r.role === "orga" || r.role === "admin"));
+    })();
+  }, []);
+  /** En modification, seule l'Organisation peut changer l'email ou la faction d'une fiche. */
+  const champVerrouille = !!editId && !estOrga;
 
   const nomEvenement = (e: EvenementLite) =>
     (language === "en" ? e.nom_en : language === "nl" ? e.nom_nl : e.nom) || e.nom;
@@ -911,7 +923,8 @@ const Personnages = () => {
           faction: nouveauPersonnage.faction || null,
           espece: nouveauPersonnage.espece,
           email: nouveauPersonnage.email,
-          statut: "soumis",
+          // L'Organisation corrige sans invalider la fiche ; les autres la resoumettent.
+          statut: estOrga && ficheMeta ? (ficheMeta.statut as any) : "soumis",
           data: { ...nouveauPersonnage, evenementsParticipes } as any,
         })
         .eq("id", editId);
@@ -1281,6 +1294,7 @@ const Personnages = () => {
                   <div className="space-y-2">
                     <Label htmlFor="faction">{t('characters.faction')}</Label>
                     <Select
+                      disabled={champVerrouille}
                       value={formData.faction || "__test__"}
                       onValueChange={(value) => setFormData({ ...formData, faction: value === "__test__" ? "" : value })}
                     >
@@ -1853,7 +1867,13 @@ const Personnages = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder={t('characters.emailPlaceholder')}
+                      disabled={champVerrouille}
                     />
+                    {champVerrouille && (
+                      <p className="text-xs text-muted-foreground">
+                        {L("Seule l'Organisation peut changer l'email ou la faction d'une fiche existante.", "Only the organisers can change the email or faction of an existing sheet.", "Alleen de organisatie kan het e-mailadres of de factie van een bestaand blad wijzigen.")}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>

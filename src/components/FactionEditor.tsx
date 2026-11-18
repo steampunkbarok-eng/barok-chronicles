@@ -133,11 +133,7 @@ const FactionEditor = ({ faction, isOrga = false, onSaved }: Props) => {
       )
     )
       return;
-    const { data: sess } = await supabase.auth.getSession();
-    const { error } = await supabase
-      .from("personnages")
-      .update({ deleted_at: new Date().toISOString(), deleted_by: sess.session?.user?.email ?? null })
-      .eq("id", id);
+    const { error } = await supabase.rpc("mettre_fiche_corbeille", { _id: id });
     if (error) return toast.error(error.message);
     toast.success(L("Fiche mise à la corbeille", "Sheet moved to the bin", "Blad naar de prullenbak verplaatst"));
     loadPersos();

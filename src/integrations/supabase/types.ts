@@ -365,6 +365,7 @@ export type Database = {
           titres: string[]
         }[]
       }
+      mettre_fiche_corbeille: { Args: { _id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "orga" | "user"

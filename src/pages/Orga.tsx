@@ -387,6 +387,7 @@ const Orga = () => {
             <h1 className="font-serif text-2xl">{L('Gestion Orga','Organisation management','Organisatiebeheer')}</h1>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-sm">
+            <Link to="/verification-droits" className="text-sm underline text-primary mr-2">{L('Vérification des droits','Permission check','Controle van de rechten')}</Link>
             <Link to="/parcours-test" className="text-sm underline text-primary mr-2">{L('Parcours de test','Test walkthrough','Testparcours')}</Link>
             <LanguageSwitcher />
             <span className="text-muted-foreground hidden sm:inline">{userEmail}</span>

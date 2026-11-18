@@ -84,6 +84,8 @@ serve(async (req) => {
     add("joueur", "Changer la faction de la fiche", false, (await row(p.id))?.faction === factionNames[1]);
     await joueur.from("personnages").delete().eq("id", p.id);
     add("joueur", "Supprimer définitivement sa fiche", false, !(await row(p.id)));
+    await joueur.rpc("mettre_fiche_corbeille", { _id: p.id });
+    add("joueur", "Mettre sa fiche à la corbeille", false, !!(await row(p.id))?.deleted_at);
 
     // Extérieur (autre faction)
     add("autre gestionnaire", "Consulter une fiche d'une autre faction", false, await canRead(ext, "personnages", p.id));
@@ -113,7 +115,7 @@ serve(async (req) => {
     add("gestionnaire", "Changer la faction d'une fiche", false, (await row(p.id))?.faction === factionNames[1]);
     await gest.from("personnages").update({ statut: "archive" }).eq("id", p.id);
     add("gestionnaire", "Archiver une fiche de sa faction", true, (await row(p.id))?.statut === "archive");
-    await gest.from("personnages").update({ deleted_at: new Date().toISOString(), deleted_by: mail("gestionnaire") }).eq("id", p.id);
+    await gest.rpc("mettre_fiche_corbeille", { _id: p.id });
     add("gestionnaire", "Mettre une fiche à la corbeille", true, !!(await row(p.id))?.deleted_at);
     add("gestionnaire", "Voir une fiche à la corbeille", false, await canRead(gest, "personnages", p.id));
     await gest.from("personnages").update({ deleted_at: null }).eq("id", p.id);
