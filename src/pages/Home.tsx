@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, FileText, Scroll, LogIn, LogOut, CalendarDays } from "lucide-react";
+import { Shield, Users, FileText, Scroll, LogIn, LogOut, CalendarDays, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { GuideButton } from "@/components/GuideButton";
@@ -180,27 +180,35 @@ const Home = () => {
 
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm mt-16">
-        <div className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
-          <div className="text-left max-w-xl mb-6 text-xs leading-relaxed border-l-2 border-primary/60 pl-3">
-            <p className="font-semibold text-foreground mb-1">{L("Protection des données (RGPD)", "Data protection (GDPR)", "Gegevensbescherming (AVG)")}</p>
-            <p>{L(
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between text-sm text-muted-foreground">
+            {/* Privacy notice: expandable, stays on the left of the copyright */}
+            <details className="group max-w-xl text-left text-xs leading-relaxed border-l-2 border-primary/60 pl-3">
+              <summary className="cursor-pointer list-none flex items-center gap-1.5 font-semibold text-foreground hover:text-primary [&::-webkit-details-marker]:hidden">
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-open:rotate-180" />
+                <span>{L("Protection des données (RGPD)", "Data protection (GDPR)", "Gegevensbescherming (AVG)")}</span>
+              </summary>
+              <p className="mt-2">{L(
               "Conformément au Règlement général sur la protection des données (RGPD – UE 2016/679), les données que vous encodez (adresse email, compte, fiches de faction et de personnage) sont traitées par Barok GN, association aux activités ludiques et sans but lucratif, uniquement pour l'organisation de ses jeux et événements. Elles ne sont ni vendues, ni cédées, ni utilisées à des fins commerciales. Elles sont conservées le temps nécessaire à ces activités. Vous pouvez à tout moment demander l'accès, la rectification ou l'effacement de vos données en écrivant à",
               "In accordance with the General Data Protection Regulation (GDPR – EU 2016/679), the data you enter (email address, account, faction and character sheets) is processed by Barok Larp, a non-profit organisation running recreational activities, solely to organise its games and events. It is never sold, transferred or used for commercial purposes, and is kept only as long as these activities require. You may request access to, correction or deletion of your data at any time by writing to",
               "Overeenkomstig de Algemene Verordening Gegevensbescherming (AVG – EU 2016/679) worden de gegevens die je invoert (e-mailadres, account, factie- en personagebladen) door Barok Larp, een vereniging zonder winstoogmerk met recreatieve activiteiten, uitsluitend verwerkt voor de organisatie van haar spellen en evenementen. Ze worden nooit verkocht, doorgegeven of voor commerciële doeleinden gebruikt en worden niet langer bewaard dan nodig voor deze activiteiten. Je kunt op elk moment inzage, verbetering of verwijdering van je gegevens vragen door te schrijven naar",
             )}{" "}<a href="mailto:steampunk.barok@gmail.com" className="text-primary hover:underline">steampunk.barok@gmail.com</a>.</p>
+            </details>
+            <div className="md:text-right">
+              <p>{t('footer.copyright')}</p>
+              <p className="mt-2">
+                {t('footer.visit')}{" "}
+                <a
+                  href="https://steambe.wixsite.com/barokgn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {t('footer.officialSite')}
+                </a>
+              </p>
+            </div>
           </div>
-          <p>{t('footer.copyright')}</p>
-          <p className="mt-2">
-            {t('footer.visit')}{" "}
-            <a 
-              href="https://steambe.wixsite.com/barokgn" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              {t('footer.officialSite')}
-            </a>
-          </p>
         </div>
       </footer>
     </div>
